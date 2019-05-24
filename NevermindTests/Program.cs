@@ -1,4 +1,6 @@
 ﻿using System;
+using System.IO;
+using Nevermind;
 
 namespace NevermindTests
 {
@@ -6,7 +8,8 @@ namespace NevermindTests
     {
         public static void Main(string[] args)
         {
-            Console.WriteLine("Hello world");
+            var source = new NmSource(new FileInfo("../../file.nm"));
+            var program = new NmProgram(source);
         }
     }
 }

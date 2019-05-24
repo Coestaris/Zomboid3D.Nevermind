@@ -1,0 +1,19 @@
+import systypes;
+import io;
+
+{
+   var a: integer = 3;
+   var b: integer = a * 2;
+ 
+   if(a == 3) 
+   {
+      print("Equals");
+   }
+   else
+   {
+      print("Not equal");
+   }
+
+
+   print("End =3");
+}
