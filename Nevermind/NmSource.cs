@@ -6,7 +6,7 @@ namespace Nevermind
 {
     public class NmSource
     {
-        private string _source;
+        internal string _source;
 
         public NmSource(string source)
         {

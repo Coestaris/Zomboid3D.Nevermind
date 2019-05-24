@@ -41,6 +41,7 @@
     <Compile Include="ByteCode\Instruction.cs" />
     <Compile Include="Compiler\Token.cs" />
     <Compile Include="Compiler\Tokenizer.cs" />
+    <Compile Include="Compiler\TokenType.cs" />
     <Compile Include="NmProgram.cs" />
     <Compile Include="NmSource.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

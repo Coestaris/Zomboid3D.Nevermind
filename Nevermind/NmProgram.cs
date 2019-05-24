@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Nevermind.ByteCode;
+using Nevermind.Compiler;
 
 namespace Nevermind
 {
@@ -17,7 +18,9 @@ namespace Nevermind
 
         public void Compile()
         {
+            List<Token> tokens = Tokenizer.Tokenize(_source._source);
 
+            
         }
     }
 }

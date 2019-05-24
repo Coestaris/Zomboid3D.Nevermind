@@ -10,6 +10,10 @@ namespace NevermindTests
         {
             var source = new NmSource(new FileInfo("../../file.nm"));
             var program = new NmProgram(source);
+
+            program.Compile();
+
+
         }
     }
 }
