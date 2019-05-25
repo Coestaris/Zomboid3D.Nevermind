@@ -39,6 +39,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ByteCode\Instruction.cs" />
+    <Compile Include="Compiler\Lexemes\ImportLexeme.cs" />
+    <Compile Include="Compiler\Lexemes\Lexeme.cs" />
+    <Compile Include="Compiler\Lexemes\LexemeInfo.cs" />
+    <Compile Include="Compiler\Lexemes\LexemeType.cs" />
+    <Compile Include="Compiler\Lexemizer.cs" />
     <Compile Include="Compiler\Token.cs" />
     <Compile Include="Compiler\Tokenizer.cs" />
     <Compile Include="Compiler\TokenType.cs" />

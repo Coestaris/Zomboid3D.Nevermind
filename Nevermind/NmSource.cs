@@ -6,19 +6,21 @@ namespace Nevermind
 {
     public class NmSource
     {
-        internal string _source;
+        internal readonly string Source;
+        internal readonly string FileName = null;
 
         public NmSource(string source)
         {
             if (source == null) throw new ArgumentNullException(nameof(source));
-            _source = source;
+            Source = source;
         }
 
         public NmSource(FileInfo fi)
         {
             if (fi == null) throw new ArgumentNullException(nameof(fi));
             if (!fi.Exists) throw new FileNotFoundException(fi.FullName);
-            _source = File.ReadAllText(fi.FullName, Encoding.UTF8);
+            FileName = fi.FullName;
+            Source = File.ReadAllText(fi.FullName, Encoding.UTF8);
         }
     }
 }

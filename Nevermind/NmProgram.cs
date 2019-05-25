@@ -18,9 +18,14 @@ namespace Nevermind
 
         public void Compile()
         {
-            List<Token> tokens = Tokenizer.Tokenize(_source._source);
+            List<Token> tokens;
 
-            
+            if(_source.FileName == null)
+                tokens = Tokenizer.Tokenize(_source.Source);
+            else
+                tokens = Tokenizer.Tokenize(_source.Source, _source.FileName);
+
+            var lexems = Lexemizer.Lexemize(tokens);
         }
     }
 }

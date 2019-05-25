@@ -5,13 +5,17 @@ namespace Nevermind.Compiler
 {
     internal class Token
     {
+        public string FileName;
+        public int LineIndex;
+        public int LineOffset;
+
         public TokenType Type;
         public string StringValue;
 
         private static readonly Regex numberRegex = new Regex(@"^[0-9]*$");
         private static readonly Regex floatNumberRegex = new Regex(@"^([0-9]*\.[0-9]*|[0-9]*)$");
 
-        public Token(string str)
+        public Token(string str, string fileName, int lineIndex, int lineOffset)
         {
             switch (str)
             {
@@ -37,6 +41,8 @@ namespace Nevermind.Compiler
                     break;
                 case "var": Type = TokenType.VarKeyword;
                     break;
+                case "function": Type = TokenType.FunctionKeyword;
+                    break;
                 case "import": Type = TokenType.ImportKeyword;
                     break;
                 case "\"": Type = TokenType.Quote;
@@ -52,15 +58,61 @@ namespace Nevermind.Compiler
 
             }
 
+            FileName = fileName;
+            LineIndex = lineIndex;
+            LineOffset = lineOffset;
             StringValue = str;
         }
 
         public override string ToString()
         {
             if (Type == TokenType.Number || Type == TokenType.FloatNumber || Type == TokenType.Identifier)
-                return $"Type: {Type}. Value: \"{StringValue}\"";
+                return $"\"{FileName}\" in {LineIndex}:{LineOffset}: Type: {Type}. Value: \"{StringValue}\"";
 
-            return $"Type: {Type}";
+            return $"\"{FileName}\" in {LineIndex}:{LineOffset}: Type: {Type}";
+        }
+
+        public string ToSource()
+        {
+            switch (Type)
+            {
+                case TokenType.ImportKeyword:
+                    return "import";
+                case TokenType.VarKeyword:
+                    return "var";
+                case TokenType.IfKeyword:
+                    return "if";
+                case TokenType.FunctionKeyword:
+                    return "function";
+                case TokenType.Identifier:
+                    return "<identifier>";
+                case TokenType.Number:
+                    return "<number>";
+                case TokenType.FloatNumber:
+                    return "<float>";
+                case TokenType.Quote:
+                    return "\"";
+                case TokenType.Semicolon:
+                    return ";";
+                case TokenType.Colon:
+                    return ":";
+                case TokenType.BracketOpen:
+                    return "(";
+                case TokenType.BracketClosed:
+                    return ")";
+                case TokenType.EqualSign:
+                    return "=";
+                case TokenType.PlusSign:
+                    return "+";
+                case TokenType.MultiplySign:
+                    return "*";
+                case TokenType.BraceOpened:
+                    return "{";
+                case TokenType.BraceClosed:
+                    return "}";
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
     }
 }

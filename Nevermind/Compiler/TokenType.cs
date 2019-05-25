@@ -5,6 +5,7 @@ namespace Nevermind.Compiler
         ImportKeyword,
         VarKeyword,
         IfKeyword,
+        FunctionKeyword,
 
         Identifier,
         Number,

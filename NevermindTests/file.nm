@@ -1,6 +1,7 @@
 import systypes;
 import io;
 
+function main()
 {
    var a: integer = 3;
    var b: integer = a * 2;
