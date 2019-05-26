@@ -28,43 +28,132 @@ namespace Nevermind.Compiler
             }
         }
 
-        public static List<Lexeme> Lexemize(List<Token> tokens)
+        private static BlockLexeme GetStructureLexeme(List<Token> tokens)
         {
             var iterator = new TokenIterator<Token>(tokens);
             var possibleLexeme = new List<Token>();
+            var currentParent = new BlockLexeme(null, null);
 
             while (iterator.GetNext() != null)
             {
-                if(iterator.Current.Type == TokenType.Semicolon)
+                if (iterator.Current.Type == TokenType.Semicolon ||
+                    iterator.Current.Type == TokenType.BraceOpened ||
+                    iterator.Current.Type == TokenType.BraceClosed)
                 {
-                    var matchedLexemes = new List<LexemeInfo>();
-                    foreach (var lexeme in Lexeme.Lexemes)
-                    {
-                        int count = 0;
-                        for(var i = 0; i < Math.Min(lexeme.TokenTypes.Count, possibleLexeme.Count); i++)
-                            if (lexeme.TokenTypes[i] == possibleLexeme[i].Type)
-                                count++;
-
-                        if(count == lexeme.TokenTypes.Count && count == possibleLexeme.Count)
-                            matchedLexemes.Add(lexeme);
-                    }
-
-                    Console.WriteLine(string.Join(" ", possibleLexeme.Select(p => p.ToSource())));
-                    if (matchedLexemes.Count == 0)
-                    {
-                        Console.WriteLine("Nothing =c");
-                    }
-                    else
-                    {
-                        Console.WriteLine("Count: {0} {1}", matchedLexemes.Count, matchedLexemes[0].ToString());
-                    }
+                    currentParent.ChildLexemes.Add(new UnknownLexeme(possibleLexeme));
                     possibleLexeme.Clear();
+
+                    switch (iterator.Current.Type)
+                    {
+                        case TokenType.BraceOpened:
+
+                            var oldParent = currentParent;
+                            currentParent = new BlockLexeme(oldParent, oldParent.ChildLexemes.Last());
+                            oldParent.ChildLexemes.Add(currentParent);
+
+                            break;
+                        case TokenType.BraceClosed:
+
+                            currentParent = (BlockLexeme)currentParent.Parent;
+                            break;
+                    }
                 }
                 else
                 {
                     possibleLexeme.Add(iterator.Current);
                 }
             }
+
+            return currentParent;
+        }
+
+        private static void ClearEmptyLexemes(BlockLexeme root)
+        {
+            var toDelete = new List<int>();
+            int index = 0;
+            foreach (var lexeme in root.ChildLexemes)
+            {
+                if (lexeme.Type == LexemeType.Block) ClearEmptyLexemes((BlockLexeme)lexeme);
+                else
+                {
+                    if(lexeme.Tokens.Count == 0)
+                        toDelete.Add(index);
+                }
+                index++;
+            }
+            toDelete.Reverse();
+
+            foreach (var ind in toDelete)
+                root.ChildLexemes.RemoveAt(ind);
+        }
+
+        private static void ResolveLexemeTypes(BlockLexeme root)
+        {
+            for(var i = 0; i < root.ChildLexemes.Count; i++)
+            {
+                var lexeme = root.ChildLexemes[i];
+
+                if (lexeme.Type == LexemeType.Block) ResolveLexemeTypes((BlockLexeme)lexeme);
+                else if(lexeme.Type == LexemeType.Unknown)
+                {
+
+                    var matchedLexemes = new List<LexemeInfo>();
+                    foreach (var lexemeInfo in Lexeme.Lexemes)
+                    {
+                        int c1 = 0, c2 = 0;
+                        while (c1 < lexeme.Tokens.Count && c2 < lexemeInfo.TokenTypes.Count)
+                        {
+                            if (lexemeInfo.TokenTypes[c2].HasFlag(lexeme.Tokens[c1].Type))
+                            {
+                                if (c2 != lexemeInfo.TokenTypes.Count - 1 &&
+                                    lexemeInfo.TokenTypes[c2].HasFlag(TokenType.ComplexToken) &&
+                                    !lexemeInfo.TokenTypes[c2 + 1].HasFlag(TokenType.ComplexToken) &&
+                                    lexemeInfo.TokenTypes[c2 + 1].HasFlag(lexeme.Tokens[c1].Type))
+                                {
+                                    c2++;
+                                }
+
+                                c1++;
+                            }
+                            else
+                            {
+                                if(c1 == 0) break;
+                                c2++;
+                            }
+                        }
+
+                        if(c1 == lexeme.Tokens.Count && c2 == lexemeInfo.TokenTypes.Count - 1) matchedLexemes.Add(lexemeInfo);
+                    }
+
+                    //Console.WriteLine(string.Join(" ", possibleLexeme.Select(p => p.ToSource())));
+                    if (matchedLexemes.Count != 0)
+                    {
+                        root.ChildLexemes[i] = (Lexeme)Activator.CreateInstance(matchedLexemes[0].LexemeType, lexeme.Tokens);
+                    }
+                    else
+                    {
+                        throw new ArgumentException("Unable to lexemize");
+                    }
+                }
+            }
+        }
+
+        private static void PrintLexemeTree(Lexeme root, int level)
+        {
+            foreach (var lexeme in root.ChildLexemes)
+            {
+                if (lexeme.Type == LexemeType.Block) PrintLexemeTree((BlockLexeme) lexeme, level + 1);
+                else Console.WriteLine("{0}-{1}", new string(' ', level * 3), lexeme);
+            }
+        }
+
+        public static List<Lexeme> Lexemize(List<Token> tokens)
+        {
+            var root = GetStructureLexeme(tokens);
+            ClearEmptyLexemes(root);
+            ResolveLexemeTypes(root);
+
+            PrintLexemeTree(root, 0);
 
             return null;
         }

@@ -18,7 +18,7 @@ namespace Nevermind.Compiler.Lexemes
 
         public override string ToString()
         {
-            return $"{nameof(Type)}: {Type}, {nameof(LexemeType)}: {LexemeType}";
+            return $"{nameof(Type)}: {Type}";
         }
     }
 }

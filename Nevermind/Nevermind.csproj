@@ -39,10 +39,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ByteCode\Instruction.cs" />
+    <Compile Include="Compiler\Lexeme.cs" />
+    <Compile Include="Compiler\LexemeInfo.cs" />
+    <Compile Include="Compiler\Lexemes\ExpressionLexeme.cs" />
+    <Compile Include="Compiler\Lexemes\FunctionCallLexeme.cs" />
+    <Compile Include="Compiler\Lexemes\FunctionLexeme.cs" />
+    <Compile Include="Compiler\Lexemes\IfLexeme.cs" />
     <Compile Include="Compiler\Lexemes\ImportLexeme.cs" />
-    <Compile Include="Compiler\Lexemes\Lexeme.cs" />
-    <Compile Include="Compiler\Lexemes\LexemeInfo.cs" />
-    <Compile Include="Compiler\Lexemes\LexemeType.cs" />
+    <Compile Include="Compiler\Lexemes\BlockLexeme.cs" />
+    <Compile Include="Compiler\Lexemes\UnknownLexeme.cs" />
+    <Compile Include="Compiler\Lexemes\VarLexeme.cs" />
+    <Compile Include="Compiler\LexemeType.cs" />
     <Compile Include="Compiler\Lexemizer.cs" />
     <Compile Include="Compiler\Token.cs" />
     <Compile Include="Compiler\Tokenizer.cs" />

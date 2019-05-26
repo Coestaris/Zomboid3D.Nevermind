@@ -3,18 +3,17 @@ import io;
 
 function main()
 {
-   var a: integer = 3;
-   var b: integer = a * 2;
- 
-   if(a == 3) 
+   var a: integer = 5 + 2;
+
+   a = 3 + 2;
+   if(a + 2 == 3)
    {
-      print("Equals");
-   }
-   else
-   {
-      print("Not equal");
+      a = a * 3;
    }
 
-
-   print("End =3");
+   if(a == 3)
+   {
+      print("...");
+      print(a + 8);
+   }
 }
