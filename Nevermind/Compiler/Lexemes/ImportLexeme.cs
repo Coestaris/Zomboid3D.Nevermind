@@ -4,8 +4,11 @@ namespace Nevermind.Compiler.Lexemes
 {
     internal class ImportLexeme : Lexeme
     {
-        public ImportLexeme(List<Token> tokens) : base(tokens, LexemeType.Import)
+        public Token ImportName;
+
+        public ImportLexeme(List<Token> tokens) : base(tokens, LexemeType.Import, false)
         {
+            ImportName = tokens[1];
         }
     }
 }

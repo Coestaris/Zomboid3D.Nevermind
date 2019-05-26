@@ -9,14 +9,17 @@ namespace Nevermind.Compiler.Lexemes
         public List<Token> Tokens;
         public List<Lexeme> ChildLexemes;
 
-        protected Lexeme(List<Token> tokens, LexemeType type)
+        protected Lexeme(List<Token> tokens, LexemeType type, bool requireBlock)
         {
             if(tokens != null)
                 Tokens = tokens.Select(p => p).ToList();
 
+            RequireBlock = requireBlock;
             Type = type;
             ChildLexemes = new List<Lexeme>();
         }
+
+        public readonly bool RequireBlock;
 
         public virtual string GetStringInfo()
         {

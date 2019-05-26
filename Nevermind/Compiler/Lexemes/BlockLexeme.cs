@@ -4,13 +4,11 @@ namespace Nevermind.Compiler.Lexemes
 {
     internal class BlockLexeme : Lexeme
     {
-        public Lexeme Prev;
-        public Lexeme Parent;
+        public readonly Lexeme Parent;
 
-        public BlockLexeme(Lexeme parent, Lexeme prev) : base(null, LexemeType.Block)
+        public BlockLexeme(Lexeme parent) : base(null, LexemeType.Block, false)
         {
             Type = LexemeType.Block;
-            Prev = Prev;
             Parent = parent;
         }
     }

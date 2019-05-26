@@ -4,7 +4,10 @@ namespace Nevermind.Compiler.Lexemes
 {
     internal class FunctionCallLexeme : Lexeme
     {
-        public FunctionCallLexeme(List<Token> tokens) : base(tokens, LexemeType.FunctionCall)
+        public Token Name;
+        public ExpressionLexeme Expression;
+
+        public FunctionCallLexeme(List<Token> tokens) : base(tokens, LexemeType.FunctionCall, false)
         {
         }
 

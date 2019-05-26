@@ -32,7 +32,7 @@ namespace Nevermind.Compiler
         {
             var iterator = new TokenIterator<Token>(tokens);
             var possibleLexeme = new List<Token>();
-            var currentParent = new BlockLexeme(null, null);
+            var currentParent = new BlockLexeme(null);
 
             while (iterator.GetNext() != null)
             {
@@ -48,7 +48,7 @@ namespace Nevermind.Compiler
                         case TokenType.BraceOpened:
 
                             var oldParent = currentParent;
-                            currentParent = new BlockLexeme(oldParent, oldParent.ChildLexemes.Last());
+                            currentParent = new BlockLexeme(oldParent);
                             oldParent.ChildLexemes.Add(currentParent);
 
                             break;
@@ -125,7 +125,6 @@ namespace Nevermind.Compiler
                         if(c1 == lexeme.Tokens.Count && c2 == lexemeInfo.TokenTypes.Count - 1) matchedLexemes.Add(lexemeInfo);
                     }
 
-                    //Console.WriteLine(string.Join(" ", possibleLexeme.Select(p => p.ToSource())));
                     if (matchedLexemes.Count != 0)
                     {
                         root.ChildLexemes[i] = (Lexeme)Activator.CreateInstance(matchedLexemes[0].LexemeType, lexeme.Tokens);
@@ -138,12 +137,51 @@ namespace Nevermind.Compiler
             }
         }
 
+        private static void LinkBlocksToLexemes(BlockLexeme root)
+        {
+            var toDelete = new List<int>();
+            int index = 0;
+            foreach (var lexeme in root.ChildLexemes)
+            {
+                if (lexeme.Type == LexemeType.Block)
+                {
+                    var bl = (BlockLexeme)lexeme;
+                    var prev = index > 0 ? root.ChildLexemes[index - 1] : null;
+                    if (prev != null && prev.RequireBlock)
+                    {
+                        toDelete.Add(index);
+                        switch (prev.Type)
+                        {
+                            case LexemeType.If:
+                                ((IfLexeme)prev).Block = bl;
+                                break;
+                            case LexemeType.Function:
+                                ((FunctionLexeme)prev).Block = bl;
+                                break;
+                        }
+                    }
+                    LinkBlocksToLexemes((BlockLexeme) lexeme);
+                }
+                index++;
+            }
+
+            toDelete.Reverse();
+            foreach (var ind in toDelete)
+                root.ChildLexemes.RemoveAt(ind);
+        }
+
         private static void PrintLexemeTree(Lexeme root, int level)
         {
             foreach (var lexeme in root.ChildLexemes)
             {
-                if (lexeme.Type == LexemeType.Block) PrintLexemeTree((BlockLexeme) lexeme, level + 1);
-                else Console.WriteLine("{0}-{1}", new string(' ', level * 3), lexeme);
+                if (lexeme.Type == LexemeType.Block)
+                    PrintLexemeTree((BlockLexeme)lexeme, level + 1);
+                else if(lexeme.Type == LexemeType.Function)
+                    PrintLexemeTree(((FunctionLexeme)lexeme).Block, level + 1);
+                else if(lexeme.Type == LexemeType.If)
+                    PrintLexemeTree(((IfLexeme)lexeme).Block, level + 1);
+                else
+                    Console.WriteLine("{0}-{1}", new string(' ', level * 3), lexeme);
             }
         }
 
@@ -152,8 +190,10 @@ namespace Nevermind.Compiler
             var root = GetStructureLexeme(tokens);
             ClearEmptyLexemes(root);
             ResolveLexemeTypes(root);
+            LinkBlocksToLexemes(root);
 
             PrintLexemeTree(root, 0);
+
 
             return null;
         }
