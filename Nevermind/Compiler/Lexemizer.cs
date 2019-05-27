@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Remoting.Channels;
 using Nevermind.Compiler.Lexemes;
 
 namespace Nevermind.Compiler
@@ -96,7 +97,6 @@ namespace Nevermind.Compiler
                 if (lexeme.Type == LexemeType.Block) ResolveLexemeTypes((BlockLexeme)lexeme);
                 else if(lexeme.Type == LexemeType.Unknown)
                 {
-
                     var matchedLexemes = new List<LexemeInfo>();
                     foreach (var lexemeInfo in Lexeme.Lexemes)
                     {
@@ -117,8 +117,8 @@ namespace Nevermind.Compiler
                             }
                             else
                             {
-                                if(c1 == 0) break;
                                 c2++;
+                                if(c2 > c1) break;
                             }
                         }
 
@@ -172,17 +172,7 @@ namespace Nevermind.Compiler
 
         private static void PrintLexemeTree(Lexeme root, int level)
         {
-            foreach (var lexeme in root.ChildLexemes)
-            {
-                if (lexeme.Type == LexemeType.Block)
-                    PrintLexemeTree((BlockLexeme)lexeme, level + 1);
-                else if(lexeme.Type == LexemeType.Function)
-                    PrintLexemeTree(((FunctionLexeme)lexeme).Block, level + 1);
-                else if(lexeme.Type == LexemeType.If)
-                    PrintLexemeTree(((IfLexeme)lexeme).Block, level + 1);
-                else
-                    Console.WriteLine("{0}-{1}", new string(' ', level * 3), lexeme);
-            }
+            root.Print(level);
         }
 
         public static List<Lexeme> Lexemize(List<Token> tokens)

@@ -15,5 +15,11 @@ namespace Nevermind.Compiler.Lexemes
             TypeName = tokens[2];
             Expression = new ExpressionLexeme(tokens.Skip(5).Take(tokens.Count - 5).ToList());
         }
+
+        public override void Print(int level)
+        {
+            base.Print(level);
+            Expression.PrintExpression(level + 1);
+        }
     }
 }

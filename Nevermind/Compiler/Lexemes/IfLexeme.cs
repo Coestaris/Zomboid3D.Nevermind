@@ -13,5 +13,11 @@ namespace Nevermind.Compiler.Lexemes
             Expression = new ExpressionLexeme(tokens.Skip(2).Take(tokens.Count - 3).ToList());
         }
 
+        public override void Print(int level)
+        {
+            base.Print(level);
+            Expression.PrintExpression(level + 1);
+            Block.Print(level + 1);
+        }
     }
 }

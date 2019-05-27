@@ -14,5 +14,12 @@ namespace Nevermind.Compiler.Lexemes
             Name = tokens[1];
             Parameters = new ExpressionLexeme(tokens.Skip(3).Take(tokens.Count - 4).ToList());
         }
+
+        public override void Print(int level)
+        {
+            base.Print(level);
+            Parameters.PrintExpression(level + 1);
+            Block.Print(level + 1);
+        }
     }
 }

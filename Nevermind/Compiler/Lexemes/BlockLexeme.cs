@@ -11,5 +11,13 @@ namespace Nevermind.Compiler.Lexemes
             Type = LexemeType.Block;
             Parent = parent;
         }
+
+        public override void Print(int level)
+        {
+            foreach (var childLexeme in ChildLexemes)
+            {
+                childLexeme.Print(level);
+            }
+        }
     }
 }
