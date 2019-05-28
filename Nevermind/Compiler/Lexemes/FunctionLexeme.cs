@@ -18,8 +18,8 @@ namespace Nevermind.Compiler.Lexemes
         public override void Print(int level)
         {
             base.Print(level);
-            Parameters.PrintExpression(level + 1);
-            Block.Print(level + 1);
+            Parameters?.PrintExpression(level + 1);
+            Block?.Print(level + 1);
         }
     }
 }

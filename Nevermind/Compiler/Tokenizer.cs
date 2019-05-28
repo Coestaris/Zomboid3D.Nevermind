@@ -9,7 +9,7 @@ namespace Nevermind.Compiler
     {
         public static List<char> tokenSplitCharacters = new List<char>()
         {
-            '\n', ' ', '.', '(', ')', ':', ';', '"', '=',
+            '\n', ' ', '.', '(', ')', ':', ';', '"', '=', '}', '{',
         };
 
         private struct RawToken
@@ -41,7 +41,6 @@ namespace Nevermind.Compiler
 
             foreach (var c in input)
             {
-
                 if (tokenSplitCharacters.Contains(c))
                 {
                     rawTokens.Add(new RawToken(currentToken, lineCount, charCount));
@@ -69,6 +68,9 @@ namespace Nevermind.Compiler
                     charCount++;
                 }
             }
+
+            if(lastContains)
+                rawTokens.Add(new RawToken(currentToken, lineCount, charCount));
 
             rawTokens = rawTokens.FindAll(p => !string.IsNullOrWhiteSpace(p.Token.Trim()));
 

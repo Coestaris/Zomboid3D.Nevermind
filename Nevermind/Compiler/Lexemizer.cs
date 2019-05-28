@@ -29,11 +29,15 @@ namespace Nevermind.Compiler
             }
         }
 
-        private static BlockLexeme GetStructureLexeme(List<Token> tokens)
+        private static BlockLexeme GetStructureLexeme(List<Token> tokens, out CompileError error)
         {
+            error = null;
             var iterator = new TokenIterator<Token>(tokens);
             var possibleLexeme = new List<Token>();
             var currentParent = new BlockLexeme(null);
+
+            int level = 0;
+            Token lastClosed = null;
 
             while (iterator.GetNext() != null)
             {
@@ -51,11 +55,15 @@ namespace Nevermind.Compiler
                             var oldParent = currentParent;
                             currentParent = new BlockLexeme(oldParent);
                             oldParent.ChildLexemes.Add(currentParent);
+                            level++;
 
                             break;
                         case TokenType.BraceClosed:
 
                             currentParent = (BlockLexeme)currentParent.Parent;
+                            lastClosed = iterator.Current;
+                            level--;
+
                             break;
                     }
                 }
@@ -64,6 +72,12 @@ namespace Nevermind.Compiler
                     possibleLexeme.Add(iterator.Current);
                 }
             }
+
+            if(possibleLexeme.Count != 0)
+                currentParent.ChildLexemes.Add(new UnknownLexeme(possibleLexeme));
+
+            if(level != 0)
+                error = new CompileError(CompileErrorType.WrongCodeStructure, lastClosed);
 
             return currentParent;
         }
@@ -88,13 +102,18 @@ namespace Nevermind.Compiler
                 root.ChildLexemes.RemoveAt(ind);
         }
 
-        private static void ResolveLexemeTypes(BlockLexeme root)
+        private static void ResolveLexemeTypes(BlockLexeme root, out CompileError error)
         {
+            error = null;
             for(var i = 0; i < root.ChildLexemes.Count; i++)
             {
                 var lexeme = root.ChildLexemes[i];
 
-                if (lexeme.Type == LexemeType.Block) ResolveLexemeTypes((BlockLexeme)lexeme);
+                if (lexeme.Type == LexemeType.Block)
+                {
+                    ResolveLexemeTypes((BlockLexeme)lexeme, out error);
+                    if(error != null) return;
+                }
                 else if(lexeme.Type == LexemeType.Unknown)
                 {
                     var matchedLexemes = new List<LexemeInfo>();
@@ -109,6 +128,13 @@ namespace Nevermind.Compiler
                                     lexemeInfo.TokenTypes[c2].HasFlag(TokenType.ComplexToken) &&
                                     !lexemeInfo.TokenTypes[c2 + 1].HasFlag(TokenType.ComplexToken) &&
                                     lexemeInfo.TokenTypes[c2 + 1].HasFlag(lexeme.Tokens[c1].Type))
+                                {
+                                    c2++;
+                                }
+
+                                if (c2 != lexemeInfo.TokenTypes.Count - 1 &&
+                                    lexemeInfo.TokenTypes[c2 + 1] != lexemeInfo.TokenTypes[c2] &&
+                                    !lexemeInfo.TokenTypes[c2].HasFlag(TokenType.ComplexToken))
                                 {
                                     c2++;
                                 }
@@ -131,16 +157,18 @@ namespace Nevermind.Compiler
                     }
                     else
                     {
-                        throw new ArgumentException("Unable to lexemize");
+                        error = new CompileError(CompileErrorType.UnknownLexeme, lexeme?.Tokens[0]);
                     }
                 }
             }
         }
 
-        private static void LinkBlocksToLexemes(BlockLexeme root)
+        private static void LinkBlocksToLexemes(BlockLexeme root, out CompileError error)
         {
             var toDelete = new List<int>();
             int index = 0;
+            error = null;
+
             foreach (var lexeme in root.ChildLexemes)
             {
                 if (lexeme.Type == LexemeType.Block)
@@ -160,7 +188,9 @@ namespace Nevermind.Compiler
                                 break;
                         }
                     }
-                    LinkBlocksToLexemes((BlockLexeme) lexeme);
+                    LinkBlocksToLexemes((BlockLexeme) lexeme, out error);
+                    if (error != null)
+                        return;
                 }
                 index++;
             }
@@ -168,6 +198,22 @@ namespace Nevermind.Compiler
             toDelete.Reverse();
             foreach (var ind in toDelete)
                 root.ChildLexemes.RemoveAt(ind);
+
+            foreach (var lexeme in root.ChildLexemes)
+            {
+                if (!lexeme.RequireBlock) continue;
+                switch (lexeme.Type)
+                {
+                    case LexemeType.If:
+                        if (((IfLexeme) lexeme).Block == null)
+                            error = new CompileError(CompileErrorType.LexemeWithoutRequiredBlock, lexeme.Tokens?[0]);
+                        break;
+                    case LexemeType.Function:
+                        if (((FunctionLexeme) lexeme).Block == null)
+                            error = new CompileError(CompileErrorType.LexemeWithoutRequiredBlock, lexeme.Tokens?[0]);
+                        break;
+                }
+            }
         }
 
         private static void PrintLexemeTree(Lexeme root, int level)
@@ -175,16 +221,30 @@ namespace Nevermind.Compiler
             root.Print(level);
         }
 
-        public static List<Lexeme> Lexemize(List<Token> tokens)
+        public static List<Lexeme> Lexemize(List<Token> tokens, out CompileError error)
         {
-            var root = GetStructureLexeme(tokens);
+            error = null;
+
+            var root = GetStructureLexeme(tokens, out error);
+            if (error != null)
+                return null;
+
             ClearEmptyLexemes(root);
-            ResolveLexemeTypes(root);
-            LinkBlocksToLexemes(root);
+            if (root.ChildLexemes.Count == 0)
+            {
+                error = new CompileError(CompileErrorType.EmptyFile);
+                return null;
+            }
+
+            ResolveLexemeTypes(root, out error);
+            if (error != null)
+                return null;
+
+            LinkBlocksToLexemes(root, out error);
+            if (error != null)
+                return null;
 
             PrintLexemeTree(root, 0);
-
-
             return null;
         }
     }

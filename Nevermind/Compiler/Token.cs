@@ -67,7 +67,6 @@ namespace Nevermind.Compiler
                     else Type = TokenType.Identifier;
                 }
                     break;
-
             }
 
             FileName = fileName;

@@ -19,7 +19,7 @@ namespace Nevermind.Compiler.Lexemes
         public override void Print(int level)
         {
             base.Print(level);
-            Expression.PrintExpression(level + 1);
+            Expression?.PrintExpression(level + 1);
         }
     }
 }

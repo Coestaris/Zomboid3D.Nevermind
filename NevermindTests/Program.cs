@@ -11,9 +11,11 @@ namespace NevermindTests
             var source = new NmSource(new FileInfo("../../file.nm"));
             var program = new NmProgram(source);
 
-            program.Compile();
-
-
+            var error = program.Compile();
+            if (error != null)
+            {
+                Console.WriteLine(error);
+            }
         }
     }
 }

@@ -16,7 +16,7 @@ namespace Nevermind
             _source = source;
         }
 
-        public void Compile()
+        public CompileError Compile()
         {
             List<Token> tokens;
 
@@ -25,7 +25,15 @@ namespace Nevermind
             else
                 tokens = Tokenizer.Tokenize(_source.Source, _source.FileName);
 
-            var lexems = Lexemizer.Lexemize(tokens);
+            foreach (var token in tokens)
+                Console.WriteLine(token);
+
+            CompileError error;
+            var lexems = Lexemizer.Lexemize(tokens, out error);
+            if (error != null)
+                return error;
+
+            return null;
         }
     }
 }
