@@ -245,7 +245,8 @@ namespace Nevermind.Compiler
                 return null;
 
             PrintLexemeTree(root, 0);
-            return null;
+
+            return root.ChildLexemes;
         }
     }
 }

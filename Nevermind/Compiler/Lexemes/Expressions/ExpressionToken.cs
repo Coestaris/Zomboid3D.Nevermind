@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Nevermind.Compiler.Lexemes
+namespace Nevermind.Compiler.Lexemes.Expressions
 {
     internal class ExpressionToken
     {
@@ -10,8 +10,7 @@ namespace Nevermind.Compiler.Lexemes
 
         public TokenType LOperator;
         public TokenType ROperator;
-        public ExpressionToken LToken;
-        public ExpressionToken RToken;
+
 
         public ExpressionToken(Token codeToken)
         {

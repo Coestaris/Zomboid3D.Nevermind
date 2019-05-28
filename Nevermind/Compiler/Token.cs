@@ -12,20 +12,20 @@ namespace Nevermind.Compiler
         public TokenType Type;
         public string StringValue;
 
-        private static readonly Regex numberRegex = new Regex(@"^[0-9]*$");
-        private static readonly Regex floatNumberRegex = new Regex(@"^([0-9]*\.[0-9]+|[0-9]+)$");
+        private static readonly Regex NumberRegex = new Regex(@"^[0-9]*$");
+        private static readonly Regex FloatNumberRegex = new Regex(@"^([0-9]*\.[0-9]+|[0-9]+)$");
 
         public const TokenType MathExpressionTokenType =
-            TokenType.Number | TokenType.FloatNumber | TokenType.BracketClosed | TokenType.BracketOpen |
-            TokenType.EqualSign | TokenType.PlusSign | TokenType.MultiplySign | TokenType.ComplexToken |
+            TokenType.Number    | TokenType.FloatNumber | TokenType.BracketClosed | TokenType.BracketOpen  |
+            TokenType.EqualSign | TokenType.PlusSign    | TokenType.MultiplySign  | TokenType.ComplexToken |
             TokenType.Identifier;
 
         public const TokenType AnyTokenType =
-            TokenType.ImportKeyword | TokenType.VarKeyword | TokenType.IfKeyword | TokenType.FunctionKeyword |
-            TokenType.Identifier | TokenType.Number | TokenType.FloatNumber | TokenType.Quote |
-            TokenType.Semicolon | TokenType.Colon | TokenType.BracketOpen | TokenType.BracketClosed |
-            TokenType.EqualSign | TokenType.PlusSign | TokenType.MultiplySign | TokenType.BraceOpened |
-            TokenType.BraceClosed | TokenType.ComplexToken;
+            TokenType.ImportKeyword | TokenType.VarKeyword    | TokenType.IfKeyword     | TokenType.FunctionKeyword  |
+            TokenType.Identifier    | TokenType.Number        | TokenType.FloatNumber   | TokenType.Quote            |
+            TokenType.Semicolon     | TokenType.Colon         | TokenType.BracketOpen   | TokenType.BracketClosed    |
+            TokenType.EqualSign     | TokenType.PlusSign      | TokenType.MultiplySign  | TokenType.BraceOpened      |
+            TokenType.BraceClosed   | TokenType.ComplexToken;
 
         public Token(string str, string fileName, int lineIndex, int lineOffset)
         {
@@ -62,8 +62,8 @@ namespace Nevermind.Compiler
 
                 default:
                 {
-                    if (numberRegex.IsMatch(str)) Type = TokenType.Number;
-                    else if (floatNumberRegex.IsMatch(str)) Type = TokenType.FloatNumber;
+                    if (NumberRegex.IsMatch(str)) Type = TokenType.Number;
+                    else if (FloatNumberRegex.IsMatch(str)) Type = TokenType.FloatNumber;
                     else Type = TokenType.Identifier;
                 }
                     break;

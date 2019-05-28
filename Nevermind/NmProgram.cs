@@ -20,15 +20,16 @@ namespace Nevermind
         {
             List<Token> tokens;
 
-            if(_source.FileName == null)
-                tokens = Tokenizer.Tokenize(_source.Source);
-            else
-                tokens = Tokenizer.Tokenize(_source.Source, _source.FileName);
+            CompileError error;
+            var source = _source.GetSource(out error);
+            if (error != null)
+                return error;
+
+            tokens = Tokenizer.Tokenize(source, _source.FileName);
 
             foreach (var token in tokens)
                 Console.WriteLine(token);
 
-            CompileError error;
             var lexems = Lexemizer.Lexemize(tokens, out error);
             if (error != null)
                 return error;

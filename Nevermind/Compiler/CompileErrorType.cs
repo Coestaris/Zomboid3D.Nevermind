@@ -6,6 +6,7 @@ namespace Nevermind.Compiler
         WrongCodeStructure,
         EmptyFile,
         UnknownLexeme,
-        LexemeWithoutRequiredBlock
+        LexemeWithoutRequiredBlock,
+        UnableToOpenFile
     }
 }

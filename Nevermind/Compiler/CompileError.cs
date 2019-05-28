@@ -28,7 +28,7 @@ namespace Nevermind.Compiler
             var sb = new StringBuilder();
             sb.AppendFormat("Error: {0}", ErrorType);
             if(FileName != null)
-                sb.AppendFormat(" at {0}", FileName);
+                sb.AppendFormat(" at \"{0}\"", FileName);
             if (LineIndex != -1 && LineIndex != -1)
             {
                 sb.AppendFormat(" in {0}:{1}", LineIndex, CharIndex);

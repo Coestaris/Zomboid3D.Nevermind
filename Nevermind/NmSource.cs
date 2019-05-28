@@ -1,26 +1,51 @@
-using System;
 using System.IO;
 using System.Text;
+using Nevermind.Compiler;
 
 namespace Nevermind
 {
     public class NmSource
     {
-        internal readonly string Source;
-        internal readonly string FileName = null;
+        private readonly string _source;
+        private readonly string _fileName;
 
-        public NmSource(string source)
+        private NmSource(string source, string fileName = null)
         {
-            if (source == null) throw new ArgumentNullException(nameof(source));
-            Source = source;
+            _source = source;
+            _fileName = fileName;
         }
 
-        public NmSource(FileInfo fi)
+        public static NmSource FromText(string source)
         {
-            if (fi == null) throw new ArgumentNullException(nameof(fi));
-            if (!fi.Exists) throw new FileNotFoundException(fi.FullName);
-            FileName = fi.FullName;
-            Source = File.ReadAllText(fi.FullName, Encoding.UTF8);
+            return new NmSource(source);
+        }
+
+        public static NmSource FromFile(string fileName)
+        {
+            return new NmSource(null, fileName);
+
+        }
+
+        public static NmSource FromFile(FileInfo fi)
+        {
+            return new NmSource(null, fi.FullName);
+        }
+
+        public string FileName => _fileName;
+
+        internal string GetSource(out CompileError error)
+        {
+            error = null;
+            if (_source != null)
+                return _source;
+
+            if (_fileName == null || !new FileInfo(_fileName).Exists)
+            {
+                error = new CompileError(CompileErrorType.UnableToOpenFile, new Token("", _fileName, -1, -1));
+                return null;
+            }
+
+            return File.ReadAllText(_fileName, Encoding.UTF8);
         }
     }
 }
