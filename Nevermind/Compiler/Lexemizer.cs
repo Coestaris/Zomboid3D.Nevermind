@@ -8,27 +8,6 @@ namespace Nevermind.Compiler
 {
     internal class Lexemizer
     {
-        private struct TokenIterator<T>
-        {
-            private readonly List<T> _list;
-            public T Current;
-            public int Index;
-
-            public TokenIterator(List<T> list)
-            {
-                _list = list;
-                Index = 0;
-                Current = default(T);
-            }
-
-            public T GetNext()
-            {
-                if(Index > _list.Count - 1) return default(T);
-                Current = _list[Index++];
-                return Current;
-            }
-        }
-
         private static BlockLexeme GetStructureLexeme(List<Token> tokens, out CompileError error)
         {
             error = null;

@@ -15,10 +15,15 @@ namespace Nevermind.Compiler
         private static readonly Regex NumberRegex = new Regex(@"^[0-9]*$");
         private static readonly Regex FloatNumberRegex = new Regex(@"^([0-9]*\.[0-9]+|[0-9]+)$");
 
+        public const TokenType MathOperatorTokenType =
+            TokenType.PlusSign      | TokenType.MinusSign       | TokenType.MultiplySign   | TokenType.DivideSign  |
+            TokenType.EqualSign     | TokenType.GreaterSign     | TokenType.LessThanSign   | TokenType.Tilda       |
+            TokenType.AmpersandSign | TokenType.OrSign          | TokenType.CircumflexSign | TokenType.PercentSign |
+            TokenType.QuestingSign  | TokenType.ExclamationMark;
+
         public const TokenType MathExpressionTokenType =
-            TokenType.Number    | TokenType.FloatNumber | TokenType.BracketClosed | TokenType.BracketOpen  |
-            TokenType.EqualSign | TokenType.PlusSign    | TokenType.MultiplySign  | TokenType.ComplexToken |
-            TokenType.Identifier;
+            MathOperatorTokenType | TokenType.BracketClosed | TokenType.BracketOpen  | TokenType.ComplexToken |
+            TokenType.Identifier  | TokenType.Number        | TokenType.FloatNumber;
 
         public const TokenType AnyTokenType =
             TokenType.ImportKeyword | TokenType.VarKeyword    | TokenType.IfKeyword     | TokenType.FunctionKeyword  |
@@ -60,6 +65,29 @@ namespace Nevermind.Compiler
                 case "\"": Type = TokenType.Quote;
                     break;
 
+                case "-": Type = TokenType.MinusSign;
+                    break;
+                case "/": Type = TokenType.DivideSign;
+                    break;
+                case ">": Type = TokenType.GreaterSign;
+                    break;
+                case "<": Type = TokenType.LessThanSign;
+                    break;
+                case "~": Type = TokenType.Tilda;
+                    break;
+                case "&": Type = TokenType.AmpersandSign;
+                    break;
+                case "|": Type = TokenType.OrSign;
+                    break;
+                case "^": Type = TokenType.CircumflexSign;
+                    break;
+                case "%": Type = TokenType.PercentSign;
+                    break;
+                case "?": Type = TokenType.QuestingSign;
+                    break;
+                case "!": Type = TokenType.ExclamationMark;
+                    break;
+
                 default:
                 {
                     if (NumberRegex.IsMatch(str)) Type = TokenType.Number;
@@ -85,45 +113,7 @@ namespace Nevermind.Compiler
 
         public string ToSource()
         {
-            switch (Type)
-            {
-                case TokenType.ImportKeyword:
-                    return "import";
-                case TokenType.VarKeyword:
-                    return "var";
-                case TokenType.IfKeyword:
-                    return "if";
-                case TokenType.FunctionKeyword:
-                    return "function";
-                case TokenType.Identifier:
-                    return $"<identifier:{StringValue}>";
-                case TokenType.Number:
-                    return $"<number:{StringValue}>";
-                case TokenType.FloatNumber:
-                    return $"<float:{StringValue}>";
-                case TokenType.Quote:
-                    return "\"";
-                case TokenType.Semicolon:
-                    return ";";
-                case TokenType.Colon:
-                    return ":";
-                case TokenType.BracketOpen:
-                    return "(";
-                case TokenType.BracketClosed:
-                    return ")";
-                case TokenType.EqualSign:
-                    return "=";
-                case TokenType.PlusSign:
-                    return "+";
-                case TokenType.MultiplySign:
-                    return "*";
-                case TokenType.BraceOpened:
-                    return "{";
-                case TokenType.BraceClosed:
-                    return "}";
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
+            return Type.ToSource();
         }
     }
 }

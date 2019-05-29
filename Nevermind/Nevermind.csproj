@@ -38,13 +38,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ByteCode\Function.cs" />
     <Compile Include="ByteCode\Instruction.cs" />
+    <Compile Include="ByteCode\IntegerType.cs" />
+    <Compile Include="ByteCode\Type.cs" />
     <Compile Include="Compiler\CompileError.cs" />
     <Compile Include="Compiler\CompileErrorType.cs" />
     <Compile Include="Compiler\Lexeme.cs" />
     <Compile Include="Compiler\LexemeInfo.cs" />
     <Compile Include="Compiler\Lexemes\ExpressionLexeme.cs" />
     <Compile Include="Compiler\Lexemes\Expressions\ExpressionToken.cs" />
+    <Compile Include="Compiler\Lexemes\Expressions\Operator.cs" />
     <Compile Include="Compiler\Lexemes\FunctionCallLexeme.cs" />
     <Compile Include="Compiler\Lexemes\FunctionLexeme.cs" />
     <Compile Include="Compiler\Lexemes\IfLexeme.cs" />
@@ -55,6 +59,7 @@
     <Compile Include="Compiler\LexemeType.cs" />
     <Compile Include="Compiler\Lexemizer.cs" />
     <Compile Include="Compiler\Token.cs" />
+    <Compile Include="Compiler\TokenIterator.cs" />
     <Compile Include="Compiler\Tokenizer.cs" />
     <Compile Include="Compiler\TokenType.cs" />
     <Compile Include="NmProgram.cs" />

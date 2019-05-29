@@ -1,16 +1,19 @@
 using System.Collections.Generic;
+using Nevermind.ByteCode;
 
 namespace Nevermind.Compiler.Lexemes.Expressions
 {
     internal class ExpressionToken
     {
-        public Token CodeToken;
-        public List<ExpressionToken> SubTokens;
+        public readonly Token CodeToken;
+        public readonly List<ExpressionToken> SubTokens;
         public ExpressionToken Parent;
 
-        public TokenType LOperator;
-        public TokenType ROperator;
+        public Operator LOperator;
+        public Operator ROperator;
 
+        public Operator UnaryOperator;
+        public Token UnaryFunction;
 
         public ExpressionToken(Token codeToken)
         {
@@ -20,7 +23,8 @@ namespace Nevermind.Compiler.Lexemes.Expressions
 
         public override string ToString()
         {
-            return CodeToken != null ? CodeToken.ToSource() : "<complex>";
+            var s = CodeToken != null ? CodeToken.ToSource() : "<complex>";
+            return UnaryFunction != null ? $"{UnaryFunction.StringValue}{s}" : s;
         }
     }
 }
