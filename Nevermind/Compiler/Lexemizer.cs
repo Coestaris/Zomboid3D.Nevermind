@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Remoting.Channels;
 using Nevermind.Compiler.Lexemes;
+using Nevermind.Compiler.Lexemes.Expressions;
 
 namespace Nevermind.Compiler
 {
@@ -132,11 +133,27 @@ namespace Nevermind.Compiler
 
                     if (matchedLexemes.Count != 0)
                     {
-                        root.ChildLexemes[i] = (Lexeme)Activator.CreateInstance(matchedLexemes[0].LexemeType, lexeme.Tokens);
+                        try
+                        {
+                            root.ChildLexemes[i] = (Lexeme)Activator.CreateInstance(matchedLexemes[0].LexemeType, lexeme.Tokens);
+                        }
+                        catch (Exception e)
+                        {
+                            if (e.InnerException.GetType() == typeof(ParseExpressionException))
+                            {
+                                error = ((ParseExpressionException)e.InnerException).ToError();
+                            }
+                            else
+                            {
+                                throw e;
+                            }
+                            return;
+                        }
                     }
                     else
                     {
                         error = new CompileError(CompileErrorType.UnknownLexeme, lexeme?.Tokens[0]);
+                        return;
                     }
                 }
             }

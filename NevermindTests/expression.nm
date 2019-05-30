@@ -1,4 +1,5 @@
 function main()
 {
-   3 + 3 + print(a);
+    var a : integer = o + o - print(1, 1);
+    3 + 3 + print(a) - 3 * (2 >= 3) / 43;
 }

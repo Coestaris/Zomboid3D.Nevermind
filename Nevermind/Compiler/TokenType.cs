@@ -42,6 +42,7 @@ namespace Nevermind.Compiler
         ExclamationMark = 268435456,
 
         ComplexToken = 131072,
+        ComaSign = 536870912
     }
 
     internal static class TokenTypeExtensions
@@ -119,6 +120,8 @@ namespace Nevermind.Compiler
                     return "?";
                 case TokenType.ExclamationMark:
                     return "!";
+                case TokenType.ComaSign:
+                    return ",";
 
                 case TokenType.ComplexToken:
                     return "<complex>";

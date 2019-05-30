@@ -11,14 +11,14 @@ namespace Nevermind.Compiler
         public TokenIterator(List<T> list)
         {
             _list = list;
-            Index = 0;
+            Index = -1;
             Current = default(T);
         }
 
         public T GetNext()
         {
-            if(Index > _list.Count - 1) return default(T);
-            Current = _list[Index++];
+            if(Index >= _list.Count - 1) return default(T);
+            Current = _list[++Index];
             return Current;
         }
     }

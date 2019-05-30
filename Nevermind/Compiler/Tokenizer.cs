@@ -7,9 +7,9 @@ namespace Nevermind.Compiler
 {
     internal static class Tokenizer
     {
-        public static List<char> tokenSplitCharacters = new List<char>()
+        private static readonly List<char> TokenSplitCharacters = new List<char>()
         {
-            '\n', ' ', '.', '(', ')', ':', ';', '"', '=', '}', '{',
+            '\n', ' ', '.', '(', ')', ':', ';', '"', '=', '}', '{', ','
         };
 
         private struct RawToken
@@ -41,7 +41,7 @@ namespace Nevermind.Compiler
 
             foreach (var c in input)
             {
-                if (tokenSplitCharacters.Contains(c))
+                if (TokenSplitCharacters.Contains(c))
                 {
                     rawTokens.Add(new RawToken(currentToken, lineCount, charCount));
                     currentToken = c.ToString();

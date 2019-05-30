@@ -7,6 +7,12 @@ namespace Nevermind.Compiler
         EmptyFile,
         UnknownLexeme,
         LexemeWithoutRequiredBlock,
-        UnableToOpenFile
+        UnableToOpenFile,
+        UnknownOperator,
+        WrongExpresionStructure,
+        WrongTokenInExpression,
+        OperatorWithoutOperand,
+        MultipleOperators,
+        UnexpectedToken
     }
 }

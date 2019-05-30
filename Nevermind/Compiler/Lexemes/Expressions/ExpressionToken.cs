@@ -23,8 +23,8 @@ namespace Nevermind.Compiler.Lexemes.Expressions
 
         public override string ToString()
         {
-            var s = CodeToken != null ? CodeToken.ToSource() : "<complex>";
-            return UnaryFunction != null ? $"{UnaryFunction.StringValue}{s}" : s;
+            var s = CodeToken != null ? $"{LOperator}{CodeToken.ToSource()}{ROperator}" : $"({LOperator}<complex>{ROperator})";
+            return UnaryFunction != null ? $"{UnaryFunction.StringValue}({s})" : s;
         }
     }
 }

@@ -62,6 +62,7 @@ namespace Nevermind.Compiler.Lexemes.Expressions
             new Operator(new List<TokenType> { TokenType.OrSign,          TokenType.OrSign        }, 3,  new Function<IntegerType, IntegerType, IntegerType>()),
             new Operator(new List<TokenType> { TokenType.QuestingSign                             }, 2,  new Function<IntegerType, IntegerType, IntegerType>()),
             new Operator(new List<TokenType> { TokenType.Colon                                    }, 1,  new Function<IntegerType, IntegerType, IntegerType>()),
+            new Operator(new List<TokenType> { TokenType.ComaSign                                 }, 1,  new Function<IntegerType, IntegerType, IntegerType>()),
         };
     }
 }

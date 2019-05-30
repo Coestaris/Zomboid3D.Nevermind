@@ -19,18 +19,16 @@ namespace Nevermind.Compiler
             TokenType.PlusSign      | TokenType.MinusSign       | TokenType.MultiplySign   | TokenType.DivideSign  |
             TokenType.EqualSign     | TokenType.GreaterSign     | TokenType.LessThanSign   | TokenType.Tilda       |
             TokenType.AmpersandSign | TokenType.OrSign          | TokenType.CircumflexSign | TokenType.PercentSign |
-            TokenType.QuestingSign  | TokenType.ExclamationMark;
+            TokenType.QuestingSign  | TokenType.ExclamationMark | TokenType.ComaSign;
 
         public const TokenType MathExpressionTokenType =
-            MathOperatorTokenType | TokenType.BracketClosed | TokenType.BracketOpen  | TokenType.ComplexToken |
-            TokenType.Identifier  | TokenType.Number        | TokenType.FloatNumber;
+            MathOperatorTokenType   | TokenType.BracketClosed | TokenType.BracketOpen   | TokenType.Identifier  |
+            TokenType.Number        | TokenType.FloatNumber   | TokenType.ComplexToken;
 
         public const TokenType AnyTokenType =
-            TokenType.ImportKeyword | TokenType.VarKeyword    | TokenType.IfKeyword     | TokenType.FunctionKeyword  |
-            TokenType.Identifier    | TokenType.Number        | TokenType.FloatNumber   | TokenType.Quote            |
-            TokenType.Semicolon     | TokenType.Colon         | TokenType.BracketOpen   | TokenType.BracketClosed    |
-            TokenType.EqualSign     | TokenType.PlusSign      | TokenType.MultiplySign  | TokenType.BraceOpened      |
-            TokenType.BraceClosed   | TokenType.ComplexToken;
+            MathExpressionTokenType    | TokenType.ImportKeyword | TokenType.VarKeyword    | TokenType.IfKeyword  |
+            TokenType.FunctionKeyword  | TokenType.Quote         | TokenType.Semicolon     | TokenType.Colon      |
+            TokenType.BraceOpened      | TokenType.BraceClosed   | TokenType.ComplexToken;
 
         public Token(string str, string fileName, int lineIndex, int lineOffset)
         {
@@ -86,6 +84,8 @@ namespace Nevermind.Compiler
                 case "?": Type = TokenType.QuestingSign;
                     break;
                 case "!": Type = TokenType.ExclamationMark;
+                    break;
+                case ",": Type = TokenType.ComaSign;
                     break;
 
                 default:

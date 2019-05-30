@@ -49,6 +49,7 @@
     <Compile Include="Compiler\Lexemes\ExpressionLexeme.cs" />
     <Compile Include="Compiler\Lexemes\Expressions\ExpressionToken.cs" />
     <Compile Include="Compiler\Lexemes\Expressions\Operator.cs" />
+    <Compile Include="Compiler\Lexemes\Expressions\ParseExpressionException.cs" />
     <Compile Include="Compiler\Lexemes\FunctionCallLexeme.cs" />
     <Compile Include="Compiler\Lexemes\FunctionLexeme.cs" />
     <Compile Include="Compiler\Lexemes\IfLexeme.cs" />

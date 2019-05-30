@@ -27,8 +27,8 @@ namespace Nevermind
 
             tokens = Tokenizer.Tokenize(source, _source.FileName);
 
-            foreach (var token in tokens)
-                Console.WriteLine(token);
+            /*foreach (var token in tokens)
+                Console.WriteLine(token);*/
 
             var lexems = Lexemizer.Lexemize(tokens, out error);
             if (error != null)
