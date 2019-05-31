@@ -16,6 +16,8 @@ namespace NevermindTests
             {
                 Console.WriteLine(error);
             }
+
+            Console.ReadKey();
         }
     }
 }
