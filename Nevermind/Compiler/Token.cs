@@ -12,8 +12,7 @@ namespace Nevermind.Compiler
         public TokenType Type;
         public string StringValue;
 
-        private static readonly Regex NumberRegex = new Regex(@"^[0-9]*$");
-        private static readonly Regex FloatNumberRegex = new Regex(@"^([0-9]*\.[0-9]+|[0-9]+)$");
+        private static readonly Regex FloatNumberRegex = new Regex();
 
         public const TokenType MathOperatorTokenType =
             TokenType.PlusSign      | TokenType.MinusSign       | TokenType.MultiplySign   | TokenType.DivideSign  |

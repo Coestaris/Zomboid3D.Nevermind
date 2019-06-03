@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Nevermind.ByteCode;
 using Nevermind.Compiler;
+using Nevermind.Compiler.Constants;
 
 namespace Nevermind
 {
@@ -10,10 +11,14 @@ namespace Nevermind
         private NmSource _source;
         private List<Instruction> _program;
 
+        internal List<Constant> Constants;
+
         public NmProgram(NmSource source)
         {
             if(source == null) throw new ArgumentNullException(nameof(source));
             _source = source;
+
+            Constants = new List<Constant>();
         }
 
         public CompileError Compile()

@@ -44,6 +44,13 @@
     <Compile Include="ByteCode\Type.cs" />
     <Compile Include="Compiler\CompileError.cs" />
     <Compile Include="Compiler\CompileErrorType.cs" />
+    <Compile Include="Compiler\Constants\Constant.cs" />
+    <Compile Include="Compiler\Constants\ConstantFormat.cs" />
+    <Compile Include="Compiler\Constants\ConstantType.cs" />
+    <Compile Include="Compiler\Constants\DecConstantFormat.cs" />
+    <Compile Include="Compiler\Constants\FloatConstantFormat.cs" />
+    <Compile Include="Compiler\Constants\HexConstantFormat.cs" />
+    <Compile Include="Compiler\Constants\OctConstantFormat.cs" />
     <Compile Include="Compiler\Lexeme.cs" />
     <Compile Include="Compiler\LexemeInfo.cs" />
     <Compile Include="Compiler\Lexemes\ExpressionLexeme.cs" />
