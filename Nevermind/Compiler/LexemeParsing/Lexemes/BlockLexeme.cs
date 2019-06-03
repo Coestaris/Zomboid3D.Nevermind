@@ -1,6 +1,4 @@
-using System.Collections.Generic;
-
-namespace Nevermind.Compiler.Lexemes
+namespace Nevermind.Compiler.LexemeParsing.Lexemes
 {
     internal class BlockLexeme : Lexeme
     {

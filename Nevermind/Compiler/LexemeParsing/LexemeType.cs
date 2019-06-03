@@ -1,4 +1,4 @@
-namespace Nevermind.Compiler
+namespace Nevermind.Compiler.LexemeParsing
 {
     internal enum LexemeType
     {

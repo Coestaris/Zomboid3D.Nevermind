@@ -1,0 +1,12 @@
+import io;
+import systypes;
+
+entrypoint function int main()
+{
+   var a: integer = 0x5 + 0x7a;
+   a = ~3 + 5 - 0.5;
+   a += 5 + 3 - -0b0010101;
+   a -= 3 == - 0124125;
+   a += 0.01;
+   a = -print(a) + ~print(a) + 4;
+}

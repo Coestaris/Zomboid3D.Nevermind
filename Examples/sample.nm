@@ -1,7 +1,7 @@
 import systypes;
 import io;
 
-function main()
+entrypoint function int main()
 {
    var a : integer = 5 + 2;
 

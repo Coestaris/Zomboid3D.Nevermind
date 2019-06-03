@@ -1,16 +1,15 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Nevermind.Compiler.Lexemes
+namespace Nevermind.Compiler.LexemeParsing.Lexemes
 {
-    internal class FunctionCallLexeme : Lexeme
+    internal class IfLexeme : Lexeme
     {
-        public Token Name;
-        public ExpressionLexeme Expression;
+        public BlockLexeme Block;
+        public  ExpressionLexeme Expression;
 
-        public FunctionCallLexeme(List<Token> tokens) : base(tokens, LexemeType.FunctionCall, false)
+        public IfLexeme(List<Token> tokens) : base(tokens, LexemeType.If, true)
         {
-            Name = tokens[0];
             Expression = new ExpressionLexeme(tokens.Skip(2).Take(tokens.Count - 3).ToList());
         }
 
@@ -18,6 +17,7 @@ namespace Nevermind.Compiler.Lexemes
         {
             base.Print(level);
             Expression?.PrintExpression(level + 1);
+            Block?.Print(level + 1);
         }
     }
 }

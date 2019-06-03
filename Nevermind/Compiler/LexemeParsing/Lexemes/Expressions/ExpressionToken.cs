@@ -1,9 +1,6 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using Nevermind.ByteCode;
 
-namespace Nevermind.Compiler.Lexemes.Expressions
+namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
 {
     internal class ExpressionToken
     {

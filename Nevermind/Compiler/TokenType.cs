@@ -42,7 +42,14 @@ namespace Nevermind.Compiler
         ExclamationMark = 268435456,
 
         ComplexToken = 131072,
-        ComaSign = 536870912
+        ComaSign = 536870912,
+
+        moduleKeyword = 1073741824,
+        privateKeyword,
+        publicKeyword,
+        initializationKeyword,
+        finalizationKeyword,
+        entrypointKeyword
     }
 
     internal static class TokenTypeExtensions

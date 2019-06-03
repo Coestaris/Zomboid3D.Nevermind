@@ -1,18 +1,18 @@
 using System;
 using System.Collections.Generic;
 
-namespace Nevermind.Compiler.Lexemes
+namespace Nevermind.Compiler.LexemeParsing
 {
     internal class LexemeInfo
     {
         public LexemeType Type;
-        public List<TokenType> TokenTypes;
+        public List<LexemePatternToken> Pattern;
         public Type LexemeType;
 
-        public LexemeInfo(LexemeType type, List<TokenType> tokenTypes, Type lexemeType)
+        public LexemeInfo(LexemeType type, List<LexemePatternToken> pattern, Type lexemeType)
         {
             Type = type;
-            TokenTypes = tokenTypes;
+            Pattern = pattern;
             LexemeType = lexemeType;
         }
 

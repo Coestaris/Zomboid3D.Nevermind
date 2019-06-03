@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Nevermind.ByteCode;
 using Nevermind.Compiler;
 using Nevermind.Compiler.Formats.Constants;
+using Nevermind.Compiler.LexemeParsing;
 
 namespace Nevermind
 {

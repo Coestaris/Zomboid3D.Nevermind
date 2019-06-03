@@ -1,0 +1,34 @@
+module module1;
+
+import io;
+
+private function void f1()
+{
+   print("F1");
+}
+
+public function void f2()
+{
+   print("F2");
+}
+
+initialization function void f3()
+{
+   print("F3");
+}
+
+finalization function void f4()
+{
+   print("F4");
+}
+
+entrypoint function int f5()
+{
+   print("F5");
+}
+
+entrypoint function someType1 f6()
+{
+   print("F6");
+}
+

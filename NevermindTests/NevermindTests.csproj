@@ -48,8 +48,15 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="expression.nm" />
-    <None Include="file.nm" />
+    <Content Include="..\Examples\expression.nm">
+      <Link>Examples\expression.nm</Link>
+    </Content>
+    <Content Include="..\Examples\functionModifiers.nm">
+      <Link>Examples\functionModifiers.nm</Link>
+    </Content>
+    <Content Include="..\Examples\sample.nm">
+      <Link>Examples\sample.nm</Link>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

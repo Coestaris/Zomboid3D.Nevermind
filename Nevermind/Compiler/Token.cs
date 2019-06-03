@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using Nevermind.Compiler.Formats;
 using Nevermind.Compiler.Formats.Constants;
-using Nevermind.Compiler.Lexemes.Expressions;
 
 namespace Nevermind.Compiler
 {
@@ -107,6 +106,12 @@ namespace Nevermind.Compiler
 
                 default:
                 {
+                    if (LineIndex == -1)
+                    {
+                        Type = TokenType.Identifier;
+                        break;
+                    }
+
                     bool found = false;
                     foreach (var constantFormat in ConstantFormats)
                     {

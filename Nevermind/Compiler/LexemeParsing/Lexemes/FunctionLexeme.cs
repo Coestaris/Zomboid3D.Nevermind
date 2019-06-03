@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Nevermind.Compiler.Lexemes
+namespace Nevermind.Compiler.LexemeParsing.Lexemes
 {
     internal class FunctionLexeme : Lexeme
     {

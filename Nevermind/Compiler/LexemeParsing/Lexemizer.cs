@@ -1,11 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Remoting.Channels;
-using Nevermind.Compiler.Lexemes;
-using Nevermind.Compiler.Lexemes.Expressions;
+using Nevermind.Compiler.LexemeParsing.Lexemes;
 
-namespace Nevermind.Compiler
+namespace Nevermind.Compiler.LexemeParsing
 {
     internal class Lexemizer
     {

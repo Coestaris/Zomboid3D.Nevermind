@@ -1,9 +1,0 @@
-function main()
-{
-   var a: integer = 0x5 + 0x7a;
-   a = ~3 + 5 - 0.5;
-   a += 5 + 3 - -3;
-   a -= 3 == -5;
-   a += 0.01;
-   a = -print(a) + ~print(a) + 4;
-}

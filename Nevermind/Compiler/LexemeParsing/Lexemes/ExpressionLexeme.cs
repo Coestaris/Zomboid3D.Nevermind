@@ -1,10 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
-using Nevermind.Compiler.Lexemes.Expressions;
+using Nevermind.Compiler.LexemeParsing.Lexemes.Expressions;
 
-namespace Nevermind.Compiler.Lexemes
+namespace Nevermind.Compiler.LexemeParsing.Lexemes
 {
     internal class ExpressionLexeme : Lexeme
     {

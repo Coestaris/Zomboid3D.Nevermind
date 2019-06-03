@@ -5,14 +5,13 @@ namespace Nevermind.Compiler.Formats.Constants
     internal class Constant
     {
         public NmProgram Program;
-
-        public ConstantType Type;
-
         public Token CodeToken;
 
-        public long   IValue;
-        public float  FValue;
-        public string SValue;
+        public readonly ConstantType Type;
+
+        public readonly long   IValue;
+        public readonly float  FValue;
+        public readonly string SValue;
 
         private Constant(Token codeToken, NmProgram program, ConstantType type)
         {
