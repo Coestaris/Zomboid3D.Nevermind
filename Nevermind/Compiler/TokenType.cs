@@ -59,7 +59,7 @@ namespace Nevermind.Compiler
                     yield return (TokenType)v;
         }
 
-        public static string ToSource(this TokenType type)
+        public static string ToSource(this TokenType type, string stringValue = null)
         {
             switch (type)
             {
@@ -72,11 +72,11 @@ namespace Nevermind.Compiler
                 case TokenType.FunctionKeyword:
                     return "function";
                 case TokenType.Identifier:
-                    return "<identifier>";
+                    return stringValue != null ? $"<identifier:{stringValue}>" : "<identifier>";
                 case TokenType.Number:
-                    return "<number>";
+                    return stringValue != null ? $"<number:{stringValue}>" : "<number>";
                 case TokenType.FloatNumber:
-                    return "<float>";
+                    return stringValue != null ? $"<float:{stringValue}>" : "<float>";
                 case TokenType.Quote:
                     return "\"";
                 case TokenType.Semicolon:

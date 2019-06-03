@@ -113,7 +113,7 @@ namespace Nevermind.Compiler
 
         public string ToSource()
         {
-            return Type.ToSource();
+            return Type.ToSource(StringValue);
         }
     }
 }

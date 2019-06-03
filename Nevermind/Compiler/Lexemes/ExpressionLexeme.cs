@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using Nevermind.Compiler.Lexemes.Expressions;
 
@@ -17,6 +18,7 @@ namespace Nevermind.Compiler.Lexemes
 
             bool first = true;
             Operator lastOperator = null;
+            Operator lastUnaryOperator = null;
             Token lastBracketClosed = null;
             Token lastFunctionCallToken = null;
 
@@ -30,6 +32,9 @@ namespace Nevermind.Compiler.Lexemes
                         lastParent.UnaryFunction = lastFunctionCallToken;
 
                     lastParent.LOperator = lastOperator;
+                    if(lastUnaryOperator != null)
+                        lastParent.UnaryOperators.Add(lastUnaryOperator);
+
                     lastOperator = null;
 
                     lastParent.Parent = oldParent;
@@ -44,6 +49,7 @@ namespace Nevermind.Compiler.Lexemes
                         lastParent.Parent.SubTokens.Remove(lastParent);
                         lastParent.Parent.SubTokens.Add(lastParent.SubTokens[0]);
                         lastParent.SubTokens[0].UnaryFunction = lastParent.UnaryFunction;
+                        lastParent.SubTokens[0].UnaryOperators.AddRange(lastParent.UnaryOperators);
                         lastParent.SubTokens[0].LOperator = lastParent.LOperator;
                         lastParent.SubTokens[0].ROperator = lastParent.ROperator;
                     }
@@ -82,20 +88,92 @@ namespace Nevermind.Compiler.Lexemes
                                 matchedOperators.Add(op);
                         }
 
-                        if (matchedOperators.Count != 0)
+                        if (matchedOperators.Count == 0)
                         {
-                            //Console.WriteLine(matchedOperators[0]);
+                            //Cant find full matches, try to find partial ones
+                            foreach (var op in Operator.Operators.FindAll(p => p.IsUnary))
+                            {
+                                var c1 = 0;
+                                while (c1 < op.OperatorTypes.Count)
+                                {
+                                    if (op.OperatorTypes[c1]
+                                        .HasFlag(possibleOperator[possibleOperator.Count - c1 - 1]))
+                                    {
+                                        c1++;
+                                    }
+                                    else
+                                    {
+                                         break;
+                                    }
+                                }
 
-                            if (lastParent.SubTokens.Count == 0)
-                                throw new ParseExpressionException(iterator.Current, CompileErrorType.OperatorWithoutOperand);
+                                if (c1 == op.OperatorTypes.Count)
+                                    matchedOperators.Add(op);
+                            }
+
+                            if(matchedOperators.Count == 0)
+                                throw new ParseExpressionException(iterator.Current, CompileErrorType.UnknownOperator);
+
+                            if(possibleOperator.Count - matchedOperators[0].OperatorTypes.Count == 0)
+                                throw new ParseExpressionException(iterator.Current, CompileErrorType.UnknownOperator);
+
+                            var binaryOp = possibleOperator.Take(possibleOperator.Count - matchedOperators[0].OperatorTypes.Count).ToList();
+                            Operator binary = null;
+
+                            foreach (var op in Operator.Operators)
+                            {
+                                var c1 = 0;
+                                while (c1 < op.OperatorTypes.Count && c1 < binaryOp.Count)
+                                {
+                                    if (op.OperatorTypes[c1].HasFlag(binaryOp[c1]))
+                                        c1++;
+                                    else break;
+                                }
+
+                                if (c1 == op.OperatorTypes.Count && c1 == binaryOp.Count)
+                                {
+                                    binary = op;
+                                    break;
+                                }
+                            }
+
+                            if(binary == null)
+                                throw new ParseExpressionException(iterator.Current, CompileErrorType.UnknownOperator);
+
+                            Console.Write(binary + " ");
+                            Console.WriteLine(matchedOperators[0]);
 
                             if(lastParent.SubTokens.Last().ROperator != null)
                                 throw new ParseExpressionException(iterator.Current, CompileErrorType.MultipleOperators);
 
-                            lastParent.SubTokens.Last().ROperator = matchedOperators[0];
-                            lastOperator = matchedOperators[0];
+                            lastParent.SubTokens.Last().ROperator = binary;
+                            lastOperator = binary;
+                            lastUnaryOperator = matchedOperators[0];
                         }
-                        else throw new ParseExpressionException(iterator.Current, CompileErrorType.UnknownOperator);
+                        else
+                        {
+                            Console.WriteLine(matchedOperators[0]);
+
+                            Operator unary = matchedOperators.Find(p => p.IsUnary);
+
+                            if (lastParent.SubTokens.Count == 0 && unary == null)
+                                throw new ParseExpressionException(iterator.Current, CompileErrorType.OperatorWithoutOperand);
+
+                            if (unary != null && (lastParent.SubTokens.Count == 0 || lastParent.SubTokens.Last().ROperator != null))
+                            {
+                                lastUnaryOperator = unary;
+                            }
+                            else
+                            {
+                                if(lastParent.SubTokens.Last().ROperator != null)
+                                    throw new ParseExpressionException(iterator.Current, CompileErrorType.MultipleOperators);
+
+                                lastParent.SubTokens.Last().ROperator = matchedOperators[0];
+                                lastOperator = matchedOperators[0];
+                            }
+
+                        }
+
                     }
                     else
                     {
@@ -105,12 +183,15 @@ namespace Nevermind.Compiler.Lexemes
                                (iterator.Current.Type == TokenType.Identifier && iterator.Index != tokens.Count - 1 && tokens[iterator.Index + 1].Type != TokenType.BracketOpen) |
                                (iterator.Current.Type == TokenType.Identifier && iterator.Index == tokens.Count - 1))
                             {
-                                if(!first && lastOperator == null)
+                                if(!first && lastOperator == null && lastUnaryOperator == null)
                                     throw new ParseExpressionException(iterator.Current, CompileErrorType.UnexpectedToken);
 
                                 first = false;
+
                                 lastParent.SubTokens.Add(new ExpressionToken(iterator.Current));
                                 lastParent.SubTokens.Last().LOperator = lastOperator;
+                                lastParent.SubTokens.Last().UnaryOperators.Add(lastUnaryOperator);
+                                lastUnaryOperator = null;
                                 lastOperator = null;
                             }
 

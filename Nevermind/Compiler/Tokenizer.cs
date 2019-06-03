@@ -9,7 +9,7 @@ namespace Nevermind.Compiler
     {
         private static readonly List<char> TokenSplitCharacters = new List<char>()
         {
-            '\n', ' ', '.', '(', ')', ':', ';', '"', '=', '}', '{', ','
+            '\n', ' ', '.', ';', '"', '}', '{', '(', ')'
         };
 
         private struct RawToken
@@ -33,6 +33,10 @@ namespace Nevermind.Compiler
 
         public static List<Token> Tokenize(string input, string fileName)
         {
+            TokenSplitCharacters.AddRange(
+                Token.MathOperatorTokenType.GetFlags().Select(p => p.ToSource()[0])
+            );
+
             var rawTokens = new List<RawToken>();
             var currentToken = "";
             var lastContains = false;
