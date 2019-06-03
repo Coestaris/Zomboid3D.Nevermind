@@ -7,35 +7,38 @@ namespace Nevermind.Compiler
 {
     internal static class Tokenizer
     {
-        private static readonly List<char> TokenSplitCharacters = new List<char>()
-        {
-            '\n', ' ', '.', ';', '"', '}', '{', '(', ')'
-        };
+        private static List<char> TokenSplitCharacters = null;
 
         private struct RawToken
         {
-            public string Token;
-            public int LineIndex;
-            public int charIndex;
+            public readonly string Token;
+            public readonly int LineIndex;
+            public readonly int CharIndex;
 
             public RawToken(string token, int lineIndex, int charIndex)
             {
                 Token = token;
                 LineIndex = lineIndex;
-                this.charIndex = charIndex;
+                CharIndex = charIndex;
             }
         }
 
-        public static List<Token> Tokenize(string input)
+        public static void InitTokenizer()
         {
-            return Tokenize(input, null);
+            if (TokenSplitCharacters != null) return;
+
+            TokenSplitCharacters = new List<char> { '\n', ' ',  ';', '"', '}', '{', '(', ')', ':' };
+            TokenSplitCharacters.AddRange(Token.MathOperatorTokenType.GetFlags().Select(p => p.ToSource()[0]));
         }
 
-        public static List<Token> Tokenize(string input, string fileName)
+        public static List<Token> Tokenize(string input, NmProgram program)
         {
-            TokenSplitCharacters.AddRange(
-                Token.MathOperatorTokenType.GetFlags().Select(p => p.ToSource()[0])
-            );
+            return Tokenize(input, null, program);
+        }
+
+        public static List<Token> Tokenize(string input, string fileName, NmProgram program)
+        {
+
 
             var rawTokens = new List<RawToken>();
             var currentToken = "";
@@ -81,7 +84,7 @@ namespace Nevermind.Compiler
             var tokens = new List<Token>();
             foreach (var token in rawTokens)
             {
-                tokens.Add(new Token(token.Token, fileName, token.LineIndex, token.charIndex));
+                tokens.Add(new Token(token.Token, fileName, token.LineIndex, token.CharIndex, program));
             }
 
             return tokens;

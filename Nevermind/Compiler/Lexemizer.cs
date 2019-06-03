@@ -139,9 +139,9 @@ namespace Nevermind.Compiler
                         }
                         catch (Exception e)
                         {
-                            if (e.InnerException.GetType() == typeof(ParseExpressionException))
+                            if (e.InnerException.GetType() == typeof(ParseException))
                             {
-                                error = ((ParseExpressionException)e.InnerException).ToError();
+                                error = ((ParseException)e.InnerException).ToError();
                             }
                             else
                             {

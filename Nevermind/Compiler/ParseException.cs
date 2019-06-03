@@ -1,13 +1,13 @@
 using System;
 
-namespace Nevermind.Compiler.Lexemes.Expressions
+namespace Nevermind.Compiler
 {
-    internal class ParseExpressionException : Exception
+    internal class ParseException : Exception
     {
         private readonly Token _token;
         private readonly CompileErrorType _errorType;
 
-        public ParseExpressionException(Token token, CompileErrorType errorType)
+        public ParseException(Token token, CompileErrorType errorType)
         {
             _token = token;
             _errorType = errorType;

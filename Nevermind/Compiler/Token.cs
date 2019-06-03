@@ -1,5 +1,9 @@
 using System;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using Nevermind.Compiler.Formats;
+using Nevermind.Compiler.Formats.Constants;
+using Nevermind.Compiler.Lexemes.Expressions;
 
 namespace Nevermind.Compiler
 {
@@ -12,7 +16,16 @@ namespace Nevermind.Compiler
         public TokenType Type;
         public string StringValue;
 
-        private static readonly Regex FloatNumberRegex = new Regex();
+        public Constant Constant;
+
+        private readonly List<ConstantFormat> ConstantFormats = new List<ConstantFormat>
+        {
+            new OctConstantFormat(),
+            new DecConstantFormat(),
+            new HexConstantFormat(),
+            new FloatConstantFormat(),
+            new BinConstantFormat()
+        };
 
         public const TokenType MathOperatorTokenType =
             TokenType.PlusSign      | TokenType.MinusSign       | TokenType.MultiplySign   | TokenType.DivideSign  |
@@ -29,8 +42,13 @@ namespace Nevermind.Compiler
             TokenType.FunctionKeyword  | TokenType.Quote         | TokenType.Semicolon     | TokenType.Colon      |
             TokenType.BraceOpened      | TokenType.BraceClosed   | TokenType.ComplexToken;
 
-        public Token(string str, string fileName, int lineIndex, int lineOffset)
+        public Token(string str, string fileName, int lineIndex, int lineOffset, NmProgram program)
         {
+            FileName = fileName;
+            LineIndex = lineIndex;
+            LineOffset = lineOffset;
+            StringValue = str;
+
             switch (str)
             {
                 case "=": Type = TokenType.EqualSign;
@@ -89,17 +107,27 @@ namespace Nevermind.Compiler
 
                 default:
                 {
-                    if (NumberRegex.IsMatch(str)) Type = TokenType.Number;
-                    else if (FloatNumberRegex.IsMatch(str)) Type = TokenType.FloatNumber;
-                    else Type = TokenType.Identifier;
+                    bool found = false;
+                    foreach (var constantFormat in ConstantFormats)
+                    {
+                        if (constantFormat.Verify(StringValue))
+                        {
+                            Constant = constantFormat.Parse(this, program);
+                            Type = Constant.ToTokenType();
+                            found = true;
+                            break;
+                        }
+                    }
+
+                    if (!found)
+                    {
+                        if (IdentifierFormat.Match(StringValue)) Type = TokenType.Identifier;
+                        else throw new ParseException(this, CompileErrorType.WrongIdentifierFormat);
+                    }
+
                 }
                     break;
             }
-
-            FileName = fileName;
-            LineIndex = lineIndex;
-            LineOffset = lineOffset;
-            StringValue = str;
         }
 
         public override string ToString()
@@ -112,7 +140,7 @@ namespace Nevermind.Compiler
 
         public string ToSource()
         {
-            return Type.ToSource(StringValue);
+            return Type.ToSource(Type == TokenType.Number || Type == TokenType.FloatNumber ? Constant.ToStringValue() : StringValue);
         }
     }
 }

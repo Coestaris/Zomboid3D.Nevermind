@@ -1,4 +1,6 @@
-namespace Nevermind.Compiler.Constants
+using System;
+
+namespace Nevermind.Compiler.Formats.Constants
 {
     internal class Constant
     {
@@ -34,6 +36,35 @@ namespace Nevermind.Compiler.Constants
         public Constant(Token codeToken, NmProgram program, string value) : this(codeToken, program, ConstantType.String)
         {
             SValue = value;
+        }
+
+        public TokenType ToTokenType()
+        {
+            switch (Type)
+            {
+                case ConstantType.Integer:
+                    return TokenType.Number;
+                case ConstantType.Float:
+                    return TokenType.FloatNumber;
+                case ConstantType.String:
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        public string ToStringValue()
+        {
+            switch (Type)
+            {
+                case ConstantType.Integer:
+                    return IValue.ToString();
+                case ConstantType.Float:
+                    return FValue.ToString();
+                case ConstantType.String:
+                    return SValue.ToString();
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
     }
 }

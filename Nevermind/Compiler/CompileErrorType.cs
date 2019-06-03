@@ -13,6 +13,7 @@ namespace Nevermind.Compiler
         WrongTokenInExpression,
         OperatorWithoutOperand,
         MultipleOperators,
-        UnexpectedToken
+        UnexpectedToken,
+        WrongIdentifierFormat
     }
 }

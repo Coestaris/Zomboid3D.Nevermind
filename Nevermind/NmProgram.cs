@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using Nevermind.ByteCode;
 using Nevermind.Compiler;
-using Nevermind.Compiler.Constants;
+using Nevermind.Compiler.Formats.Constants;
 
 namespace Nevermind
 {
@@ -23,14 +23,22 @@ namespace Nevermind
 
         public CompileError Compile()
         {
-            List<Token> tokens;
+            Tokenizer.InitTokenizer();
 
             CompileError error;
             var source = _source.GetSource(out error);
             if (error != null)
                 return error;
 
-            tokens = Tokenizer.Tokenize(source, _source.FileName);
+            List<Token> tokens;
+            try
+            {
+                tokens = Tokenizer.Tokenize(source, _source.FileName, this);
+            }
+            catch (ParseException ex)
+            {
+                return ex.ToError();
+            }
 
             foreach (var token in tokens)
                 Console.WriteLine(token);

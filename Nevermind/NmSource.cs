@@ -41,7 +41,7 @@ namespace Nevermind
 
             if (_fileName == null || !new FileInfo(_fileName).Exists)
             {
-                error = new CompileError(CompileErrorType.UnableToOpenFile, new Token("", _fileName, -1, -1));
+                error = new CompileError(CompileErrorType.UnableToOpenFile, new Token("", _fileName, -1, -1, null));
                 return null;
             }
 

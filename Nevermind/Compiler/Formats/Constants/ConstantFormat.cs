@@ -1,10 +1,10 @@
 using System.Text.RegularExpressions;
 
-namespace Nevermind.Compiler.Constants
+namespace Nevermind.Compiler.Formats.Constants
 {
     internal abstract class ConstantFormat
     {
-        protected Regex ConstantRegex;
+        protected abstract Regex ConstantRegex { get; }
 
         public virtual bool Verify(string input)
         {

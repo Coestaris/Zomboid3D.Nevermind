@@ -1,4 +1,4 @@
-namespace Nevermind.Compiler.Constants
+namespace Nevermind.Compiler.Formats.Constants
 {
     internal enum ConstantType
     {
