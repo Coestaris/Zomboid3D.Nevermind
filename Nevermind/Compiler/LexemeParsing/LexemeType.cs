@@ -5,6 +5,7 @@ namespace Nevermind.Compiler.LexemeParsing
         Block,
 
         Import,
+        Module,
         Var,
         If,
         FunctionCall,

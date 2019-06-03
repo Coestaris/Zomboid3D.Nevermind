@@ -1,0 +1,15 @@
+import systypes;
+import io;
+
+// Signle line comment
+// Another singleLine comment
+
+/*
+ *    Multiline comment
+ *                 comment
+ */
+
+entrypoint function int main()
+{
+    print("Hello world");
+}

@@ -176,9 +176,12 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes
                     }
                     else
                     {
-                        if (iterator.Current.Type == TokenType.Number || iterator.Current.Type == TokenType.FloatNumber || iterator.Current.Type == TokenType.Identifier)
+                        if (iterator.Current.Type == TokenType.Number ||
+                            iterator.Current.Type == TokenType.FloatNumber ||
+                            iterator.Current.Type == TokenType.StringToken ||
+                            iterator.Current.Type == TokenType.Identifier)
                         {
-                            if (iterator.Current.Type == TokenType.Number || iterator.Current.Type == TokenType.FloatNumber ||
+                            if (iterator.Current.Type == TokenType.Number || iterator.Current.Type == TokenType.FloatNumber || iterator.Current.Type == TokenType.StringToken ||
                                (iterator.Current.Type == TokenType.Identifier && iterator.Index != tokens.Count - 1 && tokens[iterator.Index + 1].Type != TokenType.BracketOpen) |
                                (iterator.Current.Type == TokenType.Identifier && iterator.Index == tokens.Count - 1))
                             {

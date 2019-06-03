@@ -97,21 +97,21 @@ namespace Nevermind.Compiler.LexemeParsing
                     foreach (var lexemeInfo in Lexeme.Lexemes)
                     {
                         int c1 = 0, c2 = 0;
-                        while (c1 < lexeme.Tokens.Count && c2 < lexemeInfo.TokenTypes.Count)
+                        while (c1 < lexeme.Tokens.Count && c2 < lexemeInfo.Pattern.Count)
                         {
-                            if (lexemeInfo.TokenTypes[c2].HasFlag(lexeme.Tokens[c1].Type))
+                            if (lexemeInfo.Pattern[c2].Type.HasFlag(lexeme.Tokens[c1].Type))
                             {
-                                if (c2 != lexemeInfo.TokenTypes.Count - 1 &&
-                                    lexemeInfo.TokenTypes[c2].HasFlag(TokenType.ComplexToken) &&
-                                    !lexemeInfo.TokenTypes[c2 + 1].HasFlag(TokenType.ComplexToken) &&
-                                    lexemeInfo.TokenTypes[c2 + 1].HasFlag(lexeme.Tokens[c1].Type))
+                                if (c2 != lexemeInfo.Pattern.Count - 1 &&
+                                    lexemeInfo.Pattern[c2].Type.HasFlag(TokenType.ComplexToken) &&
+                                    !lexemeInfo.Pattern[c2 + 1].Type.HasFlag(TokenType.ComplexToken) &&
+                                    lexemeInfo.Pattern[c2 + 1].Type.HasFlag(lexeme.Tokens[c1].Type))
                                 {
                                     c2++;
                                 }
 
-                                if (c2 != lexemeInfo.TokenTypes.Count - 1 &&
-                                    lexemeInfo.TokenTypes[c2 + 1] != lexemeInfo.TokenTypes[c2] &&
-                                    !lexemeInfo.TokenTypes[c2].HasFlag(TokenType.ComplexToken))
+                                if (c2 != lexemeInfo.Pattern.Count - 1 &&
+                                    lexemeInfo.Pattern[c2 + 1] != lexemeInfo.Pattern[c2] &&
+                                    !lexemeInfo.Pattern[c2].Type.HasFlag(TokenType.ComplexToken))
                                 {
                                     c2++;
                                 }
@@ -121,11 +121,14 @@ namespace Nevermind.Compiler.LexemeParsing
                             else
                             {
                                 c2++;
-                                if(c2 > c1) break;
+                                if (c2 > c1)
+                                {
+                                    if (lexemeInfo.Pattern[c2 - 1].IsRequired) break;
+                                }
                             }
                         }
 
-                        if(c1 == lexeme.Tokens.Count && c2 == lexemeInfo.TokenTypes.Count - 1) matchedLexemes.Add(lexemeInfo);
+                        if(c1 == lexeme.Tokens.Count && c2 == lexemeInfo.Pattern.Count - 1) matchedLexemes.Add(lexemeInfo);
                     }
 
                     if (matchedLexemes.Count != 0)
@@ -136,7 +139,7 @@ namespace Nevermind.Compiler.LexemeParsing
                         }
                         catch (Exception e)
                         {
-                            if (e.InnerException.GetType() == typeof(ParseException))
+                            if (e.InnerException?.GetType() == typeof(ParseException))
                             {
                                 error = ((ParseException)e.InnerException).ToError();
                             }

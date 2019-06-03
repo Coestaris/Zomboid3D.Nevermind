@@ -46,6 +46,7 @@ namespace Nevermind.Compiler.Formats.Constants
                 case ConstantType.Float:
                     return TokenType.FloatNumber;
                 case ConstantType.String:
+                    return TokenType.StringToken;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -60,7 +61,7 @@ namespace Nevermind.Compiler.Formats.Constants
                 case ConstantType.Float:
                     return FValue.ToString();
                 case ConstantType.String:
-                    return SValue.ToString();
+                    return SValue;
                 default:
                     throw new ArgumentOutOfRangeException();
             }

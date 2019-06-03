@@ -1,7 +1,7 @@
 import io;
 import systypes;
 
-entrypoint function int main()
+public function type main(p1 : t1, p2 : t2)
 {
    var a: integer = 0x5 + 0x7a;
    a = ~3 + 5 - 0.5;

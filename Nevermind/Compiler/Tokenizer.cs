@@ -8,18 +8,27 @@ namespace Nevermind.Compiler
     internal static class Tokenizer
     {
         private static List<char> TokenSplitCharacters = null;
+        private static readonly string SingleLineComment =     "//";
+        private static readonly string MultilineCommentStart = "/*";
+        private static readonly string MultilineCommentEnd =   "*/";
 
-        private struct RawToken
+        private static Regex _singleLineCommentRegex;
+        private static Regex _multilineCommentRegex;
+
+        private class RawToken
         {
             public readonly string Token;
             public readonly int LineIndex;
             public readonly int CharIndex;
+
+            public bool IsString;
 
             public RawToken(string token, int lineIndex, int charIndex)
             {
                 Token = token;
                 LineIndex = lineIndex;
                 CharIndex = charIndex;
+                IsString = false;
             }
         }
 
@@ -29,6 +38,12 @@ namespace Nevermind.Compiler
 
             TokenSplitCharacters = new List<char> { '\n', ' ',  ';', '"', '}', '{', '(', ')', ':' };
             TokenSplitCharacters.AddRange(Token.MathOperatorTokenType.GetFlags().Select(p => p.ToSource()[0]));
+
+            _singleLineCommentRegex = new Regex($"{Regex.Escape(SingleLineComment)}.*?(\n|$)",
+                RegexOptions.Multiline);
+            _multilineCommentRegex = new Regex($"{Regex.Escape(MultilineCommentStart)}(\\s|.)*?{Regex.Escape(MultilineCommentEnd)}",
+                RegexOptions.Multiline);
+
         }
 
         public static List<Token> Tokenize(string input, NmProgram program)
@@ -36,9 +51,16 @@ namespace Nevermind.Compiler
             return Tokenize(input, null, program);
         }
 
+        public static string RemoveComments(string input)
+        {
+            input = _singleLineCommentRegex.Replace(input, "");
+            input = _multilineCommentRegex.Replace(input, "");
+            return input;
+        }
+
         public static List<Token> Tokenize(string input, string fileName, NmProgram program)
         {
-
+            input = RemoveComments(input);
 
             var rawTokens = new List<RawToken>();
             var currentToken = "";
@@ -46,23 +68,47 @@ namespace Nevermind.Compiler
             var lineCount = 0;
             var charCount = 0;
 
+            var collectingString = false;
+            var str = "";
+
             foreach (var c in input)
             {
-                if (TokenSplitCharacters.Contains(c))
+                if (c == '"')
                 {
-                    rawTokens.Add(new RawToken(currentToken, lineCount, charCount));
-                    currentToken = c.ToString();
-                    lastContains = true;
+                    if (collectingString)
+                    {
+                        rawTokens.Add(new RawToken(str, lineCount, charCount));
+                        rawTokens.Last().IsString = true;
+                        str = "";
+                        collectingString = false;
+                    }
+                    else
+                    {
+                        collectingString = true;
+                    }
                 }
                 else
                 {
-                    if (lastContains)
+                    if (collectingString)
+                    {
+                        str += c;
+                    }
+                    else if (TokenSplitCharacters.Contains(c))
                     {
                         rawTokens.Add(new RawToken(currentToken, lineCount, charCount));
-                        currentToken = "";
+                        currentToken = c.ToString();
+                        lastContains = true;
                     }
-                    lastContains = false;
-                    currentToken += c;
+                    else
+                    {
+                        if (lastContains)
+                        {
+                            rawTokens.Add(new RawToken(currentToken, lineCount, charCount));
+                            currentToken = "";
+                        }
+                        lastContains = false;
+                        currentToken += c;
+                    }
                 }
 
                 if (c == '\n')
@@ -84,7 +130,7 @@ namespace Nevermind.Compiler
             var tokens = new List<Token>();
             foreach (var token in rawTokens)
             {
-                tokens.Add(new Token(token.Token, fileName, token.LineIndex, token.CharIndex, program));
+                tokens.Add(new Token(token.Token, fileName, token.LineIndex, token.CharIndex, program, token.IsString));
             }
 
             return tokens;

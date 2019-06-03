@@ -54,6 +54,15 @@ namespace Nevermind.Compiler.LexemeParsing
                 typeof(ImportLexeme)),
 
             new LexemeInfo(
+                LexemeType.Module,
+                new List<LexemePatternToken>
+                {
+                    new LexemePatternToken(TokenType.ModuleKeyword, true),
+                    new LexemePatternToken(TokenType.Identifier,    true)
+                },
+                typeof(ImportLexeme)),
+
+            new LexemeInfo(
                 LexemeType.Var,
                 new List<LexemePatternToken>
                 {
@@ -82,8 +91,12 @@ namespace Nevermind.Compiler.LexemeParsing
                 LexemeType.Function,
                 new List<LexemePatternToken>
                 {
+                    new LexemePatternToken(
+                        TokenType.PublicKeyword | TokenType.PrivateKeyword | TokenType.EntrypointKeyword |
+                        TokenType.FinalizationKeyword | TokenType.InitializationKeyword, false),
                     new LexemePatternToken(TokenType.FunctionKeyword, true),
                     new LexemePatternToken(TokenType.Identifier,      true),
+                    new LexemePatternToken(TokenType.Identifier,      false),
                     new LexemePatternToken(TokenType.BracketOpen,     true),
                     new LexemePatternToken(Token.AnyTokenType,        true),
                     new LexemePatternToken(TokenType.BracketClosed,   true)
