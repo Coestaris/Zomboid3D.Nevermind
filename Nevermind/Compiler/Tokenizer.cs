@@ -7,13 +7,11 @@ namespace Nevermind.Compiler
 {
     internal static class Tokenizer
     {
-        private static List<char> TokenSplitCharacters = null;
+        private static List<char> _tokenSplitCharacters = null;
+
         private static readonly string SingleLineComment =     "//";
         private static readonly string MultilineCommentStart = "/*";
         private static readonly string MultilineCommentEnd =   "*/";
-
-        private static Regex _singleLineCommentRegex;
-        private static Regex _multilineCommentRegex;
 
         private class RawToken
         {
@@ -30,20 +28,19 @@ namespace Nevermind.Compiler
                 CharIndex = charIndex;
                 IsString = false;
             }
+
+            public override string ToString()
+            {
+                return $"Raw token: {Token}";
+            }
         }
 
         public static void InitTokenizer()
         {
-            if (TokenSplitCharacters != null) return;
+            if (_tokenSplitCharacters != null) return;
 
-            TokenSplitCharacters = new List<char> { '\n', ' ',  ';', '"', '}', '{', '(', ')', ':' };
-            TokenSplitCharacters.AddRange(Token.MathOperatorTokenType.GetFlags().Select(p => p.ToSource()[0]));
-
-            _singleLineCommentRegex = new Regex($"{Regex.Escape(SingleLineComment)}.*?(\n|$)",
-                RegexOptions.Multiline);
-            _multilineCommentRegex = new Regex($"{Regex.Escape(MultilineCommentStart)}(\\s|.)*?{Regex.Escape(MultilineCommentEnd)}",
-                RegexOptions.Multiline);
-
+            _tokenSplitCharacters = new List<char> { '\n', ' ',  ';', '"', '}', '{', '(', ')', ':' };
+            _tokenSplitCharacters.AddRange(Token.MathOperatorTokenType.GetFlags().Select(p => p.ToSource()[0]));
         }
 
         public static List<Token> Tokenize(string input, NmProgram program)
@@ -51,17 +48,8 @@ namespace Nevermind.Compiler
             return Tokenize(input, null, program);
         }
 
-        public static string RemoveComments(string input)
-        {
-            input = _singleLineCommentRegex.Replace(input, "");
-            input = _multilineCommentRegex.Replace(input, "");
-            return input;
-        }
-
         public static List<Token> Tokenize(string input, string fileName, NmProgram program)
         {
-            input = RemoveComments(input);
-
             var rawTokens = new List<RawToken>();
             var currentToken = "";
             var lastContains = false;
@@ -69,45 +57,109 @@ namespace Nevermind.Compiler
             var charCount = 0;
 
             var collectingString = false;
+            var collectingComment = false;
+            var collectingMlComment = false;
+
+            var slCommentIndex = 0;
+            var mlCommentIndex = 0;
             var str = "";
+
 
             foreach (var c in input)
             {
-                if (c == '"')
+                if (!collectingComment)
                 {
-                    if (collectingString)
+                    if (c == SingleLineComment[slCommentIndex])
                     {
-                        rawTokens.Add(new RawToken(str, lineCount, charCount));
-                        rawTokens.Last().IsString = true;
-                        str = "";
-                        collectingString = false;
+                        slCommentIndex++;
+                        if (slCommentIndex == SingleLineComment.Length)
+                        {
+                            collectingComment = true;
+                            currentToken = "";
+                            slCommentIndex = 0;
+                            collectingMlComment = false;
+                        }
+                    }
+                    else slCommentIndex = 0;
+
+                    if (c == MultilineCommentStart[mlCommentIndex])
+                    {
+                        mlCommentIndex++;
+                        if (mlCommentIndex == MultilineCommentStart.Length)
+                        {
+                            collectingComment = true;
+                            currentToken = "";
+                            mlCommentIndex = 0;
+                            collectingMlComment = true;
+                        }
+                    }
+                    else mlCommentIndex = 0;
+                }
+
+                if (collectingComment)
+                {
+                    if (collectingMlComment)
+                    {
+                        if (c == MultilineCommentEnd[mlCommentIndex])
+                        {
+                            mlCommentIndex++;
+                            if (mlCommentIndex == MultilineCommentEnd.Length)
+                            {
+                                collectingComment = false;
+                                mlCommentIndex = 0;
+                            }
+                        }
+                        else mlCommentIndex = 0;
                     }
                     else
                     {
-                        collectingString = true;
+                        if (c == '\n') collectingComment = false;
                     }
                 }
                 else
                 {
-                    if (collectingString)
+                    if (c == '"')
                     {
-                        str += c;
-                    }
-                    else if (TokenSplitCharacters.Contains(c))
-                    {
-                        rawTokens.Add(new RawToken(currentToken, lineCount, charCount));
-                        currentToken = c.ToString();
-                        lastContains = true;
+                        if (collectingString)
+                        {
+                            rawTokens.Add(new RawToken(str, lineCount, charCount));
+                            rawTokens.Last().IsString = true;
+                            str = "";
+                            collectingString = false;
+                        }
+                        else
+                        {
+                            if (lastContains)
+                            {
+                                rawTokens.Add(new RawToken(currentToken, lineCount, charCount));
+                                currentToken = "";
+                            }
+
+                            collectingString = true;
+                        }
                     }
                     else
                     {
-                        if (lastContains)
+                        if (collectingString)
+                        {
+                            str += c;
+                        }
+                        else if (_tokenSplitCharacters.Contains(c))
                         {
                             rawTokens.Add(new RawToken(currentToken, lineCount, charCount));
-                            currentToken = "";
+                            currentToken = c.ToString();
+                            lastContains = true;
                         }
-                        lastContains = false;
-                        currentToken += c;
+                        else
+                        {
+                            if (lastContains)
+                            {
+                                rawTokens.Add(new RawToken(currentToken, lineCount, charCount));
+                                currentToken = "";
+                            }
+                            lastContains = false;
+                            currentToken += c;
+                        }
                     }
                 }
 

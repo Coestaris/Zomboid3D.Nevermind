@@ -4,12 +4,25 @@ import io;
 // Signle line comment
 // Another singleLine comment
 
+// Comment list:
+// 1. One
+// 2. Two
+// 3. Three
+// 4. Four
+
 /*
- *    Multiline comment
- *                 comment
+ * Multiline comment!
+ *   Some text
+ *  Text
  */
 
 entrypoint function int main()
 {
-    print("Hello world");
+    //Print string
+    print("Hello world" / 5);
+
+    //Declare string variable
+    var a : string = "Hello Nevermind!";
+
+    print  /*    Saving actual char position    */ ("Hi");
 }
