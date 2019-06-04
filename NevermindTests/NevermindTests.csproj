@@ -48,6 +48,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="..\Examples\commentsAndStrings.nm">
+      <Link>Examples\commentsAndStrings.nm</Link>
+    </Content>
     <Content Include="..\Examples\expression.nm">
       <Link>Examples\expression.nm</Link>
     </Content>
@@ -56,6 +59,9 @@
     </Content>
     <Content Include="..\Examples\sample.nm">
       <Link>Examples\sample.nm</Link>
+    </Content>
+    <Content Include="..\Examples\stringEscapes.nm">
+      <Link>Examples\stringEscapes.nm</Link>
     </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

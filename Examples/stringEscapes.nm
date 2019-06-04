@@ -1,0 +1,7 @@
+import systypes;
+import io;
+
+entrypoint function int main()
+{
+    var a : string = "\n" + "\10" + "\"" + "\t";
+}

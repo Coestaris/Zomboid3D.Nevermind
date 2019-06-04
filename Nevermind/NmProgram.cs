@@ -12,6 +12,9 @@ namespace Nevermind
         private NmSource _source;
         private List<Instruction> _program;
 
+        //private bool isModule;
+
+        //internal List<Import> Imports;
         internal List<Constant> Constants;
 
         public NmProgram(NmSource source)

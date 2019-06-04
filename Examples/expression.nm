@@ -1,12 +1,12 @@
 import io;
 import systypes;
 
-public function type main(p1 : t1, p2 : t2)
+entrypoint function integer main(p1 : t1, p2 : t2)
 {
-   var a: integer = 0x5 + 0x7a;
-   a = ~3 + 5 - 0.5;
-   a += 5 + 3 - -0b0010101;
-   a -= 3 == - 0124125;
-   a += 0.01;
-   a = -print(a) + ~print(a) + 4;
+    var a: integer = 0x5 + 0x7a;
+    a = ~3 + 5 - 0.5;
+    a += 5 + 3 - -0b0010101;
+    a -= 3 == - 0124125;
+    a += 0.01;
+    a = -print(a) + ~print(a) + 4;
 }
