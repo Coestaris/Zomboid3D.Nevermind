@@ -7,12 +7,11 @@ namespace Nevermind
     public class NmSource
     {
         private readonly string _source;
-        private readonly string _fileName;
 
         private NmSource(string source, string fileName = null)
         {
             _source = source;
-            _fileName = fileName;
+            FileName = fileName;
         }
 
         public static NmSource FromText(string source)
@@ -31,7 +30,7 @@ namespace Nevermind
             return new NmSource(null, fi.FullName);
         }
 
-        public string FileName => _fileName;
+        public string FileName { get; }
 
         internal string GetSource(out CompileError error)
         {
@@ -39,13 +38,13 @@ namespace Nevermind
             if (_source != null)
                 return _source;
 
-            if (_fileName == null || !new FileInfo(_fileName).Exists)
+            if (FileName == null || !new FileInfo(FileName).Exists)
             {
-                error = new CompileError(CompileErrorType.UnableToOpenFile, new Token("", _fileName, -1, -1, null));
+                error = new CompileError(CompileErrorType.UnableToOpenFile, new Token(FileName));
                 return null;
             }
 
-            return File.ReadAllText(_fileName, Encoding.UTF8);
+            return File.ReadAllText(FileName, Encoding.UTF8);
         }
     }
 }

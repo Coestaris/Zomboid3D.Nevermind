@@ -1,7 +1,9 @@
 namespace Nevermind.ByteCode
 {
-    public class IntegerType : Type
+    internal class IntegerType : Type
     {
-
+        public IntegerType(string name) : base(name)
+        {
+        }
     }
 }

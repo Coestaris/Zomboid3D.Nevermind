@@ -39,6 +39,11 @@ namespace Nevermind.Compiler
             TokenType.FunctionKeyword  | TokenType.Quote         | TokenType.Semicolon     | TokenType.Colon      |
             TokenType.BraceOpened      | TokenType.BraceClosed   | TokenType.ComplexToken;
 
+        public Token(string fileName) : this("", fileName, -1, -1, null)
+        {
+
+        }
+
         public Token(string str, string fileName, int lineIndex, int lineOffset, NmProgram program, bool isString = false)
         {
             FileName = fileName;

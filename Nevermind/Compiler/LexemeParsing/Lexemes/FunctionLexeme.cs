@@ -1,30 +1,22 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Nevermind.ByteCode;
+using Nevermind.ByteCode.Functions;
+using Type = Nevermind.ByteCode.Type;
 
 namespace Nevermind.Compiler.LexemeParsing.Lexemes
 {
-    internal class FunctionParameter
+    internal class LexemeFunctionParameter
     {
         public Token Type;
         public Token Name;
 
-        public FunctionParameter(Token type, Token name)
+        public LexemeFunctionParameter(Token type, Token name)
         {
             Type = type;
             Name = name;
         }
-    }
-
-    public enum FunctionModifier
-    {
-        None,
-
-        Public,
-        Private,
-        Entrypoint,
-        Finalization,
-        Initialization
     }
 
     internal class FunctionLexeme : Lexeme
@@ -33,7 +25,7 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes
         public Token ReturnType;
 
         public BlockLexeme Block;
-        public List<FunctionParameter> Parameters;
+        public List<LexemeFunctionParameter> Parameters;
 
         public readonly FunctionModifier Modifier;
 
@@ -48,13 +40,13 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes
                     Modifier = FunctionModifier.Private;
                     break;
                 case TokenType.EntrypointKeyword:
-                    Modifier = FunctionModifier.Private;
+                    Modifier = FunctionModifier.Entrypoint;
                     break;
                 case TokenType.FinalizationKeyword:
-                    Modifier = FunctionModifier.Private;
+                    Modifier = FunctionModifier.Finalization;
                     break;
                 case TokenType.InitializationKeyword:
-                    Modifier = FunctionModifier.Private;
+                    Modifier = FunctionModifier.Initialization;
                     break;
                 default:
                     Modifier = FunctionModifier.None;
@@ -82,7 +74,7 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes
             index++; //bracket
             Token parameterName = null;
             Token parameterType = null;
-            Parameters = new List<FunctionParameter>();
+            Parameters = new List<LexemeFunctionParameter>();
             var state = 0;
 
             foreach (var token in tokens.Skip(index).Take(tokens.Count - 1 - index))
@@ -111,7 +103,7 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes
                         if(token.Type != TokenType.Identifier)
                             throw new ParseException(token, CompileErrorType.UnexpectedToken);
                         parameterType = token;
-                        Parameters.Add(new FunctionParameter(parameterType, parameterName));
+                        Parameters.Add(new LexemeFunctionParameter(parameterType, parameterName));
                         state = 3;
                         break;
                     }
@@ -131,6 +123,15 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes
         {
             base.Print(level);
             Block?.Print(level + 1);
+        }
+
+        public Function ToFunc()
+        {
+            return new Function(
+                Name.StringValue,
+                Modifier,
+                new Type(ReturnType.StringValue),
+                Parameters.Select(p => new FunctionParameter(new Type(p.Type.StringValue), p.Name.StringValue)).ToList());
         }
     }
 }

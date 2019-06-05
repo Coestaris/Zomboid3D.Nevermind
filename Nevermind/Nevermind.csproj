@@ -38,7 +38,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ByteCode\Function.cs" />
+    <Compile Include="ByteCode\Functions\InternalFunction.cs" />
+    <Compile Include="ByteCode\Functions\FunctionModifier.cs" />
+    <Compile Include="ByteCode\Functions\FunctionParameter.cs" />
+    <Compile Include="ByteCode\Functions\InternalFunctions.cs" />
     <Compile Include="ByteCode\Instruction.cs" />
     <Compile Include="ByteCode\IntegerType.cs" />
     <Compile Include="ByteCode\Type.cs" />
@@ -70,6 +73,10 @@
     <Compile Include="Compiler\LexemeParsing\LexemeType.cs" />
     <Compile Include="Compiler\LexemeParsing\Lexemizer.cs" />
     <Compile Include="Compiler\ParseException.cs" />
+    <Compile Include="Compiler\Semantics\Import.cs" />
+    <Compile Include="Compiler\Semantics\Module.cs" />
+    <Compile Include="Compiler\Semantics\ModuleItem.cs" />
+    <Compile Include="Compiler\Semantics\StructureParser.cs" />
     <Compile Include="Compiler\Token.cs" />
     <Compile Include="Compiler\TokenIterator.cs" />
     <Compile Include="Compiler\Tokenizer.cs" />

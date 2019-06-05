@@ -1,7 +1,10 @@
 namespace Nevermind.ByteCode
 {
-    public class Type
+    internal class Type
     {
+        public Type(string name)
+        {
 
+        }
     }
 }

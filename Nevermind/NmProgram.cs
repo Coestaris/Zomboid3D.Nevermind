@@ -1,28 +1,37 @@
 using System;
 using System.Collections.Generic;
 using Nevermind.ByteCode;
+using Nevermind.ByteCode.Functions;
 using Nevermind.Compiler;
 using Nevermind.Compiler.Formats.Constants;
 using Nevermind.Compiler.LexemeParsing;
+using Nevermind.Compiler.Semantics;
 
 namespace Nevermind
 {
     public class NmProgram
     {
-        private NmSource _source;
-        private List<Instruction> _program;
+        internal NmSource Source;
 
-        //private bool isModule;
+        internal bool IsModule;
+        internal Module Module;
 
-        //internal List<Import> Imports;
+        internal List<Import> Imports;
+        internal List<Instruction> Program;
+
+        internal List<Lexeme> Lexemes;
         internal List<Constant> Constants;
+
+        internal List<Function> Functions;
+        internal Function EntrypointFunction;
 
         public NmProgram(NmSource source)
         {
             if(source == null) throw new ArgumentNullException(nameof(source));
-            _source = source;
+            Source = source;
 
             Constants = new List<Constant>();
+            Functions = new List<Function>();
         }
 
         public CompileError Compile()
@@ -30,14 +39,14 @@ namespace Nevermind
             Tokenizer.InitTokenizer();
 
             CompileError error;
-            var source = _source.GetSource(out error);
+            var source = Source.GetSource(out error);
             if (error != null)
                 return error;
 
             List<Token> tokens;
             try
             {
-                tokens = Tokenizer.Tokenize(source, _source.FileName, this);
+                tokens = Tokenizer.Tokenize(source, Source.FileName, this);
             }
             catch (ParseException ex)
             {
@@ -47,8 +56,11 @@ namespace Nevermind
             foreach (var token in tokens)
                 Console.WriteLine(token);
 
-            var lexems = Lexemizer.Lexemize(tokens, out error);
+            Lexemes = Lexemizer.Lexemize(tokens, out error);
             if (error != null)
+                return error;
+
+            if((error = StructureParser.Parse(this)) != null)
                 return error;
 
             return null;

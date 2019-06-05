@@ -1,20 +1,15 @@
-namespace Nevermind.ByteCode
+namespace Nevermind.ByteCode.Functions
 {
-    public class Function<T, A>
+    internal  class InternalFunction<T, A>
         where T : Type
         where A : Type
     {
     }
 
-    public class Function<T, A, B>
+    internal  class InternalFunction<T, A, B>
         where  T : Type
         where A : Type
         where B : Type
     {
-    }
-
-    public class Function
-    {
-
     }
 }

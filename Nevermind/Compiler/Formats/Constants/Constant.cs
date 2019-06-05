@@ -68,5 +68,10 @@ namespace Nevermind.Compiler.Formats.Constants
                     throw new ArgumentOutOfRangeException();
             }
         }
+
+        public override string ToString()
+        {
+            return $"{Type}: {ToStringValue()}";
+        }
     }
 }

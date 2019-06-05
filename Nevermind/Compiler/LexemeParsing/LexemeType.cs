@@ -8,7 +8,6 @@ namespace Nevermind.Compiler.LexemeParsing
         Module,
         Var,
         If,
-        FunctionCall,
         Function,
         Expression,
 

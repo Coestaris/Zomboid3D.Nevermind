@@ -17,6 +17,16 @@ namespace Nevermind.Compiler
         WrongIdentifierFormat,
         UnknownEscapeSymbol,
         WrongEscapeCodeFormat,
-        ExpectedEscapeSymbol
+        ExpectedEscapeSymbol,
+        WrongModuleNameFormat,
+        MultipleInitializationFunctions,
+        WrongFunctionNameFormat,
+        WrongFunctionParameterNameFormat,
+        MultipleFinalizationFunctions,
+        MultipleEntrypointFunctions,
+        NoEntrypointFunction,
+        NoFinalizationFunction,
+        NoInitializationFunction,
+        MultipleFunctionsWithSameName
     }
 }

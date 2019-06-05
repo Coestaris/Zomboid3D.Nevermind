@@ -2,7 +2,6 @@
  * Simple program example
  */
 
-
 import systypes;
 import io;
 
