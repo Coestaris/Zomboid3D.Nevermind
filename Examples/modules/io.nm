@@ -1,0 +1,41 @@
+module io
+
+import _builtins;
+
+typesyn FILE _builtin_stream_t;
+
+var __io : _builtin_stream_t;
+
+initialization function void __init()
+{
+    _builtin_stream_link(__io, "console");
+}
+
+finalization function void __fin()
+{
+    _builtin_stream_unlink(__io);
+}
+
+public function FILE fopen(fileName : string)
+{
+    var file : FILE;
+    _builtin_stream_link(file, "file");
+    _builtin_stream_open(file, fileName);
+    return file;
+}
+
+public function fclose(file : FILE)
+{
+    _builtin_stream_close(file);
+    _builtin_stream_unlink(file);
+}
+
+public function void print(__any : __any)
+{
+    _builtin_print(__io, __any);
+}
+
+public function void fprint(file : FILE, __any : __any)
+{
+    _builtin_print(file, __any);
+}

@@ -57,15 +57,19 @@ namespace Nevermind.Compiler.Semantics
 
             }
 
-            if(program.EntrypointFunction == null)
-                return new CompileError(CompileErrorType.NoEntrypointFunction, new Token(program.Source.FileName));
-
             if (program.IsModule)
             {
                 if (program.Module.InitializationFunc == null)
                     return new CompileError(CompileErrorType.NoInitializationFunction, new Token(program.Source.FileName));
                 if (program.Module.FinalizationFunc == null)
                     return new CompileError(CompileErrorType.NoFinalizationFunction, new Token(program.Source.FileName));
+                if(program.EntrypointFunction != null)
+                    return new CompileError(CompileErrorType.ModuleWithEntrypointFunction, new Token(program.Source.FileName));
+            }
+            else
+            {
+                if(program.EntrypointFunction == null)
+                    return new CompileError(CompileErrorType.NoEntrypointFunction, new Token(program.Source.FileName));
             }
 
             return null;

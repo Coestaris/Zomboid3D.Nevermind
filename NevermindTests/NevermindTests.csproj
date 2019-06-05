@@ -57,6 +57,9 @@
     <Content Include="..\Examples\functionModifiers.nm">
       <Link>Examples\functionModifiers.nm</Link>
     </Content>
+    <Content Include="..\Examples\modules\io.nm">
+      <Link>Examples\modules\io.nm</Link>
+    </Content>
     <Content Include="..\Examples\sample.nm">
       <Link>Examples\sample.nm</Link>
     </Content>
