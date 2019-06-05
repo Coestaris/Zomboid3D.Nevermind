@@ -1,7 +1,12 @@
+/*
+ * String escaping example
+ */
+
 import systypes;
 import io;
 
 entrypoint function int main()
 {
-    var a : string = "Hello \n world =3 \x4F \"";
+    var a : string = "\x48\x65\x6c\x6c\111 \119\111\o162\o154\p01100100";
+    var b : string = "\\\\Hello, \"Nevermind\"";
 }

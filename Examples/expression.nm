@@ -1,3 +1,7 @@
+/*
+ * Complex expressions example
+ */
+
 import io;
 import systypes;
 
@@ -8,5 +12,5 @@ entrypoint function integer main(p1 : t1, p2 : t2)
     a += 5 + 3 - -0b0010101;
     a -= 3 == - 0124125;
     a += 0.01;
-    a = -print(a) + ~print(a) + 4;
+    a = -print(a) + ~print(a + !(5 - 2)) + 4;
 }

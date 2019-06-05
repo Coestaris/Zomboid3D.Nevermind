@@ -1,3 +1,7 @@
+/*
+ * Strings and comments example
+ */
+
 import systypes;
 import io;
 

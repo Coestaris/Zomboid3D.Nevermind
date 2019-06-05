@@ -52,7 +52,7 @@ namespace Nevermind.Compiler.Formats
                 str => Convert.ToInt32(str, 8), 3,
                 new Regex(@"^[0-7]+$")),
             //Bin escape
-            new EscapeSymbolToken('b',
+            new EscapeSymbolToken('p',
                 str => Convert.ToInt32(str, 2), 8,
                 new Regex(@"^[0-1]+$")),
             //Dec escape

@@ -131,6 +131,10 @@ namespace Nevermind.Compiler
                                 str = "";
                                 collectingString = false;
                             }
+                            else
+                            {
+                                str += '"';
+                            }
                         }
                         else
                         {

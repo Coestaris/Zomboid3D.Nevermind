@@ -1,3 +1,7 @@
+/*
+ * Function modifiers example
+ */
+
 module module1;
 
 import io;
