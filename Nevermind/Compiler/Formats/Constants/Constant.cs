@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Nevermind.Compiler.Formats.Constants
 {
@@ -11,7 +13,7 @@ namespace Nevermind.Compiler.Formats.Constants
 
         public readonly long   IValue;
         public readonly float  FValue;
-        public readonly string SValue;
+        public readonly List<int> SValue;
 
         private Constant(Token codeToken, NmProgram program, ConstantType type)
         {
@@ -32,7 +34,7 @@ namespace Nevermind.Compiler.Formats.Constants
             FValue = value;
         }
 
-        public Constant(Token codeToken, NmProgram program, string value) : this(codeToken, program, ConstantType.String)
+        public Constant(Token codeToken, NmProgram program, List<int> value) : this(codeToken, program, ConstantType.String)
         {
             SValue = value;
         }
@@ -61,7 +63,7 @@ namespace Nevermind.Compiler.Formats.Constants
                 case ConstantType.Float:
                     return FValue.ToString();
                 case ConstantType.String:
-                    return SValue;
+                    return string.Join("", SValue.Select(p => (char)p));
                 default:
                     throw new ArgumentOutOfRangeException();
             }

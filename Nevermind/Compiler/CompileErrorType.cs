@@ -14,6 +14,9 @@ namespace Nevermind.Compiler
         OperatorWithoutOperand,
         MultipleOperators,
         UnexpectedToken,
-        WrongIdentifierFormat
+        WrongIdentifierFormat,
+        UnknownEscapeSymbol,
+        WrongEscapeCodeFormat,
+        ExpectedEscapeSymbol
     }
 }

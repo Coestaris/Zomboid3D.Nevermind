@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Nevermind.Compiler.Formats;
 
 namespace Nevermind.Compiler
 {
@@ -59,6 +60,7 @@ namespace Nevermind.Compiler
             var collectingString = false;
             var collectingComment = false;
             var collectingMlComment = false;
+            var lastSymbolIsEscapeSymbol = false;
 
             var slCommentIndex = 0;
             var mlCommentIndex = 0;
@@ -122,10 +124,13 @@ namespace Nevermind.Compiler
                     {
                         if (collectingString)
                         {
-                            rawTokens.Add(new RawToken(str, lineCount, charCount));
-                            rawTokens.Last().IsString = true;
-                            str = "";
-                            collectingString = false;
+                            if (!lastSymbolIsEscapeSymbol)
+                            {
+                                rawTokens.Add(new RawToken(str, lineCount, charCount));
+                                rawTokens.Last().IsString = true;
+                                str = "";
+                                collectingString = false;
+                            }
                         }
                         else
                         {
@@ -162,6 +167,8 @@ namespace Nevermind.Compiler
                         }
                     }
                 }
+
+                lastSymbolIsEscapeSymbol = c == EscapeSymbolToken.EscapeSymbol;
 
                 if (c == '\n')
                 {

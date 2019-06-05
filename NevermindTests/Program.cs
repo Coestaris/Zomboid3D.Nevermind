@@ -8,7 +8,7 @@ namespace NevermindTests
     {
         public static void Main(string[] args)
         {
-            var source = NmSource.FromFile("../../../Examples/sample.nm");
+            var source = NmSource.FromFile("../../../Examples/stringEscapes.nm");
             var program = new NmProgram(source);
 
             var error = program.Compile();

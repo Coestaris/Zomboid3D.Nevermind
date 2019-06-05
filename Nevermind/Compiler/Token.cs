@@ -180,7 +180,13 @@ namespace Nevermind.Compiler
             }
             else
             {
-                Constant = new Constant(this, program, StringValue);
+                var chars = new List<int>();
+                CompileErrorType error;
+                if ((error = StringFormat.CheckEscapeSymbols(StringValue, out chars)) != 0)
+                    throw new ParseException(this, error);
+
+                Constant = new Constant(this, program, chars);
+
                 Type = TokenType.StringToken;
             }
         }

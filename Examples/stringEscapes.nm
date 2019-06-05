@@ -3,5 +3,5 @@ import io;
 
 entrypoint function int main()
 {
-    var a : string = "\n" + "\10" + "\"" + "\t";
+    var a : string = "Hello \n world =3 \x4F \"";
 }
