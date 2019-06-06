@@ -174,15 +174,7 @@ namespace Nevermind.Compiler.LexemeParsing
                     if (prev != null && prev.RequireBlock)
                     {
                         toDelete.Add(index);
-                        switch (prev.Type)
-                        {
-                            case LexemeType.If:
-                                ((IfLexeme)prev).Block = bl;
-                                break;
-                            case LexemeType.Function:
-                                ((FunctionLexeme)prev).Block = bl;
-                                break;
-                        }
+                        ((ComplexLexeme)prev).Block = bl;
                     }
                     LinkBlocksToLexemes((BlockLexeme) lexeme, out error);
                     if (error != null)
@@ -197,18 +189,8 @@ namespace Nevermind.Compiler.LexemeParsing
 
             foreach (var lexeme in root.ChildLexemes)
             {
-                if (!lexeme.RequireBlock) continue;
-                switch (lexeme.Type)
-                {
-                    case LexemeType.If:
-                        if (((IfLexeme) lexeme).Block == null)
-                            error = new CompileError(CompileErrorType.LexemeWithoutRequiredBlock, lexeme.Tokens?[0]);
-                        break;
-                    case LexemeType.Function:
-                        if (((FunctionLexeme) lexeme).Block == null)
-                            error = new CompileError(CompileErrorType.LexemeWithoutRequiredBlock, lexeme.Tokens?[0]);
-                        break;
-                }
+                if (lexeme.RequireBlock && ((ComplexLexeme)lexeme).Block == null)
+                    error = new CompileError(CompileErrorType.LexemeWithoutRequiredBlock, lexeme.Tokens?[0]);
             }
         }
 

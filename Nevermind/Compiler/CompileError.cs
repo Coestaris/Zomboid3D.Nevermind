@@ -4,7 +4,7 @@ namespace Nevermind.Compiler
 {
     public class CompileError
     {
-        private Token _token;
+        private readonly Token _token;
 
         public string FileName => _token?.FileName;
         public int LineIndex => _token?.LineIndex ?? -1;

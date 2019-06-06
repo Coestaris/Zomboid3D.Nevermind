@@ -19,7 +19,7 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes
         }
     }
 
-    internal class FunctionLexeme : Lexeme
+    internal class FunctionLexeme : ComplexLexeme
     {
         public Token Name;
         public Token ReturnType;

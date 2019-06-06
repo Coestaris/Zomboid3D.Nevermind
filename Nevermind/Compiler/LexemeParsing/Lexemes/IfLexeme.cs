@@ -3,10 +3,9 @@ using System.Linq;
 
 namespace Nevermind.Compiler.LexemeParsing.Lexemes
 {
-    internal class IfLexeme : Lexeme
+    internal class IfLexeme : ComplexLexeme
     {
-        public BlockLexeme Block;
-        public  ExpressionLexeme Expression;
+        public ExpressionLexeme Expression;
 
         public IfLexeme(List<Token> tokens) : base(tokens, LexemeType.If, true)
         {

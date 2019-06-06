@@ -57,6 +57,7 @@
     <Compile Include="Compiler\Formats\Constants\OctConstantFormat.cs" />
     <Compile Include="Compiler\Formats\IdentifierFormat.cs" />
     <Compile Include="Compiler\Formats\StringFormat.cs" />
+    <Compile Include="Compiler\LexemeParsing\BlockLexeme.cs" />
     <Compile Include="Compiler\LexemeParsing\Lexeme.cs" />
     <Compile Include="Compiler\LexemeParsing\LexemeInfo.cs" />
     <Compile Include="Compiler\LexemeParsing\LexemePatternToken.cs" />
