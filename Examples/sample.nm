@@ -7,17 +7,22 @@ import io;
 
 entrypoint function integer main()
 {
-    var a : integer = 5 + 2;
+    var a : integer = 2;
+    var b : real = 2;
+    var c : string = 1;
 
     a = 3 + 2 * (4 + 2);
     if(a + 2 == 3)
     {
+        var d : integer = 3 + 2;
+        var l : integer = 3 + 2;
         a = a * 3;
     }
 
     if(a == 3)
     {
+        var l : integer = 3 + 2;
         print("...");
-        print(a + 8);
+        print(l + a + 8);
     }
 }

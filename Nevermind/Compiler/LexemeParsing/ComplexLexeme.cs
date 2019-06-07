@@ -8,5 +8,11 @@ namespace Nevermind.Compiler.LexemeParsing
         protected ComplexLexeme(List<Token> tokens, LexemeType type, bool requireBlock) : base(tokens, type, requireBlock) { }
 
         public BlockLexeme Block;
+
+        public override void Print(int level)
+        {
+            base.Print(level);
+            Block?.Print(level + 1);
+        }
     }
 }

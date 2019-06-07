@@ -28,6 +28,7 @@ namespace Nevermind.Compiler
         NoFinalizationFunction,
         NoInitializationFunction,
         MultipleFunctionsWithSameName,
-        ModuleWithEntrypointFunction
+        ModuleWithEntrypointFunction,
+        VariableRedeclaration
     }
 }

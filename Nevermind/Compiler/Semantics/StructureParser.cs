@@ -34,6 +34,10 @@ namespace Nevermind.Compiler.Semantics
 
                 program.Functions.Add(lexeme.ToFunc());
 
+                CompileError error;
+                if ((error = program.Functions.Last().ResolveLexemes()) != null)
+                    return error;
+
                 if (lexeme.Modifier == FunctionModifier.Initialization)
                 {
                     if(program.Module.InitializationFunc != null)

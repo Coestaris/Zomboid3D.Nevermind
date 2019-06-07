@@ -24,7 +24,6 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes
         public Token Name;
         public Token ReturnType;
 
-        public BlockLexeme Block;
         public List<LexemeFunctionParameter> Parameters;
 
         public readonly FunctionModifier Modifier;
@@ -119,19 +118,15 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes
             }
         }
 
-        public override void Print(int level)
-        {
-            base.Print(level);
-            Block?.Print(level + 1);
-        }
-
         public Function ToFunc()
         {
             return new Function(
                 Name.StringValue,
                 Modifier,
                 new Type(ReturnType.StringValue),
-                Parameters.Select(p => new FunctionParameter(new Type(p.Type.StringValue), p.Name.StringValue)).ToList());
+                Block.Scope,
+                Parameters.Select(p => new FunctionParameter(new Type(p.Type.StringValue), p.Name.StringValue)).ToList(),
+                Block);
         }
     }
 }

@@ -11,7 +11,7 @@ namespace Nevermind.Compiler.LexemeParsing
             error = null;
             var iterator = new TokenIterator<Token>(tokens);
             var possibleLexeme = new List<Token>();
-            var currentParent = new BlockLexeme(null);
+            var currentParent = new BlockLexeme(null, -1);
 
             int level = 0;
             Token lastClosed = null;
@@ -30,7 +30,7 @@ namespace Nevermind.Compiler.LexemeParsing
                         case TokenType.BraceOpened:
 
                             var oldParent = currentParent;
-                            currentParent = new BlockLexeme(oldParent);
+                            currentParent = new BlockLexeme(oldParent, iterator.Index);
                             oldParent.ChildLexemes.Add(currentParent);
                             level++;
 

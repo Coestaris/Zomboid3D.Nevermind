@@ -16,7 +16,6 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes
         {
             base.Print(level);
             Expression?.PrintExpression(level + 1);
-            Block?.Print(level + 1);
         }
     }
 }
