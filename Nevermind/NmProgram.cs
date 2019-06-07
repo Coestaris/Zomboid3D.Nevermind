@@ -17,8 +17,9 @@ namespace Nevermind
         internal Module Module;
 
         internal List<Import> Imports;
-        internal List<Instruction> Program;
+        internal List<Variable> ProgramLocals;
 
+        internal List<Instruction> Program;
         internal List<Lexeme> Lexemes;
         internal List<Constant> Constants;
 
@@ -30,6 +31,7 @@ namespace Nevermind
             if(source == null) throw new ArgumentNullException(nameof(source));
             Source = source;
 
+            ProgramLocals = new List<Variable>();
             Constants = new List<Constant>();
             Functions = new List<Function>();
         }

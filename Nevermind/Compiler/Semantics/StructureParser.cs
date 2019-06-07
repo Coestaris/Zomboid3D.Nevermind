@@ -1,4 +1,5 @@
 using System.Linq;
+using Nevermind.ByteCode;
 using Nevermind.ByteCode.Functions;
 using Nevermind.Compiler.Formats;
 using Nevermind.Compiler.LexemeParsing;
@@ -20,46 +21,68 @@ namespace Nevermind.Compiler.Semantics
                 program.Module = new Module(moduleLexeme.ModuleName.StringValue, program);
             }
 
-            foreach (var lexeme in program.Lexemes.FindAll(p => p.Type == LexemeType.Function).Select(p => (FunctionLexeme)p))
+            foreach (var lex in program.Lexemes)
             {
-                if(!IdentifierFormat.Match(lexeme.Name.StringValue))
-                    return new CompileError(CompileErrorType.WrongFunctionNameFormat, lexeme.Name);
-
-                foreach (var parameter in lexeme.Parameters)
-                    if(!IdentifierFormat.Match(parameter.Name.StringValue))
-                        return new CompileError(CompileErrorType.WrongFunctionParameterNameFormat, parameter.Name);
-
-                if(program.Functions.Count(p => p.Name == lexeme.Name.StringValue) != 0)
-                    return new CompileError(CompileErrorType.MultipleFunctionsWithSameName, lexeme.Name);
-
-                program.Functions.Add(lexeme.ToFunc());
-
-                CompileError error;
-                if ((error = program.Functions.Last().ResolveLexemes()) != null)
-                    return error;
-
-                if (lexeme.Modifier == FunctionModifier.Initialization)
+                if (lex.Type == LexemeType.Function)
                 {
-                    if(program.Module.InitializationFunc != null)
-                        return new CompileError(CompileErrorType.MultipleInitializationFunctions, lexeme.Name);
-                    program.Module.InitializationFunc = program.Functions.Last();
-                }
+                    var lexeme = (FunctionLexeme) lex;
+                    if (!IdentifierFormat.Match(lexeme.Name.StringValue))
+                        return new CompileError(CompileErrorType.WrongFunctionNameFormat, lexeme.Name);
 
-                if (lexeme.Modifier == FunctionModifier.Finalization)
+                    foreach (var parameter in lexeme.Parameters)
+                        if (!IdentifierFormat.Match(parameter.Name.StringValue))
+                            return new CompileError(CompileErrorType.WrongFunctionParameterNameFormat, parameter.Name);
+
+                    if (program.Functions.Count(p => p.Name == lexeme.Name.StringValue) != 0)
+                        return new CompileError(CompileErrorType.MultipleFunctionsWithSameName, lexeme.Name);
+
+                    program.Functions.Add(lexeme.ToFunc(program));
+
+                    CompileError error;
+                    if ((error = program.Functions.Last().ResolveLexemes()) != null)
+                        return error;
+
+                    if (lexeme.Modifier == FunctionModifier.Initialization)
+                    {
+                        if (program.Module.InitializationFunc != null)
+                            return new CompileError(CompileErrorType.MultipleInitializationFunctions, lexeme.Name);
+                        program.Module.InitializationFunc = program.Functions.Last();
+                    }
+
+                    if (lexeme.Modifier == FunctionModifier.Finalization)
+                    {
+                        if (program.Module.FinalizationFunc != null)
+                            return new CompileError(CompileErrorType.MultipleFinalizationFunctions, lexeme.Name);
+                        program.Module.FinalizationFunc = program.Functions.Last();
+                    }
+
+                    if (lexeme.Modifier == FunctionModifier.Entrypoint)
+                    {
+                        if (program.EntrypointFunction != null)
+                            return new CompileError(CompileErrorType.MultipleEntrypointFunctions, lexeme.Name);
+                        program.EntrypointFunction = program.Functions.Last();
+                    }
+                }
+                else if(lex.Type == LexemeType.Var)
                 {
-                    if(program.Module.FinalizationFunc != null)
-                        return new CompileError(CompileErrorType.MultipleFinalizationFunctions, lexeme.Name);
-                    program.Module.FinalizationFunc = program.Functions.Last();
-                }
+                    var lexeme = (VarLexeme)lex;
+                    if (!IdentifierFormat.Match(lexeme.VarName.StringValue))
+                        return new CompileError(CompileErrorType.WrongIdentifierFormat, lexeme.VarName);
 
-                if (lexeme.Modifier == FunctionModifier.Entrypoint)
+                    if(program.ProgramLocals.Find(p => p.Name == lexeme.VarName.StringValue) != null)
+                        return new CompileError(CompileErrorType.VariableRedeclaration, lexeme.VarName);
+
+                    program.ProgramLocals.Add(new Variable(
+                        new Type(lexeme.TypeName.StringValue),
+                        lexeme.VarName.StringValue,
+                        -1));
+                }
+                else if(lex.Type != LexemeType.Module && lex.Type != LexemeType.Import)
                 {
-                    if(program.EntrypointFunction != null)
-                        return new CompileError(CompileErrorType.MultipleEntrypointFunctions, lexeme.Name);
-                    program.EntrypointFunction = program.Functions.Last();
+                    return new CompileError(CompileErrorType.UnexpectedLexeme, lex.Tokens?[0]);
                 }
-
             }
+
 
             if (program.IsModule)
             {

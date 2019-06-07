@@ -118,9 +118,10 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes
             }
         }
 
-        public Function ToFunc()
+        public Function ToFunc(NmProgram program)
         {
             return new Function(
+                program,
                 Name.StringValue,
                 Modifier,
                 new Type(ReturnType.StringValue),
