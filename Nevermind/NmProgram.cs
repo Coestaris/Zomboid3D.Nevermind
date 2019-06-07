@@ -26,6 +26,8 @@ namespace Nevermind
         internal List<Function> Functions;
         internal Function EntrypointFunction;
 
+        internal List<NamedType> AvailableTypes;
+
         public NmProgram(NmSource source)
         {
             if(source == null) throw new ArgumentNullException(nameof(source));
@@ -34,6 +36,8 @@ namespace Nevermind
             ProgramLocals = new List<Variable>();
             Constants = new List<Constant>();
             Functions = new List<Function>();
+
+            AvailableTypes = BuiltInTypes.Get();
         }
 
         public CompileError Compile()

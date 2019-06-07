@@ -30,6 +30,7 @@ namespace Nevermind.Compiler
         MultipleFunctionsWithSameName,
         ModuleWithEntrypointFunction,
         VariableRedeclaration,
-        UnexpectedLexeme
+        UnexpectedLexeme,
+        UnknownTypeName
     }
 }

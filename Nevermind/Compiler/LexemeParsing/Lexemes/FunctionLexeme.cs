@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Nevermind.ByteCode;
@@ -118,16 +117,34 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes
             }
         }
 
-        public Function ToFunc(NmProgram program)
+        private CompileError GetParameterList(NmProgram program, out List<FunctionParameter> parameters)
         {
-            return new Function(
-                program,
-                Name.StringValue,
-                Modifier,
-                new Type(ReturnType.StringValue),
-                Block.Scope,
-                Parameters.Select(p => new FunctionParameter(new Type(p.Type.StringValue), p.Name.StringValue)).ToList(),
-                Block);
+            parameters = new List<FunctionParameter>();
+            CompileError error = null;
+
+            foreach (var parameter in Parameters)
+            {
+                Type t;
+                if ((error = Nevermind.ByteCode.Type.GetType(program, parameter.Type, out t)) != null) return error;
+                parameters.Add(new FunctionParameter(t, parameter.Name.StringValue));
+            }
+
+            return error;
+        }
+
+        public CompileError ToFunc(NmProgram program, out Function func)
+        {
+            CompileError error;
+            Type returnType;
+            List<FunctionParameter> parameters;
+
+            func = null;
+
+            if ((error = Nevermind.ByteCode.Type.GetType(program, ReturnType, out returnType)) != null) return error;
+            if ((error = GetParameterList(program, out parameters)) != null) return error;
+
+            func = new Function(program, Name.StringValue, Modifier, returnType, Block.Scope, parameters, Block);
+            return null;
         }
     }
 }

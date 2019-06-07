@@ -38,13 +38,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ByteCode\BuiltInTypes.cs" />
     <Compile Include="ByteCode\Functions\InternalFunction.cs" />
     <Compile Include="ByteCode\Functions\FunctionModifier.cs" />
     <Compile Include="ByteCode\Functions\FunctionParameter.cs" />
     <Compile Include="ByteCode\Functions\InternalFunctions.cs" />
     <Compile Include="ByteCode\Instruction.cs" />
-    <Compile Include="ByteCode\IntegerType.cs" />
     <Compile Include="ByteCode\Type.cs" />
+    <Compile Include="ByteCode\Types\FloatType.cs" />
+    <Compile Include="ByteCode\Types\IntegerType.cs" />
+    <Compile Include="ByteCode\Types\StringType.cs" />
     <Compile Include="Compiler\CompileError.cs" />
     <Compile Include="Compiler\CompileErrorType.cs" />
     <Compile Include="Compiler\Formats\Constants\BinConstantFormat.cs" />

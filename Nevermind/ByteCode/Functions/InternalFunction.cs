@@ -100,7 +100,9 @@ namespace Nevermind.ByteCode.Functions
                         return;
                     }
 
-                    LocalVariables.Add(new Variable(new Type(varLexeme.TypeName.StringValue), varLexeme.VarName.StringValue, parent.Scope));
+                    Type t;
+                    if((error = Type.GetType(Program, varLexeme.TypeName, out t)) != null) { return; }
+                    LocalVariables.Add(new Variable(t, varLexeme.VarName.StringValue, parent.Scope));
                 }
 
                 if (lexeme.RequireBlock)

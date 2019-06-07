@@ -11,6 +11,7 @@ namespace Nevermind.Compiler.Semantics
     {
         public static CompileError Parse(NmProgram program)
         {
+            CompileError error;
             var moduleLexeme = (ModuleLexeme)program.Lexemes.Find(p => p.Type == LexemeType.Module);
             if (moduleLexeme != null)
             {
@@ -36,9 +37,12 @@ namespace Nevermind.Compiler.Semantics
                     if (program.Functions.Count(p => p.Name == lexeme.Name.StringValue) != 0)
                         return new CompileError(CompileErrorType.MultipleFunctionsWithSameName, lexeme.Name);
 
-                    program.Functions.Add(lexeme.ToFunc(program));
+                    Function func;
+                    if ((error = lexeme.ToFunc(program, out func)) != null)
+                        return error;
 
-                    CompileError error;
+                    program.Functions.Add(func);
+
                     if ((error = program.Functions.Last().ResolveLexemes()) != null)
                         return error;
 
@@ -72,10 +76,10 @@ namespace Nevermind.Compiler.Semantics
                     if(program.ProgramLocals.Find(p => p.Name == lexeme.VarName.StringValue) != null)
                         return new CompileError(CompileErrorType.VariableRedeclaration, lexeme.VarName);
 
-                    program.ProgramLocals.Add(new Variable(
-                        new Type(lexeme.TypeName.StringValue),
-                        lexeme.VarName.StringValue,
-                        -1));
+                    Type t;
+                    if ((error = Nevermind.ByteCode.Type.GetType(program, lexeme.TypeName, out t)) != null) return error;
+                    program.ProgramLocals.Add(new Variable(t, lexeme.VarName.StringValue,-1));
+
                 }
                 else if(lex.Type != LexemeType.Module && lex.Type != LexemeType.Import)
                 {

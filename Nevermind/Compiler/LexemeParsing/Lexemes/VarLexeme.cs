@@ -12,7 +12,7 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes
         public VarLexeme(List<Token> tokens) : base(tokens, LexemeType.Var, false)
         {
             VarName = tokens[1];
-            TypeName = tokens[2];
+            TypeName = tokens[3];
             Expression = new ExpressionLexeme(tokens.Skip(5).Take(tokens.Count - 5).ToList());
         }
 
