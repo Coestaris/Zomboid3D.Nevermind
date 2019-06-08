@@ -6,6 +6,7 @@ using Nevermind.Compiler;
 using Nevermind.Compiler.Formats.Constants;
 using Nevermind.Compiler.LexemeParsing;
 using Nevermind.Compiler.Semantics;
+using Type = System.Type;
 
 namespace Nevermind
 {
@@ -19,13 +20,14 @@ namespace Nevermind
         internal List<Import> Imports;
         internal List<Variable> ProgramLocals;
 
-        internal List<Instruction> Program;
+        public ByteCode.ByteCode Program;
         internal List<Lexeme> Lexemes;
         internal List<Constant> Constants;
 
         internal List<Function> Functions;
         internal Function EntrypointFunction;
 
+        internal List<ByteCode.Type> UsedTypes;
         internal List<NamedType> AvailableTypes;
 
         public NmProgram(NmSource source)
@@ -37,10 +39,11 @@ namespace Nevermind
             Constants = new List<Constant>();
             Functions = new List<Function>();
 
+            UsedTypes = new List<ByteCode.Type>();
             AvailableTypes = BuiltInTypes.Get();
         }
 
-        public CompileError Compile()
+        public CompileError Parse()
         {
             Tokenizer.InitTokenizer();
 
@@ -69,6 +72,12 @@ namespace Nevermind
             if((error = StructureParser.Parse(this)) != null)
                 return error;
 
+            return null;
+        }
+
+        public CompileError Expand()
+        {
+            Program = new ByteCode.ByteCode(this);
             return null;
         }
     }

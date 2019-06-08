@@ -39,11 +39,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ByteCode\BuiltInTypes.cs" />
+    <Compile Include="ByteCode\ByteCode.cs" />
+    <Compile Include="ByteCode\ByteCodeHeader.cs" />
     <Compile Include="ByteCode\Functions\InternalFunction.cs" />
     <Compile Include="ByteCode\Functions\FunctionModifier.cs" />
     <Compile Include="ByteCode\Functions\FunctionParameter.cs" />
     <Compile Include="ByteCode\Functions\InternalFunctions.cs" />
     <Compile Include="ByteCode\Instruction.cs" />
+    <Compile Include="ByteCode\Instructions\InstructionAdd.cs" />
+    <Compile Include="ByteCode\Instructions\InstructionLdi.cs" />
+    <Compile Include="ByteCode\Instructions\InstructionLocal.cs" />
+    <Compile Include="ByteCode\Instructions\InstructionReg.cs" />
     <Compile Include="ByteCode\Type.cs" />
     <Compile Include="ByteCode\Types\FloatType.cs" />
     <Compile Include="ByteCode\Types\IntegerType.cs" />

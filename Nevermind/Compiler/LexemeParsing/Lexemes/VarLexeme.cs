@@ -9,6 +9,8 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes
         public Token TypeName;
         public ExpressionLexeme Expression;
 
+        public int Index;
+
         public VarLexeme(List<Token> tokens) : base(tokens, LexemeType.Var, false)
         {
             VarName = tokens[1];

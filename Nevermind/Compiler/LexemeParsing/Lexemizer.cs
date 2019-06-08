@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Nevermind.Compiler.LexemeParsing.Lexemes;
 
 namespace Nevermind.Compiler.LexemeParsing
@@ -136,6 +137,8 @@ namespace Nevermind.Compiler.LexemeParsing
                         try
                         {
                             root.ChildLexemes[i] = (Lexeme)Activator.CreateInstance(matchedLexemes[0].LexemeType, lexeme.Tokens);
+                            if (root.ChildLexemes.Last().Type == LexemeType.Var)
+                                ((VarLexeme) root.ChildLexemes.Last()).Index = i;
                         }
                         catch (Exception e)
                         {

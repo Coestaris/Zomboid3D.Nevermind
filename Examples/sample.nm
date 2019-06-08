@@ -5,23 +5,8 @@
 import systypes;
 import io;
 
-var aa : integer = 2;
-var bb : real = 2;
-
 entrypoint function integer main()
 {
     var a : integer = 2;
-
-    a = 3 + 2 * (4 + 2);
-    if(a + 2 == 3)
-    {
-        a = a * 3;
-    }
-
-    if(a == 3)
-    {
-        var b : integer = 3 + 2;
-        print("...");
-        print(l + a + 8);
-    }
+    var b : short = a + 3 + "HEllo wor\222";
 }

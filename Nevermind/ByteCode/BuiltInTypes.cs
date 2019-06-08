@@ -4,6 +4,13 @@ using Nevermind.ByteCode.Types;
 
 namespace Nevermind.ByteCode
 {
+    internal enum TypeID
+    {
+        Integer = 0,
+        Float = 1,
+        String = 2
+    }
+
     internal class NamedType
     {
         public string Name;
@@ -35,6 +42,10 @@ namespace Nevermind.ByteCode
             new  NamedType("string",  new StringType(new IntegerType(8,  true))),
             new  NamedType("wstring", new StringType(new IntegerType(16, true))),
         };
+
+        public static Type DefaultConstIntType => _builtinTypes[5].Type;
+        public static Type DefaultConstFloatType => _builtinTypes[8].Type;
+        public static Type DefaultConstStringType => _builtinTypes[10].Type;
 
         public static List<NamedType> Get()
         {

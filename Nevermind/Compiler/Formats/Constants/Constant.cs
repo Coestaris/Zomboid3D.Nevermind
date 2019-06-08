@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Nevermind.ByteCode;
+using Type = Nevermind.ByteCode.Type;
 
 namespace Nevermind.Compiler.Formats.Constants
 {
@@ -72,6 +74,21 @@ namespace Nevermind.Compiler.Formats.Constants
         public override string ToString()
         {
             return $"{Type}: {ToStringValue()}";
+        }
+
+        public Type ToProgramType()
+        {
+            switch (Type)
+            {
+                case ConstantType.Integer:
+                    return BuiltInTypes.DefaultConstIntType;
+                case ConstantType.Float:
+                    return BuiltInTypes.DefaultConstFloatType;
+                case ConstantType.String:
+                    return BuiltInTypes.DefaultConstStringType;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
     }
 }
