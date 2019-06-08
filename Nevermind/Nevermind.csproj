@@ -72,6 +72,7 @@
     <Compile Include="Compiler\LexemeParsing\LexemePatternToken.cs" />
     <Compile Include="Compiler\LexemeParsing\Lexemes\BlockLexeme.cs" />
     <Compile Include="Compiler\LexemeParsing\Lexemes\ExpressionLexeme.cs" />
+    <Compile Include="Compiler\LexemeParsing\Lexemes\Expressions\ExpressionLineItem.cs" />
     <Compile Include="Compiler\LexemeParsing\Lexemes\Expressions\ExpressionToken.cs" />
     <Compile Include="Compiler\LexemeParsing\Lexemes\Expressions\Operator.cs" />
     <Compile Include="Compiler\LexemeParsing\Lexemes\FunctionLexeme.cs" />

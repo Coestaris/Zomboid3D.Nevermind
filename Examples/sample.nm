@@ -7,6 +7,6 @@ import io;
 
 entrypoint function integer main()
 {
-    var a : integer = 2;
-    var b : short = a + 3 + "HEllo wor\222";
+    var a : integer = 5 + 2 * 3 + 4;
+    var b : short = a;
 }

@@ -14,6 +14,8 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
         public List<Operator> UnaryOperators;
         public Token UnaryFunction;
 
+        public int CalculatedIndex = -1;
+
         public ExpressionToken(Token codeToken)
         {
             CodeToken = codeToken;

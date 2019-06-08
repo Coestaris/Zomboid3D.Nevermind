@@ -220,6 +220,75 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes
             Root = lastParent;
         }
 
+        public List<ExpressionLineItem> ToList()
+        {
+            int index = 0;
+            return ToList(ref index, Root);
+        }
+
+        private static List<ExpressionLineItem> ToList(ref int resultIndex, ExpressionToken root)
+        {
+            var result = new List<ExpressionLineItem>();
+
+            if (root.SubTokens.Count == 1)
+                return null;
+
+            foreach (var token in root.SubTokens)
+            {
+                if (token.SubTokens.Count != 0)
+                    result.AddRange(ToList(ref resultIndex, token));
+            }
+
+            while (root.SubTokens.Count != 1)
+            {
+                var maxOperatorIndex = 0;
+                var priority = -1;
+                for (var i = 0; i < root.SubTokens.Count - 1; i++)
+                {
+                    if (root.SubTokens[i].ROperator.Priority > priority)
+                    {
+                        priority = root.SubTokens[i].ROperator.Priority;
+                        maxOperatorIndex = i;
+                    }
+                }
+
+                if (root.SubTokens[maxOperatorIndex].CalculatedIndex != -1 &&
+                    root.SubTokens[maxOperatorIndex + 1].CalculatedIndex != -1)
+                {
+                    result.Add(new ExpressionLineItem(root.SubTokens[maxOperatorIndex].ROperator,
+                        root.SubTokens[maxOperatorIndex].CalculatedIndex,
+                        root.SubTokens[maxOperatorIndex + 1].CalculatedIndex, resultIndex++));
+                }
+                else
+                {
+                    if (root.SubTokens[maxOperatorIndex].CalculatedIndex != -1)
+                    {
+                        result.Add(new ExpressionLineItem(root.SubTokens[maxOperatorIndex].ROperator,
+                            root.SubTokens[maxOperatorIndex].CalculatedIndex,
+                            root.SubTokens[maxOperatorIndex + 1], resultIndex++));
+                    }
+                    else  if (root.SubTokens[maxOperatorIndex + 1].CalculatedIndex != -1)
+                    {
+                        result.Add(new ExpressionLineItem(root.SubTokens[maxOperatorIndex].ROperator,
+                            root.SubTokens[maxOperatorIndex],
+                            root.SubTokens[maxOperatorIndex + 1].CalculatedIndex, resultIndex++));
+                    }
+                    else
+                    {
+                        result.Add(new ExpressionLineItem(root.SubTokens[maxOperatorIndex].ROperator,
+                            root.SubTokens[maxOperatorIndex],
+                            root.SubTokens[maxOperatorIndex + 1], resultIndex++));
+                    }
+
+                }
+
+                root.SubTokens.RemoveAt(maxOperatorIndex);
+                root.SubTokens[maxOperatorIndex].CalculatedIndex = resultIndex - 1;
+            }
+
+            return result;
+        }
+
         public void PrintExpression(int level, ExpressionToken token = null)
         {
             if (token == null)
