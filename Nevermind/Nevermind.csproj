@@ -45,8 +45,10 @@
     <Compile Include="ByteCode\Functions\FunctionModifier.cs" />
     <Compile Include="ByteCode\Functions\FunctionParameter.cs" />
     <Compile Include="ByteCode\Functions\InternalFunctions.cs" />
+    <Compile Include="ByteCode\Functions\Variable.cs" />
     <Compile Include="ByteCode\Instruction.cs" />
-    <Compile Include="ByteCode\Instructions\InstructionAdd.cs" />
+    <Compile Include="ByteCode\Instructions\Arithmetic\InstructionMul.cs" />
+    <Compile Include="ByteCode\Instructions\Arithmetic\InstructionAdd.cs" />
     <Compile Include="ByteCode\Instructions\InstructionLdi.cs" />
     <Compile Include="ByteCode\Instructions\InstructionLocal.cs" />
     <Compile Include="ByteCode\Instructions\InstructionReg.cs" />
@@ -75,6 +77,8 @@
     <Compile Include="Compiler\LexemeParsing\Lexemes\Expressions\ExpressionLineItem.cs" />
     <Compile Include="Compiler\LexemeParsing\Lexemes\Expressions\ExpressionToken.cs" />
     <Compile Include="Compiler\LexemeParsing\Lexemes\Expressions\Operator.cs" />
+    <Compile Include="Compiler\LexemeParsing\Lexemes\Expressions\OperatorOperands.cs" />
+    <Compile Include="Compiler\LexemeParsing\Lexemes\Expressions\OperatorResult.cs" />
     <Compile Include="Compiler\LexemeParsing\Lexemes\FunctionLexeme.cs" />
     <Compile Include="Compiler\LexemeParsing\Lexemes\IfLexeme.cs" />
     <Compile Include="Compiler\LexemeParsing\Lexemes\ImportLexeme.cs" />

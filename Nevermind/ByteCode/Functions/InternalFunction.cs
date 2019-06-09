@@ -7,20 +7,6 @@ using Nevermind.Compiler.LexemeParsing.Lexemes;
 
 namespace Nevermind.ByteCode.Functions
 {
-    internal class Variable
-    {
-        public readonly int Scope;
-        public readonly Type Type;
-        public readonly string Name;
-
-        public Variable(Type type, string name, int scope)
-        {
-            Type = type;
-            Name = name;
-            Scope = scope;
-        }
-    }
-
     internal class Function
     {
         public readonly string Name;

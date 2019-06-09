@@ -1,3 +1,5 @@
+using Nevermind.ByteCode;
+using Nevermind.ByteCode.Functions;
 using System.Collections.Generic;
 using System.Text;
 
@@ -73,6 +75,15 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
         {
             //todo!
             return list.Count;
+        }
+
+        public static List<Instruction> GetInstructions(Function func, ByteCode.ByteCode byteCode, ref int labelStart, List<ExpressionLineItem> list)
+        {
+            var instructions = new List<Instruction>();
+            foreach(var item in list)
+            {
+                var result = item.Operator.
+            }
         }
     }
 }

@@ -31,6 +31,8 @@ namespace Nevermind.Compiler
         ModuleWithEntrypointFunction,
         VariableRedeclaration,
         UnexpectedLexeme,
-        UnknownTypeName
+        UnknownTypeName,
+        ExpectedNumericOperands,
+        WrongResultType
     }
 }
