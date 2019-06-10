@@ -9,8 +9,14 @@ namespace Nevermind.ByteCode.Instructions
 {
     internal enum BinaryArithmeticIntsructionType
     {
-        Add,
-        Mul,
+        A_Add,
+        A_Mul,
+        A_lseq,
+        A_ls,
+        A_gr,
+        A_greq,
+        A_neq,
+        A_eq,
     }
 
     internal class BinaryArithmeticIntsruction : ArithmeticIntsruction

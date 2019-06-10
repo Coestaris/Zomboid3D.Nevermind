@@ -48,6 +48,7 @@
     <Compile Include="ByteCode\Functions\Variable.cs" />
     <Compile Include="ByteCode\Instruction.cs" />
     <Compile Include="ByteCode\Instructions\ArithmeticIntsruction.cs" />
+    <Compile Include="ByteCode\Instructions\InstructionBrEq.cs" />
     <Compile Include="ByteCode\Instructions\UnaryArithmeticIntsruction.cs" />
     <Compile Include="ByteCode\Instructions\BinaryArithmeticIntsruction.cs" />
     <Compile Include="ByteCode\Instructions\InstructionLdi.cs" />

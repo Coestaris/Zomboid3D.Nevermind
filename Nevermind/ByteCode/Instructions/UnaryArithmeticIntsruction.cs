@@ -9,9 +9,9 @@ namespace Nevermind.ByteCode.Instructions
 {
     internal enum UnaryArithmeticIntsructionType
     {
-        Neg,
-        Not,
-        LNeg,
+        A_Neg,
+        A_Not,
+        A_BNeg,
     }
 
     internal class UnaryArithmeticIntsruction : ArithmeticIntsruction

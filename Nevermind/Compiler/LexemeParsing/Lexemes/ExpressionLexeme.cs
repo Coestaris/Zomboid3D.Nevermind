@@ -76,7 +76,7 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes
                             possibleOperator.Add(iterator.GetNext().Type);
                         }
 
-                        foreach (var op in Operator.Operators)
+                        foreach (var op in Operator.Operators.OrderBy(p => p.IsUnary))
                         {
                             var c1 = 0;
                             while (c1 < op.OperatorTypes.Count && c1 < possibleOperator.Count)
@@ -173,9 +173,7 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes
                                 lastParent.SubTokens.Last().ROperator = matchedOperators[0];
                                 lastOperator = matchedOperators[0];
                             }
-
                         }
-
                     }
                     else
                     {
