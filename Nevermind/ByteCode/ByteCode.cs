@@ -4,8 +4,10 @@ using System.Linq;
 using System.Text;
 using Nevermind.ByteCode.Functions;
 using Nevermind.ByteCode.Instructions;
+using Nevermind.Compiler;
 using Nevermind.Compiler.LexemeParsing;
 using Nevermind.Compiler.LexemeParsing.Lexemes;
+using Nevermind.Compiler.LexemeParsing.Lexemes.Expressions;
 
 namespace Nevermind.ByteCode
 {
@@ -62,17 +64,34 @@ namespace Nevermind.ByteCode
                     instructionSet.Instructions.Add(new InstructionLocal(local, function, this, labelIndex++));
                 }
 
-                Instructions.Add(instructionSet);
-
                 foreach (var lexeme in function.RawLexeme.ChildLexemes)
                 {
                     if (lexeme.Type == LexemeType.Var)
                     {
                         var list = ((VarLexeme) lexeme).Expression.ToList();
-                        if(list != null)
+
+                        if (list != null)
                             Console.WriteLine(string.Join("\n", list));
+                        else
+                            throw new ParseException(lexeme.Tokens[0], CompileErrorType.WrongOperandList);
+
+                        var res = ExpressionLineItem.GetInstructions(function, this, ref localVarIndex, list, out var registers);
+
+                        instructionSet.Instructions.AddRange(
+                                registers.Select(p => new InstructionReg(new NumberedVariable(p.Index, p), function, this, labelIndex++)));
+
+                        res.ForEach(p => p.Label = labelIndex++);
+
+                        instructionSet.Instructions.AddRange(res);
+                        instructionSet.Instructions.Add(
+                            new InstructionLdi(registers.Last(), locals.Find(p => p.Index == ((VarLexeme)lexeme).Index).Variable, 
+                                function, this, labelIndex++));
+
                     }
+                    
                 }
+
+                Instructions.Add(instructionSet);
             }
         }
 

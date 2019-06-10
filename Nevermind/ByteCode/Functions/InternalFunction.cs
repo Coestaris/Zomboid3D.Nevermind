@@ -59,6 +59,8 @@ namespace Nevermind.ByteCode.Functions
             if (parent == null)
                 return;
 
+            int index = 0;
+
             foreach (var lexeme in parent.ChildLexemes)
             {
                 if (lexeme.Type == LexemeType.Var)
@@ -88,7 +90,7 @@ namespace Nevermind.ByteCode.Functions
 
                     Type t;
                     if((error = Type.GetType(Program, varLexeme.TypeName, out t)) != null) { return; }
-                    LocalVariables.Add(new Variable(t, varLexeme.VarName.StringValue, parent.Scope));
+                    LocalVariables.Add(new Variable(t, varLexeme.VarName.StringValue, parent.Scope, varLexeme.VarName, index++)) ;
                 }
 
                 if (lexeme.RequireBlock)

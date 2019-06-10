@@ -77,7 +77,19 @@ namespace Nevermind
 
         public CompileError Expand()
         {
-            Program = new ByteCode.ByteCode(this);
+            try
+            {
+                Program = new ByteCode.ByteCode(this);
+            }
+            catch (ParseException ex)
+            {
+                return ex.ToError();
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+
             return null;
         }
     }

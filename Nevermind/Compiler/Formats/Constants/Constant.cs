@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Nevermind.ByteCode;
+using Nevermind.ByteCode.Functions;
 using Type = Nevermind.ByteCode.Type;
 
 namespace Nevermind.Compiler.Formats.Constants
@@ -89,6 +90,12 @@ namespace Nevermind.Compiler.Formats.Constants
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+        }
+
+        internal Variable ToVariable(NmProgram program)
+        {
+            return new Variable(ToProgramType(), "__const", -1, CodeToken, -1, true,
+                program.Constants.IndexOf(this));
         }
     }
 }

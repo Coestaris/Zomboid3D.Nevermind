@@ -33,6 +33,8 @@ namespace Nevermind.Compiler
         UnexpectedLexeme,
         UnknownTypeName,
         ExpectedNumericOperands,
-        WrongResultType
+        WrongResultType,
+        UndefinedReference,
+        WrongOperandList
     }
 }

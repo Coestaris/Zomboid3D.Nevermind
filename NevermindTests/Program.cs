@@ -13,10 +13,10 @@ namespace NevermindTests
             var program = new NmProgram(source);
 
             CompileError error;
-            if((error = program.Parse()) != null) { Console.WriteLine("Parse error: {0}", error); return; }
-            if((error = program.Expand()) != null) { Console.WriteLine("Expand error: {0}", error); return; }
+            if((error = program.Parse()) != null) { Console.WriteLine("Parse error: {0}", error); }
+            if((error = program.Expand()) != null) { Console.WriteLine("Expand error: {0}", error); }
 
-            Console.WriteLine(program.Program.ToSource());
+            if(error == null) Console.WriteLine(program.Program.ToSource());
 
             Console.ReadKey();
         }

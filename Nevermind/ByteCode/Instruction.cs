@@ -5,7 +5,7 @@ namespace Nevermind.ByteCode
 {
     internal abstract class Instruction
     {
-        public readonly int Label;
+        public int Label;
         public readonly ByteCode ByteCode;
         public readonly Function Function;
 

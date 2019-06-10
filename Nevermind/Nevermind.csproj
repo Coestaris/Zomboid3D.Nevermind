@@ -47,8 +47,7 @@
     <Compile Include="ByteCode\Functions\InternalFunctions.cs" />
     <Compile Include="ByteCode\Functions\Variable.cs" />
     <Compile Include="ByteCode\Instruction.cs" />
-    <Compile Include="ByteCode\Instructions\Arithmetic\InstructionMul.cs" />
-    <Compile Include="ByteCode\Instructions\Arithmetic\InstructionAdd.cs" />
+    <Compile Include="ByteCode\Instructions\ArithmeticIntsruction.cs" />
     <Compile Include="ByteCode\Instructions\InstructionLdi.cs" />
     <Compile Include="ByteCode\Instructions\InstructionLocal.cs" />
     <Compile Include="ByteCode\Instructions\InstructionReg.cs" />

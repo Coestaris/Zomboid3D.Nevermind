@@ -78,7 +78,7 @@ namespace Nevermind.Compiler.Semantics
 
                     Type t;
                     if ((error = Nevermind.ByteCode.Type.GetType(program, lexeme.TypeName, out t)) != null) return error;
-                    program.ProgramLocals.Add(new Variable(t, lexeme.VarName.StringValue,-1));
+                    program.ProgramLocals.Add(new Variable(t, lexeme.VarName.StringValue, -1, lexeme.VarName, -1));
 
                 }
                 else if(lex.Type != LexemeType.Module && lex.Type != LexemeType.Import)

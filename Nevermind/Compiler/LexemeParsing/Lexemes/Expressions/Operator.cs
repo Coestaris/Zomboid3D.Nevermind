@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Nevermind.ByteCode.Functions;
-using Nevermind.ByteCode.Instructions.Arithmetic;
+using Nevermind.ByteCode.Instructions;
 
 namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
 {
@@ -49,7 +49,8 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
                     CompileError error = null;
                     if((error = a.CheckNumericAndGetType(out var type)) != null)
                         return new OperatorResult(error);
-                    return new OperatorResult(new InstructionMul(null, a.A, a.B, a.Function, a.ByteCode, a.Label), type);
+                    return new OperatorResult(new ArithmeticIntsruction(ArithmeticIntsructionType.Mul,
+                        null, a.A, a.B, a.Function, a.ByteCode, a.Label), type);
                 }),
 
             new Operator(new List<TokenType> { TokenType.DivideSign                               }, 13, (a) => null),
@@ -60,7 +61,8 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
                     CompileError error = null;
                     if((error = a.CheckNumericAndGetType(out var type)) != null)
                         return new OperatorResult(error);
-                    return new OperatorResult(new InstructionAdd(null, a.A, a.B, a.Function, a.ByteCode, a.Label), type);
+                    return new OperatorResult(new ArithmeticIntsruction(ArithmeticIntsructionType.Add,
+                        null, a.A, a.B, a.Function, a.ByteCode, a.Label), type);
                 }),
 
             new Operator(new List<TokenType> { TokenType.MinusSign                                }, 11, (a) => null),
