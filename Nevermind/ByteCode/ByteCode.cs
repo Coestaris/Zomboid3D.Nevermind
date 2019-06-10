@@ -59,9 +59,9 @@ namespace Nevermind.ByteCode
 
             if (list == null)
             {
-                if (((VarLexeme)lexeme).Expression.Root.SubTokens.Count == 1)
+                if (expression.Root.SubTokens.Count == 1)
                 {
-                    ExpressionToken token = ((VarLexeme)lexeme).Expression.Root.SubTokens[0];
+                    ExpressionToken token = expression.Root.SubTokens[0];
                     Variable src = ExpressionLineItem.GetVariable(function, this, token.CodeToken);
 
                     if (token.UnaryOperators.Count != 0 && token.UnaryOperators[0] != null)
@@ -96,7 +96,7 @@ namespace Nevermind.ByteCode
                         else
                         {
 
-                            Variable dest = null;
+                            /*Variable dest = null;
 
                             if (regCount == 0)
                             {
@@ -110,7 +110,8 @@ namespace Nevermind.ByteCode
                             }
 
                             instructionSet.Instructions.Add(new InstructionLdi(src, dest, function, this, labelIndex++));
-                            resultVar = (instructionSet.Instructions.Last() as InstructionLdi).Dest;
+                            resultVar = (instructionSet.Instructions.Last() as InstructionLdi).Dest;*/
+                            resultVar = src;
                         }
                     }
                 }
