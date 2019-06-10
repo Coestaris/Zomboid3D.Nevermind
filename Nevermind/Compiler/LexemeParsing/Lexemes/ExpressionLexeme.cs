@@ -31,8 +31,11 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes
                         lastParent.UnaryFunction = lastFunctionCallToken;
 
                     lastParent.LOperator = lastOperator;
-                    if(lastUnaryOperator != null)
+                    if (lastUnaryOperator != null)
+                    {
                         lastParent.UnaryOperators.Add(lastUnaryOperator);
+                        lastUnaryOperator = null;
+                    }
 
                     lastOperator = null;
 
@@ -230,13 +233,30 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes
         {
             var result = new List<ExpressionLineItem>();
 
-            if (root.SubTokens.Count == 1)
+            if (root.SubTokens.Count == 1 && root.SubTokens[0].SubTokens.Count == 0)
                 return null;
 
             foreach (var token in root.SubTokens)
             {
                 if (token.SubTokens.Count != 0)
                     result.AddRange(ToList(ref resultIndex, token));
+            }
+
+            //proceed unary operators
+            foreach (var token in root.SubTokens)
+            {
+                if(token.UnaryOperators.Count != 0 && token.UnaryOperators[0] != null)
+                {
+                    if (token.CalculatedIndex != -1)
+                    {
+                        result.Add(new ExpressionLineItem(token.UnaryOperators[0], token.CalculatedIndex, resultIndex, null));
+                    }
+                    else
+                    {
+                        result.Add(new ExpressionLineItem(token.UnaryOperators[0], token, resultIndex, null));
+                    }
+                    token.CalculatedIndex = resultIndex++;
+                }
             }
 
             while (root.SubTokens.Count != 1)

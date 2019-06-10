@@ -63,8 +63,12 @@ namespace Nevermind.ByteCode
                     instructionSet.Instructions.Add(new InstructionLocal(local, function, this, labelIndex++));
                 }
 
+                var registerInstructions = new List<InstructionReg>();
+                var regCount = 0;
                 foreach (var lexeme in function.RawLexeme.ChildLexemes)
                 {
+                    localVarIndex = function.LocalVariables.Count;
+                    
                     if (lexeme.Type == LexemeType.Var)
                     {
                         var list = ((VarLexeme)lexeme).Expression.ToList();
@@ -73,12 +77,30 @@ namespace Nevermind.ByteCode
                         {
                             if (((VarLexeme)lexeme).Expression.Root.SubTokens.Count == 1)
                             {
-                                Variable src = ExpressionLineItem.GetVariable(function, this,
-                                    ((VarLexeme)lexeme).Expression.Root.SubTokens[0].CodeToken);
+                                ExpressionToken token = ((VarLexeme)lexeme).Expression.Root.SubTokens[0];
+                                Variable src = ExpressionLineItem.GetVariable(function, this, token.CodeToken);
 
-                                instructionSet.Instructions.Add(
-                                    new InstructionLdi(src, locals.Find(p => p.Index == ((VarLexeme)lexeme).Index).Variable,
-                                        function, this, labelIndex++));
+                                if (token.UnaryOperators.Count != 0 && token.UnaryOperators[0] != null)
+                                {
+                                    var unaryRes = token.UnaryOperators[0].UnaryFunc(new OperatorOperands(function, this, labelIndex++, src));
+                                    if (unaryRes.Error != null)
+                                        throw new ParseException(token.CodeToken, unaryRes.Error.ErrorType);
+
+                                    var lastInstruction = (UnaryArithmeticIntsruction)unaryRes.Instruction;
+                                    var actualResult = locals.Find(p => p.Index == ((VarLexeme)lexeme).Index).Variable;
+
+                                    if (!unaryRes.ResultType.Equals(actualResult.Type))
+                                        throw new ParseException(lexeme.Tokens[0], CompileErrorType.IncompatibleTypes);
+
+                                    lastInstruction.Result = actualResult;
+                                    instructionSet.Instructions.Add(unaryRes.Instruction);
+                                }
+                                else
+                                {
+                                    instructionSet.Instructions.Add(
+                                        new InstructionLdi(src, locals.Find(p => p.Index == ((VarLexeme)lexeme).Index).Variable,
+                                            function, this, labelIndex++));
+                                }
                             }
                             else throw new ParseException(lexeme.Tokens[0], CompileErrorType.WrongOperandList);
                         }
@@ -87,20 +109,31 @@ namespace Nevermind.ByteCode
                             Console.WriteLine(string.Join("\n", list));
 
                             var res = ExpressionLineItem.GetInstructions(function, this, ref localVarIndex, list, out var registers);
+                            regCount = Math.Max(regCount, registers.Count);
 
-                            instructionSet.Instructions.AddRange(
-                                    registers.Select(p => new InstructionReg(new NumberedVariable(p.Index, p), function, this, labelIndex++)));
+                            if(registerInstructions.Count < regCount)
+                                registerInstructions.AddRange(
+                                        registers.
+                                            Skip(registerInstructions.Count).
+                                            Take(registers.Count - registerInstructions.Count - 1).
+                                            Select(p => new InstructionReg(new NumberedVariable(p.Index, p), function, this, labelIndex++)));
 
                             res.ForEach(p => p.Label = labelIndex++);
 
                             instructionSet.Instructions.AddRange(res);
-                            instructionSet.Instructions.Add(
-                                new InstructionLdi(registers.Last(), locals.Find(p => p.Index == ((VarLexeme)lexeme).Index).Variable,
-                                    function, this, labelIndex++));
+
+                            var lastInstruction = (ArithmeticIntsruction)instructionSet.Instructions.Last();
+                            var actualResult = locals.Find(p => p.Index == ((VarLexeme)lexeme).Index).Variable;
+
+                            if (!lastInstruction.Result.Type.Equals(actualResult.Type))
+                                throw new ParseException(lexeme.Tokens[0], CompileErrorType.IncompatibleTypes);
+
+                            lastInstruction.Result = actualResult;
                         }
                     }
                 }
 
+                instructionSet.Instructions.InsertRange(function.LocalVariables.Count, registerInstructions);
                 Instructions.Add(instructionSet);
             }
         }

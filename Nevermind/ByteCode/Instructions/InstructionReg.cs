@@ -5,17 +5,17 @@ namespace Nevermind.ByteCode.Instructions
 {
     internal class InstructionReg : Instruction
     {
-        private readonly NumberedVariable _variable;
+        public readonly NumberedVariable Variable;
 
         public InstructionReg(NumberedVariable var, Function func, ByteCode byteCode, int label) : base(func, byteCode, label)
         {
-            _variable = var;
+            Variable = var;
         }
 
         public override string InstructionName => "reg";
         public override int ParameterCount => 2;
         public override string SourceValue() =>
-            ToSourceValue(_variable.Index, ByteCode.Header.GetTypeIndex(_variable.Variable.Type));
+            ToSourceValue(Variable.Index, ByteCode.Header.GetTypeIndex(Variable.Variable.Type));
 
         public override List<byte> Serialize()
         {
