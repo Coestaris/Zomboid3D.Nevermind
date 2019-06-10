@@ -150,6 +150,9 @@ namespace Nevermind.Compiler
                     case "!":
                         Type = TokenType.ExclamationMark;
                         break;
+                    case "return":
+                        Type = TokenType.ReturnKeyword;
+                        break;
                     case ",":
                         Type = TokenType.ComaSign;
                         break;

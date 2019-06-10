@@ -95,7 +95,37 @@ namespace Nevermind.Compiler.Formats.Constants
         internal Variable ToVariable(NmProgram program)
         {
             return new Variable(ToProgramType(), "__const", -1, CodeToken, -1, true,
-                program.Constants.IndexOf(this));
+                program.Program.Header.GetConstIndex(this));
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is Constant constant)
+            {
+                if (Type == ConstantType.String && constant.Type == ConstantType.String)
+                {
+                    var firstNotSecond = constant.SValue.Except(SValue).ToList();
+                    var secondNotFirst = SValue.Except(constant.SValue).ToList();
+                    return !firstNotSecond.Any() && !secondNotFirst.Any();
+                }
+                else
+                {
+                    return Type == constant.Type &&
+                        IValue == constant.IValue &&
+                        FValue == constant.FValue;
+                }
+            }
+            else return false;
+        }
+
+        public override int GetHashCode()
+        {
+            var hashCode = -531278061;
+            hashCode = hashCode * -1521134295 + Type.GetHashCode();
+            hashCode = hashCode * -1521134295 + IValue.GetHashCode();
+            hashCode = hashCode * -1521134295 + FValue.GetHashCode();
+            hashCode = hashCode * -1521134295 + EqualityComparer<List<int>>.Default.GetHashCode(SValue);
+            return hashCode;
         }
     }
 }

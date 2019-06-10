@@ -16,6 +16,17 @@ namespace Nevermind.ByteCode
         }
 
         public virtual int GetBase() { return -1; }
+
+        public override bool Equals(object obj)
+        {
+            return obj is Type type && ID == type.ID && GetBase() == type.GetBase();
+        }
+
+        public override int GetHashCode()
+        {
+            return (int)ID * 100 + GetBase();
+        }
+
         public abstract bool HasLength { get; }
     }
 }

@@ -49,10 +49,11 @@ namespace Nevermind.Compiler
         InitializationKeyword = (ulong)(1UL << 32),
         FinalizationKeyword   = (ulong)(1UL << 33),
         EntrypointKeyword     = (ulong)(1UL << 34),
+        ReturnKeyword         = (ulong)(1UL << 35),
 
-        StringToken           = (ulong)(1UL << 35),
+        StringToken           = (ulong)(1UL << 36),
 
-        ComplexToken          = (ulong)(1UL << 36)
+        ComplexToken          = (ulong)(1UL << 37)
     }
 
     internal static class TokenTypeExtensions
@@ -150,6 +151,8 @@ namespace Nevermind.Compiler
                     return "finalization";
                 case TokenType.EntrypointKeyword:
                     return "entrypoint";
+                case TokenType.ReturnKeyword:
+                    return "return";
 
                     break;
                 default:

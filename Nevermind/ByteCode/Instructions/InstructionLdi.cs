@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Nevermind.ByteCode.Functions;
+using Nevermind.Compiler;
 
 namespace Nevermind.ByteCode.Instructions
 {
@@ -20,6 +21,12 @@ namespace Nevermind.ByteCode.Instructions
 
         public InstructionLdi(Variable src, Variable dst, Function func, ByteCode byteCode, int label) : base(func, byteCode, label)
         {
+            if (dst.Type.ID != src.Type.ID)
+                throw new ParseException(src.Token, CompileErrorType.IncompatibleTypes);
+
+            if (dst.Type.GetBase() < src.Type.GetBase())
+                throw new ParseException(src.Token, CompileErrorType.IncompatibleTypeBases);
+
             Dest = dst;
             Src = src;
         }

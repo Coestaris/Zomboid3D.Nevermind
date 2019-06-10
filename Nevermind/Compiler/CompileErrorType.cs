@@ -35,6 +35,8 @@ namespace Nevermind.Compiler
         ExpectedNumericOperands,
         WrongResultType,
         UndefinedReference,
-        WrongOperandList
+        WrongOperandList,
+        IncompatibleTypes,
+        IncompatibleTypeBases
     }
 }

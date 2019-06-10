@@ -80,14 +80,11 @@ namespace Nevermind
             try
             {
                 Program = new ByteCode.ByteCode(this);
+                Program.Proceed();
             }
             catch (ParseException ex)
             {
                 return ex.ToError();
-            }
-            catch (Exception e)
-            {
-                throw e;
             }
 
             return null;

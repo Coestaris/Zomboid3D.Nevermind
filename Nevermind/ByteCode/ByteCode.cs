@@ -45,10 +45,9 @@ namespace Nevermind.ByteCode
         {
             Program = program;
             Header = new ByteCodeHeader(program);
-            Proceed();
         }
 
-        private void Proceed()
+        public void Proceed()
         {
             Instructions = new List<FunctionInstruction>();
             foreach (var function in Program.Functions)
@@ -68,27 +67,38 @@ namespace Nevermind.ByteCode
                 {
                     if (lexeme.Type == LexemeType.Var)
                     {
-                        var list = ((VarLexeme) lexeme).Expression.ToList();
+                        var list = ((VarLexeme)lexeme).Expression.ToList();
 
-                        if (list != null)
-                            Console.WriteLine(string.Join("\n", list));
+                        if (list == null)
+                        {
+                            if (((VarLexeme)lexeme).Expression.Root.SubTokens.Count == 1)
+                            {
+                                Variable src = ExpressionLineItem.GetVariable(function, this,
+                                    ((VarLexeme)lexeme).Expression.Root.SubTokens[0].CodeToken);
+
+                                instructionSet.Instructions.Add(
+                                    new InstructionLdi(src, locals.Find(p => p.Index == ((VarLexeme)lexeme).Index).Variable,
+                                        function, this, labelIndex++));
+                            }
+                            else throw new ParseException(lexeme.Tokens[0], CompileErrorType.WrongOperandList);
+                        }
                         else
-                            throw new ParseException(lexeme.Tokens[0], CompileErrorType.WrongOperandList);
+                        {
+                            Console.WriteLine(string.Join("\n", list));
 
-                        var res = ExpressionLineItem.GetInstructions(function, this, ref localVarIndex, list, out var registers);
+                            var res = ExpressionLineItem.GetInstructions(function, this, ref localVarIndex, list, out var registers);
 
-                        instructionSet.Instructions.AddRange(
-                                registers.Select(p => new InstructionReg(new NumberedVariable(p.Index, p), function, this, labelIndex++)));
+                            instructionSet.Instructions.AddRange(
+                                    registers.Select(p => new InstructionReg(new NumberedVariable(p.Index, p), function, this, labelIndex++)));
 
-                        res.ForEach(p => p.Label = labelIndex++);
+                            res.ForEach(p => p.Label = labelIndex++);
 
-                        instructionSet.Instructions.AddRange(res);
-                        instructionSet.Instructions.Add(
-                            new InstructionLdi(registers.Last(), locals.Find(p => p.Index == ((VarLexeme)lexeme).Index).Variable, 
-                                function, this, labelIndex++));
-
+                            instructionSet.Instructions.AddRange(res);
+                            instructionSet.Instructions.Add(
+                                new InstructionLdi(registers.Last(), locals.Find(p => p.Index == ((VarLexeme)lexeme).Index).Variable,
+                                    function, this, labelIndex++));
+                        }
                     }
-                    
                 }
 
                 Instructions.Add(instructionSet);
@@ -102,7 +112,7 @@ namespace Nevermind.ByteCode
             sb.AppendLine();
             foreach (var instruction in Instructions)
             {
-                sb.AppendFormat(".{0}\n", instruction.Function.Name);
+                sb.AppendFormat("\n.{0}\n", instruction.Function.Name);
                 sb.AppendLine(string.Join("\n", instruction.Instructions.Select(p => p.ToSource()).ToList()));
             }
 

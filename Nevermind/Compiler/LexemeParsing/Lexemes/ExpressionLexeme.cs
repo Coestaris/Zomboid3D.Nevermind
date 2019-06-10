@@ -286,6 +286,8 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes
                 root.SubTokens[maxOperatorIndex].CalculatedIndex = resultIndex - 1;
             }
 
+            root.CalculatedIndex = root.SubTokens[0].CalculatedIndex;
+
             return result;
         }
 

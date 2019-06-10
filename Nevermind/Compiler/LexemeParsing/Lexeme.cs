@@ -103,6 +103,15 @@ namespace Nevermind.Compiler.LexemeParsing
                 },
                 typeof(FunctionLexeme)),
 
+           new LexemeInfo(
+                LexemeType.Return,
+                new List<LexemePatternToken>
+                {
+                    new LexemePatternToken(TokenType.ReturnKeyword,       true),
+                    new LexemePatternToken(Token.MathExpressionTokenType, true),
+                },
+                typeof(ReturnLexeme)),
+
             new LexemeInfo(
                 LexemeType.Expression,
                 new List<LexemePatternToken>

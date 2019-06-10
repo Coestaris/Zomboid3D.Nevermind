@@ -57,12 +57,12 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
             StringBuilder sb = new StringBuilder();
             sb.AppendFormat("%{0} <- ", ResultRegisterIndex);
             if (RegOperand1 != -1) sb.AppendFormat("%{0}", RegOperand1);
-            else sb.AppendFormat("{0}", Operand1.CodeToken.ToSource());
+            else sb.AppendFormat("{0}", Operand1?.CodeToken?.ToSource() ?? "null");
 
             sb.AppendFormat(" {0} ", Operator);
 
             if (RegOperand2 != -1) sb.AppendFormat("%{0}", RegOperand2);
-            else sb.AppendFormat("{0}", Operand2.CodeToken.ToSource());
+            else sb.AppendFormat("{0}", Operand2?.CodeToken?.ToSource() ?? "null");
 
             return sb.ToString();
         }
@@ -78,6 +78,20 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
             return list.Count;
         }
 
+        public static Variable GetVariable(Function func, ByteCode.ByteCode byteCode, Token token)
+        {
+            var operand = func.LocalVariables.Find(p => p.Name == token.StringValue);
+            if (operand == null)
+            {
+                if (token.Constant != null)
+                    operand = token.Constant.ToVariable(byteCode.Program);
+                else
+                    throw new ParseException(token, CompileErrorType.UndefinedReference);
+            }
+
+            return operand;
+        }
+
         public static List<Instruction> GetInstructions(Function func, ByteCode.ByteCode byteCode, 
             ref int localVarIndex, List<ExpressionLineItem> list,
             out List<Variable> registers)
@@ -87,32 +101,8 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
 
             foreach (var item in list)
             {
-                Variable operand1 = item.RegOperand1 == -1 ? null : registers[item.RegOperand1];
-                Variable operand2 = item.RegOperand2 == -1 ? null : registers[item.RegOperand2];
-
-                if(operand1 == null)
-                {
-                    operand1 = func.LocalVariables.Find(p => p.Name == item.Operand1.CodeToken.StringValue);
-                    if (operand1 == null)
-                    {
-                        if (item.Operand1.CodeToken.Constant != null)
-                            operand1 = item.Operand1.CodeToken.Constant.ToVariable(byteCode.Program);
-                        else
-                            throw new ParseException(item.Operand1.CodeToken, CompileErrorType.UndefinedReference);
-                    }
-                }
-
-                if (operand2 == null)
-                {
-                    operand2 = func.LocalVariables.Find(p => p.Name == item.Operand2.CodeToken.StringValue);
-                    if (operand2 == null)
-                    {
-                        if (item.Operand2.CodeToken.Constant != null)
-                            operand2 = item.Operand2.CodeToken.Constant.ToVariable(byteCode.Program);
-                        else
-                            throw new ParseException(item.Operand2.CodeToken, CompileErrorType.UndefinedReference);
-                    }
-                }
+                Variable operand1 = item.RegOperand1 == -1 ? GetVariable(func, byteCode, item.Operand1.CodeToken) : registers[item.RegOperand1];
+                Variable operand2 = item.RegOperand2 == -1 ? GetVariable(func, byteCode, item.Operand2.CodeToken) : registers[item.RegOperand2];
 
                 var result = item.Operator.BinaryFunc(
                     new OperatorOperands(func, byteCode, -1, operand1, operand2));
