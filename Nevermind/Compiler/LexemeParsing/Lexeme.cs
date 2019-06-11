@@ -50,8 +50,7 @@ namespace Nevermind.Compiler.LexemeParsing
                 {
                     new LexemePatternToken(TokenType.ImportKeyword, true),
                     new LexemePatternToken(TokenType.Identifier,    true)
-                },
-                typeof(ImportLexeme)),
+                }),
 
             new LexemeInfo(
                 LexemeType.Module,
@@ -59,8 +58,7 @@ namespace Nevermind.Compiler.LexemeParsing
                 {
                     new LexemePatternToken(TokenType.ModuleKeyword, true),
                     new LexemePatternToken(TokenType.Identifier,    true)
-                },
-                typeof(ImportLexeme)),
+                }),
 
             new LexemeInfo(
                 LexemeType.Var,
@@ -72,8 +70,7 @@ namespace Nevermind.Compiler.LexemeParsing
                     new LexemePatternToken(TokenType.Identifier,          true),
                     new LexemePatternToken(TokenType.EqualSign,           true),
                     new LexemePatternToken(Token.MathExpressionTokenType, true),
-                },
-                typeof(VarLexeme)),
+                }),
 
             new LexemeInfo(
                 LexemeType.If,
@@ -83,9 +80,7 @@ namespace Nevermind.Compiler.LexemeParsing
                     new LexemePatternToken(TokenType.BracketOpen,         true),
                     new LexemePatternToken(Token.MathExpressionTokenType, true),
                     new LexemePatternToken(TokenType.BracketClosed,       true)
-
-                },
-                typeof(IfLexeme)),
+                }),
 
             new LexemeInfo(
                 LexemeType.Function,
@@ -100,25 +95,22 @@ namespace Nevermind.Compiler.LexemeParsing
                     new LexemePatternToken(TokenType.BracketOpen,     true),
                     new LexemePatternToken(Token.AnyTokenType,        true),
                     new LexemePatternToken(TokenType.BracketClosed,   true)
-                },
-                typeof(FunctionLexeme)),
+                }),
 
            new LexemeInfo(
                 LexemeType.Return,
                 new List<LexemePatternToken>
                 {
                     new LexemePatternToken(TokenType.ReturnKeyword,       true),
-                    new LexemePatternToken(Token.MathExpressionTokenType, true),
-                },
-                typeof(ReturnLexeme)),
+                    new LexemePatternToken(Token.MathExpressionTokenType, true)
+                }),
 
             new LexemeInfo(
                 LexemeType.Expression,
                 new List<LexemePatternToken>
                 {
                     new LexemePatternToken(Token.AnyTokenType, true),
-                },
-                typeof(ExpressionLexeme)),
+                }),
         };
     }
 }

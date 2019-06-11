@@ -1,6 +1,7 @@
 using Nevermind.ByteCode;
 using Nevermind.ByteCode.Functions;
 using Nevermind.ByteCode.Instructions;
+using Nevermind.ByteCode.Instructions.ArithmeticIntsructions;
 using System.Collections.Generic;
 using System.Text;
 
@@ -157,17 +158,16 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
                     throw new ParseException(item.Operand1.CodeToken, result.Error.ErrorType);
 
                 instructions.Add(result.Instruction);
+                 var resultVar = new Variable(result.ResultType, $"__reg{localVarIndex}", func.Scope, null, localVarIndex++);
 
-                var resultVar = new Variable(result.ResultType, $"__reg{localVarIndex}", func.Scope, null, localVarIndex++);
-                if (result.Instruction is BinaryArithmeticIntsruction)
+                if (result.Instruction is ArithmeticIntsruction)
                 {
-                    (result.Instruction as BinaryArithmeticIntsruction).Result = resultVar;
+                    (result.Instruction as ArithmeticIntsruction).Result = resultVar;
                 }
-                else
+                else if(result.Instruction is InstructionLdi)
                 {
-                    (result.Instruction as UnaryArithmeticIntsruction).Result = resultVar;
+                    //registers.Add((result.Instruction as InstructionLdi).Dest);
                 }
-
                 registers.Add(resultVar);
             }
 

@@ -7,8 +7,6 @@ import io;
 
 entrypoint function integer main()
 {
-    var a : integer = 4 - 2 + 2;
-    if(a + 4)
-    {
-    }
+    var tmp : integer = 4;
+    var a : integer = (tmp = 4) + (tmp = 7);
 }

@@ -136,9 +136,14 @@ namespace Nevermind.Compiler.LexemeParsing
                     {
                         try
                         {
-                            root.ChildLexemes[i] = (Lexeme)Activator.CreateInstance(matchedLexemes[0].LexemeType, lexeme.Tokens);
+                            root.ChildLexemes[i] = matchedLexemes[0].CreateLexeme(lexeme.Tokens);
                             if (root.ChildLexemes.Last().Type == LexemeType.Var)
                                 ((VarLexeme) root.ChildLexemes.Last()).Index = i;
+                        }
+                        catch(ParseException e)
+                        {
+                            error = e.ToError();
+                            return;
                         }
                         catch (Exception e)
                         {
@@ -225,7 +230,7 @@ namespace Nevermind.Compiler.LexemeParsing
             if (error != null)
                 return null;
 
-            PrintLexemeTree(root, 0);
+            //PrintLexemeTree(root, 0);
 
             return root.ChildLexemes;
         }

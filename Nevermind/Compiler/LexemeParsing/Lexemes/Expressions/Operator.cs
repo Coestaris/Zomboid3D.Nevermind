@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Nevermind.ByteCode.Functions;
 using Nevermind.ByteCode.Instructions;
+using Nevermind.ByteCode.Instructions.ArithmeticIntsructions;
 
 namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
 {
@@ -62,11 +63,10 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
             //Arithmetical
             new Operator(new List<TokenType> { TokenType.MultiplySign                             }, 13, (a) => OperatorFunc(a, BinaryArithmeticIntsructionType.A_Mul)),
 
-            new Operator(new List<TokenType> { TokenType.DivideSign                               }, 13, (a) => OperatorFunc(a, BinaryArithmeticIntsructionType.A_Add)),
-            new Operator(new List<TokenType> { TokenType.PercentSign                              }, 12, (a) => OperatorFunc(a, BinaryArithmeticIntsructionType.A_Add)),
+            new Operator(new List<TokenType> { TokenType.DivideSign                               }, 13, (a) => OperatorFunc(a, BinaryArithmeticIntsructionType.A_Div)),
+            new Operator(new List<TokenType> { TokenType.PercentSign                              }, 12, (a) => OperatorFunc(a, BinaryArithmeticIntsructionType.A_EDiv)),
             new Operator(new List<TokenType> { TokenType.PlusSign                                 }, 11, (a) => OperatorFunc(a, BinaryArithmeticIntsructionType.A_Add)),
-
-            new Operator(new List<TokenType> { TokenType.MinusSign                                }, 11, (a) => OperatorFunc(a, BinaryArithmeticIntsructionType.A_Add)),
+            new Operator(new List<TokenType> { TokenType.MinusSign                                }, 11, (a) => OperatorFunc(a, BinaryArithmeticIntsructionType.A_Sub)),
             
             //Logical comp
             new Operator(new List<TokenType> { TokenType.LessThanSign,    TokenType.LessThanSign  }, 10, (a) => OperatorFunc(a, BinaryArithmeticIntsructionType.A_Add)),
@@ -97,8 +97,10 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
             new Operator(new List<TokenType> { TokenType.AmpersandSign,   TokenType.EqualSign     }, 1,  (a) => OperatorFunc(a, BinaryArithmeticIntsructionType.A_Add)),
             new Operator(new List<TokenType> { TokenType.CircumflexSign,  TokenType.EqualSign     }, 1,  (a) => OperatorFunc(a, BinaryArithmeticIntsructionType.A_Add)),
             new Operator(new List<TokenType> { TokenType.OrSign,          TokenType.EqualSign     }, 1,  (a) => OperatorFunc(a, BinaryArithmeticIntsructionType.A_Add)),
-            new Operator(new List<TokenType> { TokenType.EqualSign                                }, 1,  (a) => OperatorFunc(a, BinaryArithmeticIntsructionType.A_Add)),
-            new Operator(new List<TokenType> { TokenType.EqualSign                                }, 1,  (a) => OperatorFunc(a, BinaryArithmeticIntsructionType.A_Add)),
+            new Operator(new List<TokenType> { TokenType.EqualSign                                }, 1,  (a) =>
+            {
+                 return new OperatorResult(new InstructionLdi(a.B, a.A, a.Function, a.ByteCode, a.Label), a.A.Type);
+            }),
             new Operator(new List<TokenType> { TokenType.ComaSign                                 }, 0,  (a) => OperatorFunc(a, BinaryArithmeticIntsructionType.A_Add)),
         };
     }

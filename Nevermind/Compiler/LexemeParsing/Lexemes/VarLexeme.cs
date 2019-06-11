@@ -15,6 +15,7 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes
         {
             VarName = tokens[1];
             TypeName = tokens[3];
+
             Expression = new ExpressionLexeme(tokens.Skip(5).Take(tokens.Count - 5).ToList());
         }
 

@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Nevermind.ByteCode.Instructions
+namespace Nevermind.ByteCode.Instructions.ArithmeticIntsructions
 {
     internal class ArithmeticIntsruction : Instruction
     {

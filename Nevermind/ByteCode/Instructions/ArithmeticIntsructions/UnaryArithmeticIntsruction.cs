@@ -1,11 +1,7 @@
 ﻿using Nevermind.ByteCode.Functions;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Nevermind.ByteCode.Instructions
+namespace Nevermind.ByteCode.Instructions.ArithmeticIntsructions
 {
     internal enum UnaryArithmeticIntsructionType
     {
@@ -24,7 +20,7 @@ namespace Nevermind.ByteCode.Instructions
 
         public override int ParameterCount => 2;
 
-        public override string SourceValue() =>ToSourceValue(Result?.Index ?? -1, Operand.ToSourceValue());
+        public override string SourceValue() => ToSourceValue(Result?.Index ?? -1, Operand.ToSourceValue());
 
         public override List<byte> Serialize()
         {

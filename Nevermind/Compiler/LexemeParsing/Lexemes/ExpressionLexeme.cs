@@ -142,8 +142,8 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes
                             if(binary == null)
                                 throw new ParseException(iterator.Current, CompileErrorType.UnknownOperator);
 
-                            Console.Write(binary + " ");
-                            Console.WriteLine(matchedOperators[0]);
+                            //Console.Write(binary + " ");
+                            //Console.WriteLine(matchedOperators[0]);
 
                             if(lastParent.SubTokens.Last().ROperator != null)
                                 throw new ParseException(iterator.Current, CompileErrorType.MultipleOperators);
@@ -154,7 +154,7 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes
                         }
                         else
                         {
-                            Console.WriteLine(matchedOperators[0]);
+                            //Console.WriteLine(matchedOperators[0]);
 
                             Operator unary = matchedOperators.Find(p => p.IsUnary);
 

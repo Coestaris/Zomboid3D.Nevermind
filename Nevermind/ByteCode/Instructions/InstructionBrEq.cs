@@ -6,7 +6,7 @@ namespace Nevermind.ByteCode.Instructions
 {
     internal class InstructionBrEq : Instruction
     {
-        public readonly int Index;
+        public int Index;
         public readonly Variable Variable;
 
         public override List<byte> Serialize()
@@ -17,7 +17,7 @@ namespace Nevermind.ByteCode.Instructions
         public override string InstructionName => "breq";
         public override int ParameterCount => 2;
         public override string SourceValue() =>
-            ToSourceValue(Variable.ToSourceValue(), Index);
+            ToSourceValue(Variable.ToSourceValue(), $"_{Function.Name}" + Index);
 
         public InstructionBrEq(Variable variable, int index, Function func, ByteCode byteCode, int label) : base(func, byteCode, label)
         {

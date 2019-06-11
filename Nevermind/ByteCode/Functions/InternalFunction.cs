@@ -38,7 +38,8 @@ namespace Nevermind.ByteCode.Functions
         {
             LocalVariables = new List<Variable>();
             CompileError error = null;
-            ResolveLocals(RawLexeme, out error);
+            int index = 0;
+            ResolveLocals(RawLexeme, out error, ref index);
             return error;
         }
 
@@ -53,13 +54,11 @@ namespace Nevermind.ByteCode.Functions
             return false;
         }
 
-        private void ResolveLocals(BlockLexeme parent, out CompileError error)
+        private void ResolveLocals(BlockLexeme parent, out CompileError error, ref int index)
         {
             error = null;
             if (parent == null)
                 return;
-
-            int index = 0;
 
             foreach (var lexeme in parent.ChildLexemes)
             {
@@ -96,13 +95,13 @@ namespace Nevermind.ByteCode.Functions
 
                 if (lexeme.RequireBlock)
                 {
-                    ResolveLocals(((ComplexLexeme) lexeme).Block, out error);
+                    ResolveLocals(((ComplexLexeme) lexeme).Block, out error, ref index);
                     if (error != null) return;
                 }
 
                 if(lexeme.Type == LexemeType.Block)
                 {
-                    ResolveLocals((BlockLexeme) lexeme, out error);
+                    ResolveLocals((BlockLexeme) lexeme, out error, ref index);
                     if (error != null) return;
                 }
             }

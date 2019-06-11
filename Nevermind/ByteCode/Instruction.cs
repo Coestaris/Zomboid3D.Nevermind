@@ -24,12 +24,12 @@ namespace Nevermind.ByteCode
 
         public string ToSource()
         {
-            return $"   _{Function.Name}{Label}: {SourceValue()}";
+            return $"   _{Function.Name + Label,-6}:  {SourceValue()}";
         }
 
         protected string ToSourceValue(params object[] objects)
         {
-            return $"{InstructionName} {string.Join(", ", objects)}";
+            return $"{InstructionName,-6} {string.Join(", ", objects)}";
         }
     }
 }

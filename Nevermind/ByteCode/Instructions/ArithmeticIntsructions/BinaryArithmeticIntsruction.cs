@@ -1,22 +1,22 @@
 ﻿using Nevermind.ByteCode.Functions;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Nevermind.ByteCode.Instructions
+namespace Nevermind.ByteCode.Instructions.ArithmeticIntsructions
 {
     internal enum BinaryArithmeticIntsructionType
     {
         A_Add,
+        A_Sub,
         A_Mul,
+        A_Div,
         A_lseq,
         A_ls,
         A_gr,
         A_greq,
         A_neq,
         A_eq,
+        A_EDiv,
     }
 
     internal class BinaryArithmeticIntsruction : ArithmeticIntsruction
@@ -37,7 +37,7 @@ namespace Nevermind.ByteCode.Instructions
 
         public override List<byte> Serialize()
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public BinaryArithmeticIntsruction(BinaryArithmeticIntsructionType type, Variable res, Variable a, Variable b, Function func, ByteCode byteCode, int label) : base(res, func, byteCode, label)
