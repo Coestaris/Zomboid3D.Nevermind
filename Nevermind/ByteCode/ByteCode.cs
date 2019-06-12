@@ -123,8 +123,14 @@ namespace Nevermind.ByteCode
                 Console.WriteLine(string.Join("\n", list));
 
                 var res = ExpressionLineItem.GetInstructions(function, this, ref localVarIndex, list, out var registers);
-                regCount = Math.Max(regCount, registers.Count);
 
+                if ((res.Last() is BinaryArithmeticIntsruction) && ((BinaryArithmeticIntsruction)res.Last()).CanBeSimplified())
+                {
+                    res[res.Count - 1] = ((BinaryArithmeticIntsruction)res.Last()).Simplify();
+                    registers.RemoveAt(registers.Count - 1);
+                }
+
+                regCount = Math.Max(regCount, registers.Count);
                 if (registerInstructions.Count < regCount)
                     registerInstructions.AddRange(
                             registers.
@@ -146,10 +152,7 @@ namespace Nevermind.ByteCode
                 else
                 {
                     var last = instructionSet.Instructions.Last();
-                    if(last is ArithmeticIntsruction)
-                        resultVar = (last as ArithmeticIntsruction).Result;
-                    else
-                        resultVar = (last as InstructionLdi).Dest;
+                    resultVar = (last as ArithmeticIntsruction).Result;
                 }
             }
 
@@ -248,7 +251,7 @@ namespace Nevermind.ByteCode
                 GetInstructionList(function.RawLexeme, function, ref localVarIndex, ref regCount, ref labelIndex,
                     registerInstructions, instructionSet, locals);
 
-                instructionSet.Instructions.InsertRange(function.LocalVariables.Count, registerInstructions.FindAll(p => p.Variable.Index >= localVarIndex - 1));
+                instructionSet.Instructions.InsertRange(function.LocalVariables.Count, registerInstructions); //.FindAll(p => p.Variable.Index >= localVarIndex - 1));
                 instructionSet.Instructions.Add(new InstructionRet(function, this, labelIndex++));
                 Instructions.Add(instructionSet);
             }

@@ -22,6 +22,17 @@ namespace Nevermind.ByteCode.Instructions.ArithmeticIntsructions
         A_And,
         A_Xor,
         A_Or,
+        A_lsh,
+        A_rlh,
+        A_SetAdd,
+        A_SetSub,
+        A_SetMul,
+        A_SetDiv,
+        A_SetEDiv,
+        A_SetAnd,
+        A_SetXor,
+        A_SetOr,
+        A_Set,
     }
 
     internal class BinaryArithmeticIntsruction : ArithmeticIntsruction
@@ -50,6 +61,38 @@ namespace Nevermind.ByteCode.Instructions.ArithmeticIntsructions
             Type = type;
             Operand1 = a;
             Operand2 = b;
+        }
+
+        public bool CanBeSimplified()
+        {
+            return Type >= BinaryArithmeticIntsructionType.A_SetAdd &&
+                   Type <= BinaryArithmeticIntsructionType.A_Set;
+        }
+
+        public Instruction Simplify()
+        {
+            switch (Type)
+            {
+                case BinaryArithmeticIntsructionType.A_SetAdd:
+                    return new BinaryArithmeticIntsruction(BinaryArithmeticIntsructionType.A_Add, Operand1, Operand1, Operand2, Function, ByteCode, Label);
+                case BinaryArithmeticIntsructionType.A_SetSub:
+                    return new BinaryArithmeticIntsruction(BinaryArithmeticIntsructionType.A_Sub, Operand1, Operand1, Operand2, Function, ByteCode, Label);
+                case BinaryArithmeticIntsructionType.A_SetMul:
+                    return new BinaryArithmeticIntsruction(BinaryArithmeticIntsructionType.A_Mul, Operand1, Operand1, Operand2, Function, ByteCode, Label);
+                case BinaryArithmeticIntsructionType.A_SetDiv:
+                    return new BinaryArithmeticIntsruction(BinaryArithmeticIntsructionType.A_Div, Operand1, Operand1, Operand2, Function, ByteCode, Label);
+                case BinaryArithmeticIntsructionType.A_SetEDiv:
+                    return new BinaryArithmeticIntsruction(BinaryArithmeticIntsructionType.A_EDiv, Operand1, Operand1, Operand2, Function, ByteCode, Label);
+                case BinaryArithmeticIntsructionType.A_SetAnd:
+                    return new BinaryArithmeticIntsruction(BinaryArithmeticIntsructionType.A_And, Operand1, Operand1, Operand2, Function, ByteCode, Label);
+                case BinaryArithmeticIntsructionType.A_SetXor:
+                    return new BinaryArithmeticIntsruction(BinaryArithmeticIntsructionType.A_Xor, Operand1, Operand1, Operand2, Function, ByteCode, Label);
+                case BinaryArithmeticIntsructionType.A_SetOr:
+                    return new BinaryArithmeticIntsruction(BinaryArithmeticIntsructionType.A_Or, Operand1, Operand1, Operand2, Function, ByteCode, Label);
+                case BinaryArithmeticIntsructionType.A_Set:
+                    return new InstructionLdi(Operand2, Operand1, Function, ByteCode, Label);
+            }
+            return null;
         }
     }
 }

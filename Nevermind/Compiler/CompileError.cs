@@ -4,11 +4,11 @@ namespace Nevermind.Compiler
 {
     public class CompileError
     {
-        private readonly Token _token;
+        internal readonly Token Token;
 
-        public string FileName => _token?.FileName;
-        public int LineIndex => _token?.LineIndex ?? -1;
-        public int CharIndex => _token?.LineOffset ?? -1;
+        public string FileName => Token?.FileName;
+        public int LineIndex => Token?.LineIndex ?? -1;
+        public int CharIndex => Token?.LineOffset ?? -1;
 
         public CompileErrorType ErrorType;
 
@@ -20,7 +20,7 @@ namespace Nevermind.Compiler
         internal CompileError(CompileErrorType type, Token token)
         {
             ErrorType = type;
-            _token = token;
+            Token = token;
         }
 
         public override string ToString()

@@ -21,6 +21,7 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
         public bool IsUnary;
         public Token FunctionCall;
         public Operator UnaryOperator;
+        internal Token NearToken;
 
         private ExpressionLineItem(Operator @operator, int resultRegisterIndex)
         {
@@ -149,25 +150,18 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
                 if (!item.IsUnary)
                 {
                     Variable operand2 = item.RegOperand2 == -1 ? GetVariable(func, byteCode, item.Operand2.CodeToken) : registers[item.RegOperand2];
-                    result = item.Operator.BinaryFunc(new OperatorOperands(func, byteCode, -1, operand1, operand2));
+                    result = item.Operator.BinaryFunc(new OperatorOperands(func, byteCode, -1, operand1, operand2, item));
                 }
                 else
                     result = item.UnaryOperator.UnaryFunc(new OperatorOperands(func, byteCode, -1, operand1));
 
                 if (result.Error != null)
-                    throw new ParseException(item.Operand1.CodeToken, result.Error.ErrorType);
+                    throw new ParseException(item.NearToken, result.Error.ErrorType);
 
                 instructions.Add(result.Instruction);
                  var resultVar = new Variable(result.ResultType, $"__reg{localVarIndex}", func.Scope, null, localVarIndex++);
 
-                if (result.Instruction is ArithmeticIntsruction)
-                {
-                    (result.Instruction as ArithmeticIntsruction).Result = resultVar;
-                }
-                else if(result.Instruction is InstructionLdi)
-                {
-                    //registers.Add((result.Instruction as InstructionLdi).Dest);
-                }
+                (result.Instruction as ArithmeticIntsruction).Result = resultVar;
                 registers.Add(resultVar);
             }
 

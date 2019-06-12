@@ -15,8 +15,11 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
         public Variable A;
         public Variable B;
 
-        public OperatorOperands(Function function, ByteCode.ByteCode byteCode, int label, Variable a, Variable b)
+        public ExpressionLineItem LineItem;
+
+        public OperatorOperands(Function function, ByteCode.ByteCode byteCode, int label, Variable a, Variable b, ExpressionLineItem lineItem)
         {
+            LineItem = lineItem;
             Function = function;
             ByteCode = byteCode;
             Label = label;

@@ -300,6 +300,8 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes
 
                 }
 
+                result.Last().NearToken = root.SubTokens[maxOperatorIndex].CodeToken;
+
                 root.SubTokens.RemoveAt(maxOperatorIndex);
                 root.SubTokens[maxOperatorIndex].CalculatedIndex = resultIndex - 1;
             }

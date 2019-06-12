@@ -38,6 +38,7 @@ namespace Nevermind.Compiler
         WrongOperandList,
         IncompatibleTypes,
         IncompatibleTypeBases,
-        ElseWithoutCondition
+        ElseWithoutCondition,
+        WrongAssignmentOperation
     }
 }

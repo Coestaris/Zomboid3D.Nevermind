@@ -3,7 +3,7 @@ namespace Nevermind.ByteCode.Types
     internal class StringType : Type
     {
         public IntegerType CharType;
-        public override bool HasLength => false;
+        public override bool HasLength => true;
 
         public StringType(IntegerType charType)
         {
