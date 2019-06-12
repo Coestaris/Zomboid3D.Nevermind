@@ -7,6 +7,16 @@ import io;
 
 entrypoint function integer main()
 {
-    var tmp : integer = 4;
-    var a : integer = (tmp = 4) + (tmp = 7);
+    var tmp : integer = 0;
+    var a : integer = 2 * (5 + 6);
+
+    if(a == 5)
+    {
+        tmp = 0;
+    }
+
+    if(a != 5)
+    {
+        tmp = 1;
+    }
 }

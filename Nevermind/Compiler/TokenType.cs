@@ -50,10 +50,11 @@ namespace Nevermind.Compiler
         FinalizationKeyword   = (ulong)(1UL << 33),
         EntrypointKeyword     = (ulong)(1UL << 34),
         ReturnKeyword         = (ulong)(1UL << 35),
+        ElseKeyword           = (ulong)(1UL << 36),
 
-        StringToken           = (ulong)(1UL << 36),
+        StringToken           = (ulong)(1UL << 37),
 
-        ComplexToken          = (ulong)(1UL << 37)
+        ComplexToken          = (ulong)(1UL << 38)
     }
 
     internal static class TokenTypeExtensions
@@ -70,94 +71,53 @@ namespace Nevermind.Compiler
                     yield return (TokenType)v;
         }
 
+        private static Dictionary<TokenType, string> _tokenDict = new Dictionary<TokenType, string>()
+        {
+            { TokenType.ImportKeyword, "import" },
+            { TokenType.VarKeyword, "var" },
+            { TokenType.IfKeyword, "if" },
+            { TokenType.FunctionKeyword, "function" },
+            { TokenType.Identifier, "<identifier{0}>" },
+            { TokenType.Number, "<number{0}>" },
+            { TokenType.FloatNumber, "<float{0}>" },
+            { TokenType.StringToken, "<string{0}>" },
+            { TokenType.Quote, "\"" },
+            { TokenType.Semicolon, " }," },
+            { TokenType.Colon, ":" },
+            { TokenType.BracketOpen, "(" },
+            { TokenType.BracketClosed, ")" },
+            { TokenType.EqualSign, "=" },
+            { TokenType.PlusSign, "+" },
+            { TokenType.MultiplySign, "*" },
+            { TokenType.BraceOpened, "{" },
+            { TokenType.BraceClosed, "}" },
+            { TokenType.MinusSign, "-" },
+            { TokenType.DivideSign, "/" },
+            { TokenType.GreaterSign, ">" },
+            { TokenType.LessThanSign, "<" },
+            { TokenType.Tilda, "~" },
+            { TokenType.AmpersandSign, "&" },
+            { TokenType.OrSign, "|" },
+            { TokenType.CircumflexSign, "^" },
+            { TokenType.PercentSign, "%" },
+            { TokenType.QuestingSign, "?" },
+            { TokenType.ExclamationMark, "!" },
+            { TokenType.ComaSign, "," },
+            { TokenType.ComplexToken, "<complex>" },
+            { TokenType.ModuleKeyword, "module" },
+            { TokenType.PrivateKeyword, "private" },
+            { TokenType.PublicKeyword, "public" },
+            { TokenType.InitializationKeyword, "initialization" },
+            { TokenType.FinalizationKeyword, "finalization" },
+            { TokenType.EntrypointKeyword, "entrypoint" },
+            { TokenType.ReturnKeyword, "return" },
+        };
+
         public static string ToSource(this TokenType type, string stringValue = null)
         {
-            switch (type)
-            {
-                case TokenType.ImportKeyword:
-                    return "import";
-                case TokenType.VarKeyword:
-                    return "var";
-                case TokenType.IfKeyword:
-                    return "if";
-                case TokenType.FunctionKeyword:
-                    return "function";
-                case TokenType.Identifier:
-                    return stringValue != null ? $"<identifier:{stringValue}>" : "<identifier>";
-                case TokenType.Number:
-                    return stringValue != null ? $"<number:{stringValue}>" : "<number>";
-                case TokenType.FloatNumber:
-                    return stringValue != null ? $"<float:{stringValue}>" : "<float>";
-                case TokenType.StringToken:
-                    return stringValue != null ? $"<string:{stringValue}>" : "<string>";
-                case TokenType.Quote:
-                    return "\"";
-                case TokenType.Semicolon:
-                    return ";";
-                case TokenType.Colon:
-                    return ":";
-                case TokenType.BracketOpen:
-                    return "(";
-                case TokenType.BracketClosed:
-                    return ")";
-                case TokenType.EqualSign:
-                    return "=";
-                case TokenType.PlusSign:
-                    return "+";
-                case TokenType.MultiplySign:
-                    return "*";
-                case TokenType.BraceOpened:
-                    return "{";
-                case TokenType.BraceClosed:
-                    return "}";
-
-                case TokenType.MinusSign:
-                    return "-";
-                case TokenType.DivideSign:
-                    return "/";
-                case TokenType.GreaterSign:
-                    return ">";
-                case TokenType.LessThanSign:
-                    return "<";
-                case TokenType.Tilda:
-                    return "~";
-                case TokenType.AmpersandSign:
-                    return "&";
-                case TokenType.OrSign:
-                    return "|";
-                case TokenType.CircumflexSign:
-                    return "^";
-                case TokenType.PercentSign:
-                    return "%";
-                case TokenType.QuestingSign:
-                    return "?";
-                case TokenType.ExclamationMark:
-                    return "!";
-                case TokenType.ComaSign:
-                    return ",";
-
-                case TokenType.ComplexToken:
-                    return "<complex>";
-
-                case TokenType.ModuleKeyword:
-                    return "module";
-                case TokenType.PrivateKeyword:
-                    return "private";
-                case TokenType.PublicKeyword:
-                    return "public";
-                case TokenType.InitializationKeyword:
-                    return "initialization";
-                case TokenType.FinalizationKeyword:
-                    return "finalization";
-                case TokenType.EntrypointKeyword:
-                    return "entrypoint";
-                case TokenType.ReturnKeyword:
-                    return "return";
-
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
+            var item = _tokenDict[type];
+            if (item.Contains("{")) return string.Format(item, ":" + stringValue ?? "--" );
+            else return item;
         }
     }
 }

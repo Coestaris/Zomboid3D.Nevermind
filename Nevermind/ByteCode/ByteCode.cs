@@ -230,7 +230,7 @@ namespace Nevermind.ByteCode
                 GetInstructionList(function.RawLexeme, function, ref localVarIndex, ref regCount, ref labelIndex,
                     registerInstructions, instructionSet, locals);
 
-                //instructionSet.Instructions.InsertRange(function.LocalVariables.Count, registerInstructions.FindAll(p => p.Variable.Index >= localVarIndex));
+                instructionSet.Instructions.InsertRange(function.LocalVariables.Count, registerInstructions.FindAll(p => p.Variable.Index >= localVarIndex - 1));
                 instructionSet.Instructions.Add(new InstructionRet(function, this, labelIndex++));
                 Instructions.Add(instructionSet);
             }

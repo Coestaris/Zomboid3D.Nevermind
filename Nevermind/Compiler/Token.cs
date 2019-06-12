@@ -44,6 +44,44 @@ namespace Nevermind.Compiler
 
         }
 
+        private Dictionary<string, TokenType> _TokenDict = new Dictionary<string, TokenType>()
+        {
+            { "=" , TokenType.EqualSign },
+            { "(", TokenType.BracketOpen },
+            { ")", TokenType.BracketClosed },
+            { "*", TokenType.MultiplySign },
+            { "+", TokenType.PlusSign },
+            { ";", TokenType.Semicolon },
+            { ":", TokenType.Colon },
+            { "{", TokenType.BraceOpened },
+            { "}", TokenType.BraceClosed },
+            { "if", TokenType.IfKeyword },
+            { "var", TokenType.VarKeyword },
+            { "function", TokenType.FunctionKeyword },
+            { "import", TokenType.ImportKeyword },
+            { "\"", TokenType.Quote },
+            { "module", TokenType.ModuleKeyword },
+            { "public", TokenType.PublicKeyword },
+            { "private", TokenType.PrivateKeyword },
+            { "entrypoint", TokenType.EntrypointKeyword },
+            { "initialization", TokenType.InitializationKeyword },
+            { "finalization", TokenType.FinalizationKeyword },
+            { "-", TokenType.MinusSign },
+            { "/", TokenType.DivideSign },
+            { ">", TokenType.GreaterSign },
+            { "<", TokenType.LessThanSign },
+            { "~", TokenType.Tilda },
+            { "&", TokenType.AmpersandSign },
+            { "|", TokenType.OrSign },
+            { "^", TokenType.CircumflexSign },
+            { "%", TokenType.PercentSign },
+            { "?", TokenType.QuestingSign },
+            { "!", TokenType.ExclamationMark },
+            { "return", TokenType.ReturnKeyword },
+            { "esle", TokenType.ElseKeyword },
+            { ",", TokenType.ComaSign },
+        };
+
         public Token(string str, string fileName, int lineIndex, int lineOffset, NmProgram program, bool isString = false)
         {
             FileName = fileName;
@@ -53,137 +91,30 @@ namespace Nevermind.Compiler
 
             if (!isString)
             {
-                switch (str)
+                if (!_TokenDict.TryGetValue(str, out Type))
                 {
-                    case "=":
-                        Type = TokenType.EqualSign;
-                        break;
-                    case "(":
-                        Type = TokenType.BracketOpen;
-                        break;
-                    case ")":
-                        Type = TokenType.BracketClosed;
-                        break;
-                    case "*":
-                        Type = TokenType.MultiplySign;
-                        break;
-                    case "+":
-                        Type = TokenType.PlusSign;
-                        break;
-                    case ";":
-                        Type = TokenType.Semicolon;
-                        break;
-                    case ":":
-                        Type = TokenType.Colon;
-                        break;
-                    case "{":
-                        Type = TokenType.BraceOpened;
-                        break;
-                    case "}":
-                        Type = TokenType.BraceClosed;
-                        break;
-                    case "if":
-                        Type = TokenType.IfKeyword;
-                        break;
-                    case "var":
-                        Type = TokenType.VarKeyword;
-                        break;
-                    case "function":
-                        Type = TokenType.FunctionKeyword;
-                        break;
-                    case "import":
-                        Type = TokenType.ImportKeyword;
-                        break;
-                    case "\"":
-                        Type = TokenType.Quote;
-                        break;
-
-                    case "module":
-                        Type = TokenType.ModuleKeyword;
-                        break;
-                    case "public":
-                        Type = TokenType.PublicKeyword;
-                        break;
-                    case "private":
-                        Type = TokenType.PrivateKeyword;
-                        break;
-                    case "entrypoint":
-                        Type = TokenType.EntrypointKeyword;
-                        break;
-                    case "initialization":
-                        Type = TokenType.InitializationKeyword;
-                        break;
-                    case "finalization":
-                        Type = TokenType.FinalizationKeyword;
-                        break;
-
-                    case "-":
-                        Type = TokenType.MinusSign;
-                        break;
-                    case "/":
-                        Type = TokenType.DivideSign;
-                        break;
-                    case ">":
-                        Type = TokenType.GreaterSign;
-                        break;
-                    case "<":
-                        Type = TokenType.LessThanSign;
-                        break;
-                    case "~":
-                        Type = TokenType.Tilda;
-                        break;
-                    case "&":
-                        Type = TokenType.AmpersandSign;
-                        break;
-                    case "|":
-                        Type = TokenType.OrSign;
-                        break;
-                    case "^":
-                        Type = TokenType.CircumflexSign;
-                        break;
-                    case "%":
-                        Type = TokenType.PercentSign;
-                        break;
-                    case "?":
-                        Type = TokenType.QuestingSign;
-                        break;
-                    case "!":
-                        Type = TokenType.ExclamationMark;
-                        break;
-                    case "return":
-                        Type = TokenType.ReturnKeyword;
-                        break;
-                    case ",":
-                        Type = TokenType.ComaSign;
-                        break;
-
-                    default:
+                    if (LineIndex == -1)
                     {
-                        if (LineIndex == -1)
+                        Type = TokenType.Identifier;
+                    }
+
+                    bool found = false;
+                    foreach (var constantFormat in ConstantFormats)
+                    {
+                        if (constantFormat.Verify(StringValue))
                         {
-                            Type = TokenType.Identifier;
+                            Constant = constantFormat.Parse(this, program);
+                            Type = Constant.ToTokenType();
+                            found = true;
                             break;
                         }
-
-                        bool found = false;
-                        foreach (var constantFormat in ConstantFormats)
-                        {
-                            if (constantFormat.Verify(StringValue))
-                            {
-                                Constant = constantFormat.Parse(this, program);
-                                Type = Constant.ToTokenType();
-                                found = true;
-                                break;
-                            }
-                        }
-
-                        if (!found)
-                        {
-                            if (IdentifierFormat.Match(StringValue)) Type = TokenType.Identifier;
-                            else throw new ParseException(this, CompileErrorType.WrongIdentifierFormat);
-                        }
                     }
-                        break;
+
+                    if (!found)
+                    {
+                        if (IdentifierFormat.Match(StringValue)) Type = TokenType.Identifier;
+                        else throw new ParseException(this, CompileErrorType.WrongIdentifierFormat);
+                    }
                 }
             }
             else
