@@ -137,8 +137,28 @@ namespace Nevermind.Compiler.LexemeParsing
                         try
                         {
                             root.ChildLexemes[i] = matchedLexemes[0].CreateLexeme(lexeme.Tokens);
-                            if (root.ChildLexemes.Last().Type == LexemeType.Var)
-                                ((VarLexeme) root.ChildLexemes.Last()).Index = i;
+                            //if (root.ChildLexemes.Last().Type == LexemeType.Var)
+                            //((VarLexeme) root.ChildLexemes.Last()).Index = i;
+
+                            if (root.ChildLexemes[i].Type == LexemeType.Else)
+                            {
+                                if (i == 0 ||
+                                    (root.ChildLexemes[i - 1].Type != LexemeType.If) &&
+                                    (root.ChildLexemes[i - 1].Type == LexemeType.Block && root.ChildLexemes[i - 2].Type != LexemeType.If))
+                                {
+                                    error = new CompileError(CompileErrorType.ElseWithoutCondition, lexeme.Tokens[0]);
+                                    return;
+                                }
+
+                                if(root.ChildLexemes[i - 1].Type == LexemeType.If)
+                                {
+                                    (root.ChildLexemes[i - 1] as IfLexeme).ElseLexeme = (ElseLexeme)root.ChildLexemes[i];
+                                }
+                                else
+                                {
+                                    (root.ChildLexemes[i - 2] as IfLexeme).ElseLexeme = (ElseLexeme)root.ChildLexemes[i];
+                                }
+                            }
                         }
                         catch(ParseException e)
                         {
@@ -230,7 +250,7 @@ namespace Nevermind.Compiler.LexemeParsing
             if (error != null)
                 return null;
 
-            //PrintLexemeTree(root, 0);
+            PrintLexemeTree(root, 0);
 
             return root.ChildLexemes;
         }

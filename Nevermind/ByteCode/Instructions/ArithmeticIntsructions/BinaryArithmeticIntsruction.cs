@@ -17,6 +17,11 @@ namespace Nevermind.ByteCode.Instructions.ArithmeticIntsructions
         A_neq,
         A_eq,
         A_EDiv,
+        A_LAnd,
+        A_LOr,
+        A_And,
+        A_Xor,
+        A_Or,
     }
 
     internal class BinaryArithmeticIntsruction : ArithmeticIntsruction

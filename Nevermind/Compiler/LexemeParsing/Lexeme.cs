@@ -83,6 +83,13 @@ namespace Nevermind.Compiler.LexemeParsing
                 }),
 
             new LexemeInfo(
+                LexemeType.Else,
+                new List<LexemePatternToken>
+                {
+                    new LexemePatternToken(TokenType.ElseKeyword,         true),
+                }),
+
+            new LexemeInfo(
                 LexemeType.Function,
                 new List<LexemePatternToken>
                 {

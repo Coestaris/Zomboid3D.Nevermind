@@ -6,6 +6,7 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes
     internal class IfLexeme : ComplexLexeme
     {
         public ExpressionLexeme Expression;
+        public ElseLexeme ElseLexeme;
 
         public IfLexeme(List<Token> tokens) : base(tokens, LexemeType.If, true)
         {

@@ -37,6 +37,7 @@ namespace Nevermind.Compiler
         UndefinedReference,
         WrongOperandList,
         IncompatibleTypes,
-        IncompatibleTypeBases
+        IncompatibleTypeBases,
+        ElseWithoutCondition
     }
 }

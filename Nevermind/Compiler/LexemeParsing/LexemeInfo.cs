@@ -38,6 +38,9 @@ namespace Nevermind.Compiler.LexemeParsing
                     return new ExpressionLexeme(tokens);
                 case LexemeType.Return:
                     return new ReturnLexeme(tokens);
+                case LexemeType.Else:
+                    return new ElseLexeme(tokens);
+
                 case LexemeType.Block:
                 case LexemeType.Unknown:
                 default:

@@ -49,6 +49,7 @@
     <Compile Include="ByteCode\Instruction.cs" />
     <Compile Include="ByteCode\Instructions\ArithmeticIntsructions\ArithmeticIntsruction.cs" />
     <Compile Include="ByteCode\Instructions\InstructionBrEq.cs" />
+    <Compile Include="ByteCode\Instructions\InstructionJmp.cs" />
     <Compile Include="ByteCode\Instructions\InstructionRet.cs" />
     <Compile Include="ByteCode\Instructions\ArithmeticIntsructions\UnaryArithmeticIntsruction.cs" />
     <Compile Include="ByteCode\Instructions\ArithmeticIntsructions\BinaryArithmeticIntsruction.cs" />
@@ -83,6 +84,7 @@
     <Compile Include="Compiler\LexemeParsing\Lexemes\Expressions\OperatorOperands.cs" />
     <Compile Include="Compiler\LexemeParsing\Lexemes\Expressions\OperatorResult.cs" />
     <Compile Include="Compiler\LexemeParsing\Lexemes\FunctionLexeme.cs" />
+    <Compile Include="Compiler\LexemeParsing\Lexemes\ElseLexeme.cs" />
     <Compile Include="Compiler\LexemeParsing\Lexemes\IfLexeme.cs" />
     <Compile Include="Compiler\LexemeParsing\Lexemes\ReturnLexeme.cs" />
     <Compile Include="Compiler\LexemeParsing\Lexemes\ImportLexeme.cs" />

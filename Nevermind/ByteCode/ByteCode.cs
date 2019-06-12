@@ -180,6 +180,8 @@ namespace Nevermind.ByteCode
                         break;
                     case LexemeType.If:
                         {
+                            var ifLexeme = lexeme as IfLexeme;
+
                             //Calculate expression
                             var expression = ((IfLexeme)lexeme).Expression;
                             ExpressionToList(expression, lexeme, function, out var variable, ref labelIndex, ref localVarIndex, ref regCount,
@@ -189,10 +191,26 @@ namespace Nevermind.ByteCode
                             var eq = instructionSet.Instructions.Last() as InstructionBrEq;
 
                             //Proceed block
-                            GetInstructionList((lexeme as IfLexeme).Block, function, ref localVarIndex, ref regCount, ref labelIndex,
+                            GetInstructionList(ifLexeme.Block, function, ref localVarIndex, ref regCount, ref labelIndex,
                                 registerInstructions, instructionSet, locals);
 
-                            eq.Index = labelIndex;
+                            if (ifLexeme.ElseLexeme != null)
+                            {
+                                instructionSet.Instructions.Add(new InstructionJmp(-1, function, this, labelIndex++));
+                                var jmp = instructionSet.Instructions.Last() as InstructionJmp;
+
+                                eq.Index = labelIndex;
+
+                                //Proceed else block
+                                GetInstructionList(ifLexeme.ElseLexeme.Block, function, ref localVarIndex, ref regCount, ref labelIndex,
+                                    registerInstructions, instructionSet, locals);
+
+                                jmp.Index = labelIndex;
+                            }
+                            else
+                            {
+                                eq.Index = labelIndex;
+                            }
                         }
                         break;
                     case LexemeType.Expression:

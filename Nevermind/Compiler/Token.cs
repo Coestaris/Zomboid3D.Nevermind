@@ -78,7 +78,7 @@ namespace Nevermind.Compiler
             { "?", TokenType.QuestingSign },
             { "!", TokenType.ExclamationMark },
             { "return", TokenType.ReturnKeyword },
-            { "esle", TokenType.ElseKeyword },
+            { "else", TokenType.ElseKeyword },
             { ",", TokenType.ComaSign },
         };
 

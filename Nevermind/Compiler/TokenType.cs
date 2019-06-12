@@ -105,6 +105,7 @@ namespace Nevermind.Compiler
             { TokenType.ComaSign, "," },
             { TokenType.ComplexToken, "<complex>" },
             { TokenType.ModuleKeyword, "module" },
+            { TokenType.ElseKeyword, "else" },
             { TokenType.PrivateKeyword, "private" },
             { TokenType.PublicKeyword, "public" },
             { TokenType.InitializationKeyword, "initialization" },

@@ -13,5 +13,6 @@ namespace Nevermind.Compiler.LexemeParsing
 
         Unknown,
         Return,
+        Else,
     }
 }

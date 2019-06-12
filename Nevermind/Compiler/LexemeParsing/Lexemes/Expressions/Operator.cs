@@ -79,13 +79,13 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
             new Operator(new List<TokenType> { TokenType.EqualSign,       TokenType.EqualSign     }, 8,  (a) => OperatorFunc(a, BinaryArithmeticIntsructionType.A_eq)),
             
             //Binary operators
-            new Operator(new List<TokenType> { TokenType.AmpersandSign                            }, 7,  (a) => OperatorFunc(a, BinaryArithmeticIntsructionType.A_Add)),
-            new Operator(new List<TokenType> { TokenType.CircumflexSign                           }, 6,  (a) => OperatorFunc(a, BinaryArithmeticIntsructionType.A_Add)),
-            new Operator(new List<TokenType> { TokenType.OrSign                                   }, 5,  (a) => OperatorFunc(a, BinaryArithmeticIntsructionType.A_Add)),
+            new Operator(new List<TokenType> { TokenType.AmpersandSign                            }, 7,  (a) => OperatorFunc(a, BinaryArithmeticIntsructionType.A_And)),
+            new Operator(new List<TokenType> { TokenType.CircumflexSign                           }, 6,  (a) => OperatorFunc(a, BinaryArithmeticIntsructionType.A_Xor)),
+            new Operator(new List<TokenType> { TokenType.OrSign                                   }, 5,  (a) => OperatorFunc(a, BinaryArithmeticIntsructionType.A_Or)),
             
             //Logical
-            new Operator(new List<TokenType> { TokenType.AmpersandSign,   TokenType.AmpersandSign }, 4,  (a) => OperatorFunc(a, BinaryArithmeticIntsructionType.A_Add)),
-            new Operator(new List<TokenType> { TokenType.OrSign,          TokenType.OrSign        }, 3,  (a) => OperatorFunc(a, BinaryArithmeticIntsructionType.A_Add)),
+            new Operator(new List<TokenType> { TokenType.AmpersandSign,   TokenType.AmpersandSign }, 4,  (a) => OperatorFunc(a, BinaryArithmeticIntsructionType.A_LAnd)),
+            new Operator(new List<TokenType> { TokenType.OrSign,          TokenType.OrSign        }, 3,  (a) => OperatorFunc(a, BinaryArithmeticIntsructionType.A_LOr)),
             new Operator(new List<TokenType> { TokenType.QuestingSign                             }, 2,  (a) => OperatorFunc(a, BinaryArithmeticIntsructionType.A_Add)),
             new Operator(new List<TokenType> { TokenType.Colon                                    }, 1,  (a) => OperatorFunc(a, BinaryArithmeticIntsructionType.A_Add)),
             
