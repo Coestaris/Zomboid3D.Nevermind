@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Nevermind.ByteCode.Functions;
+using Nevermind.ByteCode.Types;
 using Nevermind.Compiler;
 
 namespace Nevermind.ByteCode.Instructions

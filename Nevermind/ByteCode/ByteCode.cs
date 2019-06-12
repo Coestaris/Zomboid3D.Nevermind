@@ -1,6 +1,7 @@
 using Nevermind.ByteCode.Functions;
 using Nevermind.ByteCode.Instructions;
 using Nevermind.ByteCode.Instructions.ArithmeticIntsructions;
+using Nevermind.ByteCode.InternalClasses;
 using Nevermind.Compiler;
 using Nevermind.Compiler.LexemeParsing;
 using Nevermind.Compiler.LexemeParsing.Lexemes;
@@ -12,30 +13,6 @@ using System.Text;
 
 namespace Nevermind.ByteCode
 {
-    internal class FunctionInstruction
-    {
-        public readonly List<Instruction> Instructions;
-        public readonly Function Function;
-
-        public FunctionInstruction(Function function)
-        {
-            Function = function;
-            Instructions = new List<Instruction>();
-        }
-    }
-
-    internal class NumberedVariable
-    {
-        public readonly int Index;
-        public readonly Variable Variable;
-
-        public NumberedVariable(int index, Variable variable)
-        {
-            Index = index;
-            Variable = variable;
-        }
-    }
-
     public class ByteCode
     {
         public readonly NmProgram Program;
@@ -51,7 +28,7 @@ namespace Nevermind.ByteCode
         internal void ExpressionToList(
             ExpressionLexeme expression, Lexeme lexeme, Function function, out Variable resultVar,
             ref int labelIndex, ref int localVarIndex, ref int regCount, List<InstructionReg> registerInstructions,
-            FunctionInstruction instructionSet, List<NumberedVariable> locals, Variable storeResultTo)
+            FunctionInstruction instructionSet, List<NumeratedVariable> locals, Variable storeResultTo)
 
         {
             var list = expression.ToList();
@@ -136,7 +113,7 @@ namespace Nevermind.ByteCode
                             registers.
                                 Skip(registerInstructions.Count).
                                 Take(registers.Count - registerInstructions.Count - (storeResultTo != null ? 1 : 0)).
-                                Select(p => new InstructionReg(new NumberedVariable(p.Index, p), function, this, labelIndexCopy++)));
+                                Select(p => new InstructionReg(new NumeratedVariable(p.Index, p), function, this, labelIndexCopy++)));
 
                 res.ForEach(p => p.Label = labelIndexCopy++);
                 instructionSet.Instructions.AddRange(res);
@@ -161,7 +138,7 @@ namespace Nevermind.ByteCode
         }
 
         private void GetInstructionList(Lexeme rootLexeme, Function function, ref int localVarIndex, ref int regCount, ref int labelIndex,
-            List<InstructionReg> registerInstructions, FunctionInstruction instructionSet, List<NumberedVariable> locals)
+            List<InstructionReg> registerInstructions, FunctionInstruction instructionSet, List<NumeratedVariable> locals)
         {
             foreach (var lexeme in rootLexeme.ChildLexemes)
             {
@@ -238,7 +215,7 @@ namespace Nevermind.ByteCode
                 var instructionSet = new FunctionInstruction(function);
 
                 var localVarIndex = 0;
-                var locals = function.LocalVariables.Select(p => new NumberedVariable(localVarIndex++, p)).ToList();
+                var locals = function.LocalVariables.Select(p => new NumeratedVariable(localVarIndex++, p)).ToList();
 
                 foreach (var local in locals)
                 {

@@ -38,16 +38,22 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ByteCode\BuiltInTypes.cs" />
+    <Compile Include="ByteCode\InternalClasses\FunctionInstruction.cs" />
+    <Compile Include="ByteCode\InternalClasses\NumberedVariable.cs" />
+    <Compile Include="ByteCode\InternalClasses\NumeratedConstant.cs" />
+    <Compile Include="ByteCode\InternalClasses\NumeratedType.cs" />
+    <Compile Include="ByteCode\NumeratedConstant.cs" />
+    <Compile Include="ByteCode\Types\BuiltInTypes.cs" />
     <Compile Include="ByteCode\ByteCode.cs" />
     <Compile Include="ByteCode\ByteCodeHeader.cs" />
     <Compile Include="ByteCode\Functions\InternalFunction.cs" />
     <Compile Include="ByteCode\Functions\FunctionModifier.cs" />
     <Compile Include="ByteCode\Functions\FunctionParameter.cs" />
-    <Compile Include="ByteCode\Functions\InternalFunctions.cs" />
     <Compile Include="ByteCode\Functions\Variable.cs" />
     <Compile Include="ByteCode\Instruction.cs" />
     <Compile Include="ByteCode\Instructions\ArithmeticIntsructions\ArithmeticIntsruction.cs" />
+    <Compile Include="ByteCode\Instructions\ArithmeticIntsructions\BinaryArithmeticIntsructionType.cs" />
+    <Compile Include="ByteCode\Instructions\ArithmeticIntsructions\UnaryArithmeticIntsructionType.cs" />
     <Compile Include="ByteCode\Instructions\InstructionBrEq.cs" />
     <Compile Include="ByteCode\Instructions\InstructionJmp.cs" />
     <Compile Include="ByteCode\Instructions\InstructionRet.cs" />
@@ -56,10 +62,12 @@
     <Compile Include="ByteCode\Instructions\InstructionLdi.cs" />
     <Compile Include="ByteCode\Instructions\InstructionLocal.cs" />
     <Compile Include="ByteCode\Instructions\InstructionReg.cs" />
-    <Compile Include="ByteCode\Type.cs" />
-    <Compile Include="ByteCode\Types\FloatType.cs" />
-    <Compile Include="ByteCode\Types\IntegerType.cs" />
-    <Compile Include="ByteCode\Types\StringType.cs" />
+    <Compile Include="ByteCode\InternalClasses\NamedType.cs" />
+    <Compile Include="ByteCode\Types\Type.cs" />
+    <Compile Include="ByteCode\Types\TypeID.cs" />
+    <Compile Include="ByteCode\Types\Scalar\FloatType.cs" />
+    <Compile Include="ByteCode\Types\Scalar\IntegerType.cs" />
+    <Compile Include="ByteCode\Types\Scalar\StringType.cs" />
     <Compile Include="Compiler\CompileError.cs" />
     <Compile Include="Compiler\CompileErrorType.cs" />
     <Compile Include="Compiler\Formats\Constants\BinConstantFormat.cs" />

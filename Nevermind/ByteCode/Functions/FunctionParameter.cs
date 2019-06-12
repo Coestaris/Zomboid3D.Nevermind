@@ -1,3 +1,5 @@
+using Nevermind.ByteCode.Types;
+
 namespace Nevermind.ByteCode.Functions
 {
     internal class FunctionParameter

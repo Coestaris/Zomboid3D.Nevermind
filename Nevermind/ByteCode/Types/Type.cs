@@ -1,6 +1,6 @@
 using Nevermind.Compiler;
 
-namespace Nevermind.ByteCode
+namespace Nevermind.ByteCode.Types
 {
     internal abstract class Type
     {

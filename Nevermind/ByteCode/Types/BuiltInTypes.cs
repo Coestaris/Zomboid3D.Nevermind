@@ -1,28 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
-using Nevermind.ByteCode.Types;
+using Nevermind.ByteCode.InternalClasses;
+using Nevermind.ByteCode.Types.Scalar;
 
-namespace Nevermind.ByteCode
+namespace Nevermind.ByteCode.Types
 {
-    internal enum TypeID
-    {
-        Integer = 0,
-        Float = 1,
-        String = 2
-    }
-
-    internal class NamedType
-    {
-        public string Name;
-        public Type Type;
-
-        public NamedType(string name, Type type)
-        {
-            Name = name;
-            Type = type;
-        }
-    }
-
     internal static class BuiltInTypes
     {
         private static List<NamedType> _builtinTypes = new List<NamedType>

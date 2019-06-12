@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using System.Linq;
+using Nevermind.ByteCode.Types;
 using Nevermind.Compiler;
 using Nevermind.Compiler.Formats;
 using Nevermind.Compiler.LexemeParsing;

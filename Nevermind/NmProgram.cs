@@ -1,13 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Nevermind.ByteCode;
 using Nevermind.ByteCode.Functions;
+using Nevermind.ByteCode.InternalClasses;
+using Nevermind.ByteCode.Types;
 using Nevermind.Compiler;
 using Nevermind.Compiler.Formats.Constants;
 using Nevermind.Compiler.LexemeParsing;
 using Nevermind.Compiler.Semantics;
-using Type = System.Type;
 
 namespace Nevermind
 {
@@ -28,7 +28,7 @@ namespace Nevermind
         internal List<Function> Functions;
         internal Function EntrypointFunction;
 
-        internal List<ByteCode.Type> UsedTypes;
+        internal List<ByteCode.Types.Type> UsedTypes;
         internal List<NamedType> AvailableTypes;
 
         private Dictionary<ElapsedTimeType, TimeSpan> _time = new Dictionary<ElapsedTimeType, TimeSpan>();
@@ -60,7 +60,7 @@ namespace Nevermind
             Constants = new List<Constant>();
             Functions = new List<Function>();
 
-            UsedTypes = new List<ByteCode.Type>();
+            UsedTypes = new List<ByteCode.Types.Type>();
             AvailableTypes = BuiltInTypes.Get();
         }
 

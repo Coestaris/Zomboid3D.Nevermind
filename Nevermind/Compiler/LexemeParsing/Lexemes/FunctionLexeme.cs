@@ -1,8 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
-using Nevermind.ByteCode;
+using Nevermind.ByteCode.Types;
 using Nevermind.ByteCode.Functions;
-using Type = Nevermind.ByteCode.Type;
 
 namespace Nevermind.Compiler.LexemeParsing.Lexemes
 {
@@ -125,7 +124,7 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes
             foreach (var parameter in Parameters)
             {
                 Type t;
-                if ((error = Nevermind.ByteCode.Type.GetType(program, parameter.Type, out t)) != null) return error;
+                if ((error = ByteCode.Types.Type.GetType(program, parameter.Type, out t)) != null) return error;
                 parameters.Add(new FunctionParameter(t, parameter.Name.StringValue));
             }
 
@@ -140,7 +139,7 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes
 
             func = null;
 
-            if ((error = Nevermind.ByteCode.Type.GetType(program, ReturnType, out returnType)) != null) return error;
+            if ((error = ByteCode.Types.Type.GetType(program, ReturnType, out returnType)) != null) return error;
             if ((error = GetParameterList(program, out parameters)) != null) return error;
 
             func = new Function(program, Name.StringValue, Modifier, returnType, Block.Scope, parameters, Block);

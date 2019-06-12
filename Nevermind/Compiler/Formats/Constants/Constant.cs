@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Nevermind.ByteCode;
 using Nevermind.ByteCode.Functions;
-using Type = Nevermind.ByteCode.Type;
+using Nevermind.ByteCode.Types;
+using Type = Nevermind.ByteCode.Types.Type;
 
 namespace Nevermind.Compiler.Formats.Constants
 {

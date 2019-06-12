@@ -1,6 +1,7 @@
 using System.Linq;
 using Nevermind.ByteCode;
 using Nevermind.ByteCode.Functions;
+using Nevermind.ByteCode.Types;
 using Nevermind.Compiler.Formats;
 using Nevermind.Compiler.LexemeParsing;
 using Nevermind.Compiler.LexemeParsing.Lexemes;
@@ -76,8 +77,7 @@ namespace Nevermind.Compiler.Semantics
                     if(program.ProgramLocals.Find(p => p.Name == lexeme.VarName.StringValue) != null)
                         return new CompileError(CompileErrorType.VariableRedeclaration, lexeme.VarName);
 
-                    Type t;
-                    if ((error = Nevermind.ByteCode.Type.GetType(program, lexeme.TypeName, out t)) != null) return error;
+                    if ((error = Type.GetType(program, lexeme.TypeName, out Type t)) != null) return error;
                     program.ProgramLocals.Add(new Variable(t, lexeme.VarName.StringValue, -1, lexeme.VarName, -1));
 
                 }

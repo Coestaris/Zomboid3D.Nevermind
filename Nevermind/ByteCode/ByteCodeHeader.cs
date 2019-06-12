@@ -1,34 +1,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Nevermind.ByteCode.InternalClasses;
+using Nevermind.ByteCode.Types;
 using Nevermind.Compiler.Formats.Constants;
 
 namespace Nevermind.ByteCode
 {
-    internal class NumeratedType
-    {
-        public int Index;
-        public Type Type;
-
-        public NumeratedType(int index, Type type)
-        {
-            Index = index;
-            Type = type;
-        }
-    }
-
-    internal class NumeratedConstant
-    {
-        public int Index;
-        public Constant Constant;
-
-        public NumeratedConstant(int index, Constant constant)
-        {
-            Index = index;
-            Constant = constant;
-        }
-    }
-
     internal class ByteCodeHeader
     {
         public NmProgram Program;

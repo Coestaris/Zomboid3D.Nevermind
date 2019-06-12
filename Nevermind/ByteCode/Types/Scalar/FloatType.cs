@@ -1,4 +1,4 @@
-namespace Nevermind.ByteCode.Types
+namespace Nevermind.ByteCode.Types.Scalar
 {
     internal class FloatType : Type
     {

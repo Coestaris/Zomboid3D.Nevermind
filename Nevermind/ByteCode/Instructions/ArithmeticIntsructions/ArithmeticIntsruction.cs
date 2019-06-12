@@ -9,7 +9,9 @@ namespace Nevermind.ByteCode.Instructions.ArithmeticIntsructions
         public Variable Result;
 
         public override string InstructionName => throw new NotImplementedException();
+
         public override int ParameterCount => throw new NotImplementedException();
+
         public override List<byte> Serialize() => throw new NotImplementedException();
 
         public override string SourceValue() => throw new NotImplementedException();

@@ -1,13 +1,14 @@
 using System.Collections.Generic;
 using Nevermind.ByteCode.Functions;
+using Nevermind.ByteCode.InternalClasses;
 
 namespace Nevermind.ByteCode.Instructions
 {
     internal class InstructionReg : Instruction
     {
-        public readonly NumberedVariable Variable;
+        public readonly NumeratedVariable Variable;
 
-        public InstructionReg(NumberedVariable var, Function func, ByteCode byteCode, int label) : base(func, byteCode, label)
+        public InstructionReg(NumeratedVariable var, Function func, ByteCode byteCode, int label) : base(func, byteCode, label)
         {
             Variable = var;
         }

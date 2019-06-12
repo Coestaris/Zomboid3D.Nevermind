@@ -1,5 +1,5 @@
-﻿using System;
-using Nevermind.Compiler;
+﻿using Nevermind.Compiler;
+using Nevermind.ByteCode.Types;
 
 namespace Nevermind.ByteCode.Functions
 {

@@ -4,6 +4,7 @@ using System.Linq;
 using Nevermind.ByteCode.Functions;
 using Nevermind.ByteCode.Instructions;
 using Nevermind.ByteCode.Instructions.ArithmeticIntsructions;
+using Nevermind.ByteCode.Types;
 
 namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
 {
@@ -59,7 +60,7 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
 
         private static OperatorResult UnaryOperatorFunc(OperatorOperands operands, UnaryArithmeticIntsructionType operatorType)
         {
-            if (operands.A.Type.ID != ByteCode.TypeID.Float && operands.A.Type.ID != ByteCode.TypeID.Integer)
+            if (operands.A.Type.ID != TypeID.Float && operands.A.Type.ID != TypeID.Integer)
                 return new OperatorResult(new CompileError(CompileErrorType.ExpectedNumericOperands, operands.A.Token));
 
             return new OperatorResult(new UnaryArithmeticIntsruction(operatorType, null, operands.A, operands.Function, operands.ByteCode, operands.Label), operands.A.Type);

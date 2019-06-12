@@ -1,8 +1,6 @@
-﻿using Nevermind.ByteCode;
-using Nevermind.ByteCode.Functions;
+﻿using Nevermind.ByteCode.Functions;
 using Nevermind.ByteCode.Types;
-
-using Type = Nevermind.ByteCode.Type;
+using Nevermind.ByteCode.Types.Scalar;
 
 namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
 {
