@@ -32,7 +32,7 @@ namespace Nevermind.ByteCode
             return $"{InstructionName,-6} {string.Join(", ", objects)}";
         }
 
-        protected string ToIndex(int index)
+        protected string ToFunctionLabel(int index)
         {
             return $"_{Function.Name}{index}";
         }

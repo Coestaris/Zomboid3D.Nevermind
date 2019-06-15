@@ -38,6 +38,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ByteCode\Instructions\InstructionCall.cs" />
     <Compile Include="ByteCode\Instructions\InstructionPush.cs" />
     <Compile Include="ByteCode\Instructions\InstructionPop.cs" />
     <Compile Include="ByteCode\InternalClasses\FunctionInstruction.cs" />
@@ -48,7 +49,7 @@
     <Compile Include="ByteCode\Types\BuiltInTypes.cs" />
     <Compile Include="ByteCode\ByteCode.cs" />
     <Compile Include="ByteCode\ByteCodeHeader.cs" />
-    <Compile Include="ByteCode\Functions\InternalFunction.cs" />
+    <Compile Include="ByteCode\Functions\Function.cs" />
     <Compile Include="ByteCode\Functions\FunctionModifier.cs" />
     <Compile Include="ByteCode\Functions\FunctionParameter.cs" />
     <Compile Include="ByteCode\Functions\Variable.cs" />

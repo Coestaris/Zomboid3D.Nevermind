@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Nevermind.ByteCode.Functions;
 using Nevermind.ByteCode.InternalClasses;
 using Nevermind.ByteCode.Types;
 using Nevermind.Compiler.Formats.Constants;
@@ -24,6 +25,12 @@ namespace Nevermind.ByteCode
 
             program.UsedTypes.AddRange(UsedConstants.Select(p => p.Constant.ToProgramType()));
             UsedTypes = program.UsedTypes.Distinct().Select(p => new NumeratedType(typeIndex++, p)).ToList();
+        }
+
+        public Function GetFunction(string name)
+        {
+            //todo: Search in modules
+            return Program.Functions.Find(p => p.Name == name);
         }
 
         public int GetTypeIndex(Type t)

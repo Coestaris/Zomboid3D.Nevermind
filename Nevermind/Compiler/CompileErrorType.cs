@@ -40,6 +40,7 @@ namespace Nevermind.Compiler
         IncompatibleTypeBases,
         ElseWithoutCondition,
         WrongAssignmentOperation,
-        ReturnInVoidFunction
+        ReturnInVoidFunction,
+        WrongParameterCount
     }
 }

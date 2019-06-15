@@ -5,12 +5,16 @@
 import systypes;
 import io;
 
-function real func(a : integer)
+function real func(a : real)
 {
-     return 6.3 + 5.96;
+     return a * 2;
 }
 
 entrypoint function integer main()
 {
-    var a : integer = 2;
+   var a : real = 0.0;
+   if(func(a) == 0)
+   {
+       a = ~a;
+   } 
 }

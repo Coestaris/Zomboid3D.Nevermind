@@ -54,7 +54,7 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
             if(operands.LineItem.Operand1 == null)
                 return new OperatorResult(new CompileError(CompileErrorType.WrongAssignmentOperation, operands.A.Token));
 
-            if (operands.A.IsLinkToConst)
+            if (operands.A.VariableType != VariableType.Variable)
                 return new OperatorResult(new CompileError(CompileErrorType.WrongAssignmentOperation, operands.A.Token));
 
             return new OperatorResult(new BinaryArithmeticIntsruction(operatorType,
@@ -118,8 +118,7 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
             new Operator(new List<TokenType> { TokenType.OrSign,          TokenType.EqualSign     }, 1,  (a) => SetFunc(a, BinaryArithmeticIntsructionType.A_SetOr)),
             new Operator(new List<TokenType> { TokenType.EqualSign                                }, 1,  (a) => SetFunc(a, BinaryArithmeticIntsructionType.A_Set)),
 
-            //hm...
-            //new Operator(new List<TokenType> { TokenType.ComaSign                                 }, 0,  (a) => OperatorFunc(a, BinaryArithmeticIntsructionType.A_Add)),
+            new Operator(new List<TokenType> { TokenType.ComaSign                                 }, 0,  (a) => OperatorFunc(a, BinaryArithmeticIntsructionType.A_Add)),
         };
     }
 }

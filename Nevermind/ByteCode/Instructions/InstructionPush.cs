@@ -15,7 +15,7 @@ namespace Nevermind.ByteCode.Instructions
 
         public override string InstructionName => "push";
         public override int ParameterCount => 0;
-        public override string SourceValue() => ToSourceValue(Variable.Index);
+        public override string SourceValue() => ToSourceValue(Variable.ToSourceValue());
 
         public InstructionPush(Variable variable, Function func, ByteCode byteCode, int label) : base(func, byteCode, label)
         {

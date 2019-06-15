@@ -46,7 +46,7 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes
                 }
                 else if (iterator.Current.Type == TokenType.BracketClosed)
                 {
-                    if (lastParent.SubTokens.Count == 1)
+                    if (lastParent.SubTokens.Count == 1 && lastParent.SubTokens[0].UnaryFunction == null)
                     {
                         lastParent.Parent.SubTokens.Remove(lastParent);
                         lastParent.Parent.SubTokens.Add(lastParent.SubTokens[0]);
@@ -193,7 +193,8 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes
 
                                 lastParent.SubTokens.Add(new ExpressionToken(iterator.Current));
                                 lastParent.SubTokens.Last().LOperator = lastOperator;
-                                lastParent.SubTokens.Last().UnaryOperators.Add(lastUnaryOperator);
+                                if(lastUnaryOperator != null)
+                                    lastParent.SubTokens.Last().UnaryOperators.Add(lastUnaryOperator);
                                 lastUnaryOperator = null;
                                 lastOperator = null;
                             }
@@ -231,13 +232,30 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes
         {
             var result = new List<ExpressionLineItem>();
 
-            if (root.SubTokens.Count == 1 && root.SubTokens[0].SubTokens.Count == 0)
+            if (root.SubTokens.Count == 1 && root.SubTokens[0].SubTokens.Count == 0 && root.SubTokens[0].UnaryFunction == null)
                 return null;
 
             foreach (var token in root.SubTokens)
             {
                 if (token.SubTokens.Count != 0)
                     result.AddRange(ToList(ref resultIndex, token));
+            }
+
+            //function calls
+            foreach (var token in root.SubTokens)
+            {
+                if (token.UnaryFunction != null)
+                {
+                    if (token.CalculatedIndex != -1)
+                    {
+                        result.Add(new ExpressionLineItem(null, token.CalculatedIndex, resultIndex, token.UnaryFunction));
+                    }
+                    else
+                    {
+                        result.Add(new ExpressionLineItem(null, token, resultIndex, token.UnaryFunction));
+                    }
+                    token.CalculatedIndex = resultIndex++;
+                }
             }
 
             //proceed unary operators

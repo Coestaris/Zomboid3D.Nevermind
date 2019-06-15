@@ -20,6 +20,8 @@ namespace Nevermind.ByteCode.Functions
         public NmProgram Program;
         public List<Variable> LocalVariables;
 
+        public int Index;
+
         public Function(NmProgram program, string name, FunctionModifier modifier,
             Type returnType, int scope,
             List<FunctionParameter> parameters = null,
@@ -116,9 +118,8 @@ namespace Nevermind.ByteCode.Functions
                         return;
                     }
 
-                    Type t;
-                    if((error = Type.GetType(Program, varLexeme.TypeName, out t)) != null) { return; }
-                    LocalVariables.Add(new Variable(t, varLexeme.VarName.StringValue, parent.Scope, varLexeme.VarName, index++)) ;
+                    if ((error = Type.GetType(Program, varLexeme.TypeName, out Type t)) != null) { return; }
+                    LocalVariables.Add(new Variable(t, varLexeme.VarName.StringValue, parent.Scope, varLexeme.VarName, index++, VariableType.Variable));
                     varLexeme.Index = index - 1;
                 }
 

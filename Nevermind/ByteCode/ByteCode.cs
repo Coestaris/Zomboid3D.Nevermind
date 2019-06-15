@@ -40,7 +40,7 @@ namespace Nevermind.ByteCode
                 if (expression.Root.SubTokens.Count == 1)
                 {
                     ExpressionToken token = expression.Root.SubTokens[0];
-                    Variable src = ExpressionLineItem.GetVariable(function, this, token.CodeToken);
+                    Variable src = ExpressionLineItem.GetVariable(locals, this, token.CodeToken);
 
                     if (token.UnaryOperators.Count != 0 && token.UnaryOperators[0] != null)
                     {
@@ -99,7 +99,7 @@ namespace Nevermind.ByteCode
             {
                 Console.WriteLine(string.Join("\n", list));
 
-                var res = ExpressionLineItem.GetInstructions(function, this, ref localVarIndex, list, out var registers);
+                var res = ExpressionLineItem.GetInstructions(function, this, ref localVarIndex, list, out var registers, locals);
 
                 if ((res.Last() is BinaryArithmeticIntsruction) && ((BinaryArithmeticIntsruction)res.Last()).CanBeSimplified())
                 {
@@ -108,7 +108,7 @@ namespace Nevermind.ByteCode
                     if (last.Type == BinaryArithmeticIntsructionType.A_Set && res.Count != 1)
                     {
                         res.RemoveAt(res.Count - 1);
-                        (res[res.Count - 1] as BinaryArithmeticIntsruction).Result = last.Operand1;
+                        (res[res.Count - 1] as ArithmeticIntsruction).Result = last.Operand1;
                     }
                     else
                     {
@@ -240,7 +240,7 @@ namespace Nevermind.ByteCode
 
                 if (function.Parameters.Count != 0)
                 {
-                    var parametrers = function.Parameters.Select(p => new Variable(p.Type, p.Name, function.Scope, p.CodeToken, localVarIndex++));
+                    var parametrers = function.Parameters.Select(p => new Variable(p.Type, p.Name, function.Scope, p.CodeToken, localVarIndex++, VariableType.Variable));
                     locals.AddRange(parametrers.Select(p => new NumeratedVariable(p.Index, p)));
                 }
                 
@@ -275,7 +275,7 @@ namespace Nevermind.ByteCode
             sb.AppendLine();
             foreach (var instruction in Instructions)
             {
-                sb.AppendFormat("\n.{0}\n", instruction.Function.Name);
+                sb.AppendFormat("\n.{0} ({1})\n", instruction.Function.Name, instruction.Function.Index);
                 sb.AppendLine(string.Join("\n", instruction.Instructions.Select(p => p.ToSource()).ToList()));
             }
 

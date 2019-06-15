@@ -23,6 +23,7 @@ namespace Nevermind.Compiler.Semantics
                 program.Module = new Module(moduleLexeme.ModuleName.StringValue, program);
             }
 
+            var functionIndex = 0;
             foreach (var lex in program.Lexemes)
             {
                 if (lex.Type == LexemeType.Function)
@@ -42,6 +43,7 @@ namespace Nevermind.Compiler.Semantics
                     if ((error = lexeme.ToFunc(program, out func)) != null)
                         return error;
 
+                    func.Index = functionIndex++;
                     program.Functions.Add(func);
 
                     if ((error = program.Functions.Last().ResolveLexemes()) != null)
@@ -78,7 +80,7 @@ namespace Nevermind.Compiler.Semantics
                         return new CompileError(CompileErrorType.VariableRedeclaration, lexeme.VarName);
 
                     if ((error = Type.GetType(program, lexeme.TypeName, out Type t)) != null) return error;
-                    program.ProgramLocals.Add(new Variable(t, lexeme.VarName.StringValue, -1, lexeme.VarName, -1));
+                    program.ProgramLocals.Add(new Variable(t, lexeme.VarName.StringValue, -1, lexeme.VarName, -1, VariableType.Variable));
 
                 }
                 else if(lex.Type != LexemeType.Module && lex.Type != LexemeType.Import)

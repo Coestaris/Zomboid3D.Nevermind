@@ -80,6 +80,7 @@ namespace Nevermind
             {
                 StartMeasureTime();
                 tokens = Tokenizer.Tokenize(source, Source.FileName, this);
+                Console.WriteLine(string.Join("\n", tokens));
                 EndMeasureTime(ElapsedTimeType.Tokenizing);
             }
             catch (ParseException ex)

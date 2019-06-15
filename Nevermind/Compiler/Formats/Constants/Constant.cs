@@ -94,7 +94,7 @@ namespace Nevermind.Compiler.Formats.Constants
 
         internal Variable ToVariable(NmProgram program)
         {
-            return new Variable(ToProgramType(), "__const", -1, CodeToken, -1, true,
+            return new Variable(ToProgramType(), "__const", -1, CodeToken, -1, VariableType.LinkToConst,
                 program.Program.Header.GetConstIndex(this));
         }
 

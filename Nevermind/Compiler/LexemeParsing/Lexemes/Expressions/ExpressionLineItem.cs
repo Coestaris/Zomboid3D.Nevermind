@@ -2,7 +2,9 @@ using Nevermind.ByteCode;
 using Nevermind.ByteCode.Functions;
 using Nevermind.ByteCode.Instructions;
 using Nevermind.ByteCode.Instructions.ArithmeticIntsructions;
+using Nevermind.ByteCode.InternalClasses;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
@@ -96,7 +98,7 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
             else
             {
                 if (FunctionCall != null)
-                    sb.AppendFormat(" {0}(", FunctionCall);
+                    sb.AppendFormat(" {0}(", FunctionCall.StringValue);
                 else
                     sb.AppendFormat(" {0} ", UnaryOperator);
 
@@ -121,9 +123,9 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
             return list.Count;
         }
 
-        public static Variable GetVariable(Function func, ByteCode.ByteCode byteCode, Token token)
+        public static Variable GetVariable(List<NumeratedVariable> locals, ByteCode.ByteCode byteCode, Token token)
         {
-            var operand = func.LocalVariables.Find(p => p.Name == token.StringValue);
+            var operand = locals.Find(p => p.Variable.Name == token.StringValue)?.Variable;
             if (operand == null)
             {
                 if (token.Constant != null)
@@ -137,7 +139,7 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
 
         public static List<Instruction> GetInstructions(Function func, ByteCode.ByteCode byteCode, 
             ref int localVarIndex, List<ExpressionLineItem> list,
-            out List<Variable> registers)
+            out List<Variable> registers, List<NumeratedVariable> locals)
         {
             var instructions = new List<Instruction>();
             registers = new List<Variable>();
@@ -145,24 +147,63 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
             foreach (var item in list)
             {
                 OperatorResult result = null;
-                Variable operand1 = item.RegOperand1 == -1 ? GetVariable(func, byteCode, item.Operand1.CodeToken) : registers[item.RegOperand1];
+                Variable operand1 = item.RegOperand1 == -1 ? GetVariable(locals, byteCode, item.Operand1.CodeToken) : registers[item.RegOperand1];
 
                 if (!item.IsUnary)
                 {
-                    Variable operand2 = item.RegOperand2 == -1 ? GetVariable(func, byteCode, item.Operand2.CodeToken) : registers[item.RegOperand2];
+                    Variable operand2 = item.RegOperand2 == -1 ? GetVariable(locals, byteCode, item.Operand2.CodeToken) : registers[item.RegOperand2];
                     result = item.Operator.BinaryFunc(new OperatorOperands(func, byteCode, -1, operand1, operand2, item));
                 }
                 else
-                    result = item.UnaryOperator.UnaryFunc(new OperatorOperands(func, byteCode, -1, operand1));
+                {
+                    if (item.FunctionCall != null)
+                    {
+                        var funcToCall = func.Program.Program.Header.GetFunction(item.FunctionCall.StringValue);
+                        if(funcToCall == null)
+                            throw new ParseException(CompileErrorType.UndefinedReference, item.FunctionCall);
 
-                if (result.Error != null)
-                    throw new ParseException(result.Error.ErrorType, item.NearToken);
+                        if(operand1.VariableType != VariableType.Tuple)
+                        {
+                            if(funcToCall.Parameters.Count != 1)
+                                throw new ParseException(CompileErrorType.WrongParameterCount, item.FunctionCall);
 
-                instructions.Add(result.Instruction);
-                 var resultVar = new Variable(result.ResultType, $"__reg{localVarIndex}", func.Scope, null, localVarIndex++);
+                            if(!funcToCall.Parameters[0].Type.Equals(operand1.Type))
+                                throw new ParseException(CompileErrorType.IncompatibleTypes, item.FunctionCall);
 
-                (result.Instruction as ArithmeticIntsruction).Result = resultVar;
-                registers.Add(resultVar);
+                            instructions.Add(new InstructionPush(operand1, func, byteCode, -1));
+                            instructions.Add(new InstructionCall(funcToCall, func, byteCode, -1));
+                        }
+                        else
+                        {
+
+                        }
+
+                        if (funcToCall.ReturnType != null)
+                            registers.Add(new Variable(funcToCall.ReturnType, $"__reg{localVarIndex}", func.Scope, null, localVarIndex++, VariableType.Variable));
+
+                        instructions.Add(new InstructionPop(registers.Last(), func, byteCode, -1));
+
+                    }
+
+                    if (item.UnaryOperator != null)
+                        result = item.UnaryOperator.UnaryFunc(new OperatorOperands(func, byteCode, -1, operand1));
+                }
+
+                if (item.FunctionCall == null)
+                {
+                    if (result.Error != null)
+                        throw new ParseException(result.Error.ErrorType, item.NearToken);
+
+                    instructions.Add(result.Instruction);
+                    var resultVar = new Variable(result.ResultType, $"__reg{localVarIndex}", func.Scope, null, localVarIndex++, VariableType.Variable);
+
+                    (result.Instruction as ArithmeticIntsruction).Result = resultVar;
+                    registers.Add(resultVar);
+                }
+                else
+                {
+
+                }
             }
 
             return instructions;
