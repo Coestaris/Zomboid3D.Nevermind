@@ -13,7 +13,7 @@ namespace Nevermind.Compiler
             _errorType = error.ErrorType;
         }
 
-        public ParseException(Token token, CompileErrorType errorType)
+        public ParseException(CompileErrorType errorType, Token token)
         {
             _token = token;
             _errorType = errorType;

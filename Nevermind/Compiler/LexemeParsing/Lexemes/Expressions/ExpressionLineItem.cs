@@ -129,7 +129,7 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
                 if (token.Constant != null)
                     operand = token.Constant.ToVariable(byteCode.Program);
                 else
-                    throw new ParseException(token, CompileErrorType.UndefinedReference);
+                    throw new ParseException(CompileErrorType.UndefinedReference, token);
             }
 
             return operand;
@@ -156,7 +156,7 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
                     result = item.UnaryOperator.UnaryFunc(new OperatorOperands(func, byteCode, -1, operand1));
 
                 if (result.Error != null)
-                    throw new ParseException(item.NearToken, result.Error.ErrorType);
+                    throw new ParseException(result.Error.ErrorType, item.NearToken);
 
                 instructions.Add(result.Instruction);
                  var resultVar = new Variable(result.ResultType, $"__reg{localVarIndex}", func.Scope, null, localVarIndex++);

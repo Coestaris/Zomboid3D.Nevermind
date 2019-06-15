@@ -22,10 +22,10 @@ namespace Nevermind.ByteCode.Instructions
         public InstructionLdi(Variable src, Variable dst, Function func, ByteCode byteCode, int label) : base(dst, func, byteCode, label)
         {
             if (dst.Type.ID != src.Type.ID)
-                throw new ParseException(src.Token, CompileErrorType.IncompatibleTypes);
+                throw new ParseException(CompileErrorType.IncompatibleTypes, src.Token);
 
             if (dst.Type.GetBase() < src.Type.GetBase())
-                throw new ParseException(src.Token, CompileErrorType.IncompatibleTypeBases);
+                throw new ParseException(CompileErrorType.IncompatibleTypeBases, src.Token);
 
             Src = src;
         }

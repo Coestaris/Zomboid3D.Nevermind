@@ -57,7 +57,7 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes
                     }
 
                     if(lastOperator != null)
-                        throw new ParseException(iterator.Current, CompileErrorType.OperatorWithoutOperand);
+                        throw new ParseException(CompileErrorType.OperatorWithoutOperand, iterator.Current);
 
                     lastBracketClosed = iterator.Current;
                     lastParent = lastParent.Parent;
@@ -114,10 +114,10 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes
                             }
 
                             if(matchedOperators.Count == 0)
-                                throw new ParseException(iterator.Current, CompileErrorType.UnknownOperator);
+                                throw new ParseException(CompileErrorType.UnknownOperator, iterator.Current);
 
                             if(possibleOperator.Count - matchedOperators[0].OperatorTypes.Count == 0)
-                                throw new ParseException(iterator.Current, CompileErrorType.UnknownOperator);
+                                throw new ParseException(CompileErrorType.UnknownOperator, iterator.Current);
 
                             var binaryOp = possibleOperator.Take(possibleOperator.Count - matchedOperators[0].OperatorTypes.Count).ToList();
                             Operator binary = null;
@@ -140,13 +140,13 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes
                             }
 
                             if(binary == null)
-                                throw new ParseException(iterator.Current, CompileErrorType.UnknownOperator);
+                                throw new ParseException(CompileErrorType.UnknownOperator, iterator.Current);
 
                             //Console.Write(binary + " ");
                             //Console.WriteLine(matchedOperators[0]);
 
                             if(lastParent.SubTokens.Last().ROperator != null)
-                                throw new ParseException(iterator.Current, CompileErrorType.MultipleOperators);
+                                throw new ParseException(CompileErrorType.MultipleOperators, iterator.Current);
 
                             lastParent.SubTokens.Last().ROperator = binary;
                             lastOperator = binary;
@@ -159,7 +159,7 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes
                             Operator unary = matchedOperators.Find(p => p.IsUnary);
 
                             if (lastParent.SubTokens.Count == 0 && unary == null)
-                                throw new ParseException(iterator.Current, CompileErrorType.OperatorWithoutOperand);
+                                throw new ParseException(CompileErrorType.OperatorWithoutOperand, iterator.Current);
 
                             if (unary != null && (lastParent.SubTokens.Count == 0 || lastParent.SubTokens.Last().ROperator != null))
                             {
@@ -168,7 +168,7 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes
                             else
                             {
                                 if(lastParent.SubTokens.Last().ROperator != null)
-                                    throw new ParseException(iterator.Current, CompileErrorType.MultipleOperators);
+                                    throw new ParseException(CompileErrorType.MultipleOperators, iterator.Current);
 
                                 lastParent.SubTokens.Last().ROperator = matchedOperators[0];
                                 lastOperator = matchedOperators[0];
@@ -187,7 +187,7 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes
                                (iterator.Current.Type == TokenType.Identifier && iterator.Index == tokens.Count - 1))
                             {
                                 if(!first && lastOperator == null && lastUnaryOperator == null)
-                                    throw new ParseException(iterator.Current, CompileErrorType.UnexpectedToken);
+                                    throw new ParseException(CompileErrorType.UnexpectedToken, iterator.Current);
 
                                 first = false;
 
@@ -206,17 +206,17 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes
                         }
                         else
                         {
-                            throw new ParseException(iterator.Current, CompileErrorType.WrongTokenInExpression);
+                            throw new ParseException(CompileErrorType.WrongTokenInExpression, iterator.Current);
                         }
                     }
                 }
             }
 
             if(level != 0)
-                throw new ParseException(lastBracketClosed, CompileErrorType.WrongExpresionStructure);
+                throw new ParseException(CompileErrorType.WrongExpresionStructure, lastBracketClosed);
 
             if(lastOperator != null)
-                throw new ParseException(iterator.Current, CompileErrorType.OperatorWithoutOperand);
+                throw new ParseException(CompileErrorType.OperatorWithoutOperand, iterator.Current);
 
             Root = lastParent;
         }

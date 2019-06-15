@@ -46,13 +46,13 @@ namespace Nevermind.ByteCode
                     {
                         var unaryRes = token.UnaryOperators[0].UnaryFunc(new OperatorOperands(function, this, labelIndex++, src));
                         if (unaryRes.Error != null)
-                            throw new ParseException(token.CodeToken, unaryRes.Error.ErrorType);
+                            throw new ParseException(unaryRes.Error.ErrorType, token.CodeToken);
 
                         if (storeResultTo != null)
                         {
                             var lastInstruction = (UnaryArithmeticIntsruction)unaryRes.Instruction;
                             if (!unaryRes.ResultType.Equals(storeResultTo.Type))
-                                throw new ParseException(lexeme.Tokens[0], CompileErrorType.IncompatibleTypes);
+                                throw new ParseException(CompileErrorType.IncompatibleTypes, lexeme.Tokens[0]);
                             lastInstruction.Result = storeResultTo;
                             resultVar = storeResultTo;
                         }
@@ -93,7 +93,7 @@ namespace Nevermind.ByteCode
                         }
                     }
                 }
-                else throw new ParseException(lexeme.Tokens[0], CompileErrorType.WrongOperandList);
+                else throw new ParseException(CompileErrorType.WrongOperandList, lexeme.Tokens[0]);
             }
             else
             {
@@ -103,7 +103,17 @@ namespace Nevermind.ByteCode
 
                 if ((res.Last() is BinaryArithmeticIntsruction) && ((BinaryArithmeticIntsruction)res.Last()).CanBeSimplified())
                 {
-                    res[res.Count - 1] = ((BinaryArithmeticIntsruction)res.Last()).Simplify();
+                    var last = (BinaryArithmeticIntsruction)res.Last();
+
+                    if (last.Type == BinaryArithmeticIntsructionType.A_Set && res.Count != 1)
+                    {
+                        res.RemoveAt(res.Count - 1);
+                        (res[res.Count - 1] as BinaryArithmeticIntsruction).Result = last.Operand1;
+                    }
+                    else
+                    {
+                        res[res.Count - 1] = last.Simplify();
+                    }
                     registers.RemoveAt(registers.Count - 1);
                 }
 
@@ -122,7 +132,7 @@ namespace Nevermind.ByteCode
                 {
                     var lastInstruction = (ArithmeticIntsruction)instructionSet.Instructions.Last();
                     if (!lastInstruction.Result.Type.Equals(storeResultTo.Type))
-                        throw new ParseException(lexeme.Tokens[0], CompileErrorType.IncompatibleTypes);
+                        throw new ParseException(CompileErrorType.IncompatibleTypes, lexeme.Tokens[0]);
                     lastInstruction.Result = storeResultTo;
                     resultVar = storeResultTo;
                 }
@@ -142,7 +152,7 @@ namespace Nevermind.ByteCode
         {
             foreach (var lexeme in rootLexeme.ChildLexemes)
             {
-                localVarIndex = function.LocalVariables.Count;
+                localVarIndex = locals.Count;
 
                 switch (lexeme.Type)
                 {
@@ -201,6 +211,16 @@ namespace Nevermind.ByteCode
                         }
                         break;
                     case LexemeType.Return:
+                        {
+                            //Calculate expression
+                            ExpressionToList(((ReturnLexeme)lexeme).Expression, lexeme, function, out var variable, ref labelIndex, ref localVarIndex, ref regCount,
+                                registerInstructions, instructionSet, locals, null);
+
+                            if (!variable.Type.Equals(function.ReturnType))
+                                throw new ParseException(CompileErrorType.IncompatibleTypes, lexeme.Tokens[1]);
+
+                            instructionSet.Instructions.Add(new InstructionPush(variable, function, this, labelIndex++));
+                        }
                         break;
                 }
             }
@@ -215,11 +235,25 @@ namespace Nevermind.ByteCode
                 var instructionSet = new FunctionInstruction(function);
 
                 var localVarIndex = 0;
+
                 var locals = function.LocalVariables.Select(p => new NumeratedVariable(localVarIndex++, p)).ToList();
 
+                if (function.Parameters.Count != 0)
+                {
+                    var parametrers = function.Parameters.Select(p => new Variable(p.Type, p.Name, function.Scope, p.CodeToken, localVarIndex++));
+                    locals.AddRange(parametrers.Select(p => new NumeratedVariable(p.Index, p)));
+                }
+                
                 foreach (var local in locals)
                 {
+                    local.Variable.Index = local.Index;
                     instructionSet.Instructions.Add(new InstructionLocal(local, function, this, labelIndex++));
+                }
+
+                if (function.Parameters.Count != 0)
+                {
+                    foreach (var param in locals.Skip(function.LocalVariables.Count))
+                        instructionSet.Instructions.Add(new InstructionPop(param.Variable, function, this, labelIndex++));
                 }
 
                 var registerInstructions = new List<InstructionReg>();
@@ -228,7 +262,7 @@ namespace Nevermind.ByteCode
                 GetInstructionList(function.RawLexeme, function, ref localVarIndex, ref regCount, ref labelIndex,
                     registerInstructions, instructionSet, locals);
 
-                instructionSet.Instructions.InsertRange(function.LocalVariables.Count, registerInstructions); //.FindAll(p => p.Variable.Index >= localVarIndex - 1));
+                instructionSet.Instructions.InsertRange(locals.Count, registerInstructions); //.FindAll(p => p.Variable.Index >= localVarIndex - 1));
                 instructionSet.Instructions.Add(new InstructionRet(function, this, labelIndex++));
                 Instructions.Add(instructionSet);
             }

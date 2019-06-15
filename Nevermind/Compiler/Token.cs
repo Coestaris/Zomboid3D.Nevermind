@@ -113,7 +113,7 @@ namespace Nevermind.Compiler
                     if (!found)
                     {
                         if (IdentifierFormat.Match(StringValue)) Type = TokenType.Identifier;
-                        else throw new ParseException(this, CompileErrorType.WrongIdentifierFormat);
+                        else throw new ParseException(CompileErrorType.WrongIdentifierFormat, this);
                     }
                 }
             }
@@ -122,7 +122,7 @@ namespace Nevermind.Compiler
                 var chars = new List<int>();
                 CompileErrorType error;
                 if ((error = StringFormat.CheckEscapeSymbols(StringValue, out chars)) != 0)
-                    throw new ParseException(this, error);
+                    throw new ParseException(error, this);
 
                 Constant = new Constant(this, program, chars);
 

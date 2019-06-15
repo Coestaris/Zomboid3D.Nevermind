@@ -40,7 +40,36 @@ namespace Nevermind.ByteCode.Functions
             CompileError error = null;
             int index = 0;
             ResolveLocals(RawLexeme, out error, ref index);
+            ResolveReturns(ReturnType != null, RawLexeme, out error);
             return error;
+        }
+
+        private static void ResolveReturns(bool hasReturnType, BlockLexeme parent, out CompileError error)
+        {
+            error = null;
+            if (parent == null)
+                return;
+
+            foreach (var lexeme in parent.ChildLexemes)
+            {
+                if (lexeme.Type == LexemeType.Return && !hasReturnType)
+                {
+                    error = new CompileError(CompileErrorType.ReturnInVoidFunction, lexeme.Tokens[0]);
+                    return;
+                }
+
+                if (lexeme.RequireBlock)
+                {
+                    ResolveReturns(hasReturnType, ((ComplexLexeme)lexeme).Block, out error);
+                    if (error != null) return;
+                }
+
+                if (lexeme.Type == LexemeType.Block)
+                {
+                    ResolveReturns(hasReturnType, (BlockLexeme)lexeme, out error);
+                    if (error != null) return;
+                }
+            }
         }
 
         private static bool HasInStack(BlockLexeme parent, int scope)

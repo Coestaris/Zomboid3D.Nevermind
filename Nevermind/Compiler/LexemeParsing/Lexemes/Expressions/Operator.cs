@@ -53,7 +53,10 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
             
             if(operands.LineItem.Operand1 == null)
                 return new OperatorResult(new CompileError(CompileErrorType.WrongAssignmentOperation, operands.A.Token));
-            
+
+            if (operands.A.IsLinkToConst)
+                return new OperatorResult(new CompileError(CompileErrorType.WrongAssignmentOperation, operands.A.Token));
+
             return new OperatorResult(new BinaryArithmeticIntsruction(operatorType,
                 null, operands.A, operands.B, operands.Function, operands.ByteCode, operands.Label), operands.A.Type);
         }

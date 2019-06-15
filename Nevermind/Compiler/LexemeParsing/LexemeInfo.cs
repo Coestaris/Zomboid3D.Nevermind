@@ -44,7 +44,7 @@ namespace Nevermind.Compiler.LexemeParsing
                 case LexemeType.Block:
                 case LexemeType.Unknown:
                 default:
-                    throw new ParseException(tokens[0], CompileErrorType.UnexpectedLexeme);
+                    throw new ParseException(CompileErrorType.UnexpectedLexeme, tokens[0]);
             }
         }
     }

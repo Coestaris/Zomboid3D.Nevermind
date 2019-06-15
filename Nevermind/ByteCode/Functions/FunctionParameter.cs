@@ -1,4 +1,5 @@
 using Nevermind.ByteCode.Types;
+using Nevermind.Compiler;
 
 namespace Nevermind.ByteCode.Functions
 {
@@ -6,12 +7,13 @@ namespace Nevermind.ByteCode.Functions
     {
         public Type Type;
         public string Name;
-        
-        public FunctionParameter(Type type, string name)
+        public Token CodeToken;
+
+        public FunctionParameter(Type type, string name, Token token)
         {
             Type = type;
             Name = name;
+            CodeToken = token;
         }
-        
     }
 }

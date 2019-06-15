@@ -59,7 +59,7 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes
             {
                 //Has type and Name
                 Name = tokens[index + 1];
-                ReturnType = tokens[index];
+                ReturnType = tokens[index].StringValue == "void" ? null : tokens[index];
                 index += 2;
             }
             else
@@ -81,7 +81,7 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes
                     case 0:
                     {
                         if(token.Type != TokenType.Identifier)
-                            throw new ParseException(token, CompileErrorType.UnexpectedToken);
+                            throw new ParseException(CompileErrorType.UnexpectedToken, token);
                         parameterName = token;
                         state = 1;
                         break;
@@ -90,7 +90,7 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes
                     case 1:
                     {
                         if(token.Type != TokenType.Colon)
-                            throw new ParseException(token, CompileErrorType.UnexpectedToken);
+                            throw new ParseException(CompileErrorType.UnexpectedToken, token);
                         state = 2;
                         break;
                     }
@@ -98,7 +98,7 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes
                     case 2:
                     {
                         if(token.Type != TokenType.Identifier)
-                            throw new ParseException(token, CompileErrorType.UnexpectedToken);
+                            throw new ParseException(CompileErrorType.UnexpectedToken, token);
                         parameterType = token;
                         Parameters.Add(new LexemeFunctionParameter(parameterType, parameterName));
                         state = 3;
@@ -108,7 +108,7 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes
                     case 3:
                     {
                         if(token.Type != TokenType.ComaSign)
-                            throw new ParseException(token, CompileErrorType.UnexpectedToken);
+                            throw new ParseException(CompileErrorType.UnexpectedToken, token);
                         state = 0;
                         break;
                     }
@@ -123,9 +123,8 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes
 
             foreach (var parameter in Parameters)
             {
-                Type t;
-                if ((error = ByteCode.Types.Type.GetType(program, parameter.Type, out t)) != null) return error;
-                parameters.Add(new FunctionParameter(t, parameter.Name.StringValue));
+                if ((error = ByteCode.Types.Type.GetType(program, parameter.Type, out Type t)) != null) return error;
+                parameters.Add(new FunctionParameter(t, parameter.Name.StringValue, parameter.Name));
             }
 
             return error;
@@ -134,12 +133,13 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes
         public CompileError ToFunc(NmProgram program, out Function func)
         {
             CompileError error;
-            Type returnType;
+            Type returnType = null;
             List<FunctionParameter> parameters;
 
             func = null;
 
-            if ((error = ByteCode.Types.Type.GetType(program, ReturnType, out returnType)) != null) return error;
+            if (ReturnType != null)
+                if ((error = ByteCode.Types.Type.GetType(program, ReturnType, out returnType)) != null) return error;
             if ((error = GetParameterList(program, out parameters)) != null) return error;
 
             func = new Function(program, Name.StringValue, Modifier, returnType, Block.Scope, parameters, Block);

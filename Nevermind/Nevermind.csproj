@@ -38,6 +38,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ByteCode\Instructions\InstructionPush.cs" />
+    <Compile Include="ByteCode\Instructions\InstructionPop.cs" />
     <Compile Include="ByteCode\InternalClasses\FunctionInstruction.cs" />
     <Compile Include="ByteCode\InternalClasses\NumberedVariable.cs" />
     <Compile Include="ByteCode\InternalClasses\NumeratedConstant.cs" />
