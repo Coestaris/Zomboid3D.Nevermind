@@ -94,54 +94,7 @@ namespace Nevermind.Compiler.LexemeParsing
                 }
                 else if(lexeme.Type == LexemeType.Unknown)
                 {
-                    LexemeInfo matchedLexeme = null;
-                    foreach (var lexemeInfo in Lexeme.Lexemes)
-                    {
-                        int c1 = 0, c2 = 0;
-                        int bracketLevel = 0;
-                        while (c1 < lexeme.Tokens.Count && c2 < lexemeInfo.Pattern.Count)
-                        {
-                            if (lexemeInfo.Pattern[c2].Type.HasFlag(lexeme.Tokens[c1].Type))
-                            {
-                               /* if (lexeme.Tokens[c1].Type == TokenType.BracketOpen)
-                                    bracketLevel++;
-                                else if (lexeme.Tokens[c1].Type == TokenType.BracketClosed)
-                                    bracketLevel--;*/
-
-                                if (c2 != lexemeInfo.Pattern.Count - 1 &&
-                                    lexemeInfo.Pattern[c2].Type.HasFlag(TokenType.ComplexToken) &&
-                                    !lexemeInfo.Pattern[c2 + 1].Type.HasFlag(TokenType.ComplexToken) &&
-                                    lexemeInfo.Pattern[c2 + 1].Type.HasFlag(lexeme.Tokens[c1].Type))
-                                {
-                                    c2++;
-                                }
-
-                                if (c2 != lexemeInfo.Pattern.Count - 1 &&
-                                    lexemeInfo.Pattern[c2 + 1] != lexemeInfo.Pattern[c2] &&
-                                    !lexemeInfo.Pattern[c2].Type.HasFlag(TokenType.ComplexToken))
-                                {
-                                    c2++;
-                                }
-
-                                c1++;
-                            }
-                            else
-                            {
-                                c2++;
-                                if (c2 > c1)
-                                {
-                                    if (lexemeInfo.Pattern[c2 - 1].IsRequired) break;
-                                }
-                            }
-                        }
-
-                        if (c1 == lexeme.Tokens.Count && c2 == lexemeInfo.Pattern.Count - 1)
-                        {
-                            matchedLexeme = lexemeInfo;
-                            break;
-                        }
-                    }
-
+                    LexemeInfo matchedLexeme = LexemePatternToken.GetMatchedLexeme(lexeme.Tokens);
                     if (matchedLexeme != null)
                     {
                         try

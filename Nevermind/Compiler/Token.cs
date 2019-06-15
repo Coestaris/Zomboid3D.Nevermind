@@ -15,7 +15,7 @@ namespace Nevermind.Compiler
 
         public Constant Constant;
 
-        private readonly List<ConstantFormat> ConstantFormats = new List<ConstantFormat>
+        private static readonly List<ConstantFormat> ConstantFormats = new List<ConstantFormat>
         {
             new OctConstantFormat(),
             new DecConstantFormat(),

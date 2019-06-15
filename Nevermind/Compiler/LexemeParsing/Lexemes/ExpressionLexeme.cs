@@ -122,7 +122,7 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes
                             var binaryOp = possibleOperator.Take(possibleOperator.Count - matchedOperators[0].OperatorTypes.Count).ToList();
                             Operator binary = null;
 
-                            foreach (var op in Operator.Operators)
+                            foreach (var op in Operator.Operators.FindAll(p => !p.IsUnary))
                             {
                                 var c1 = 0;
                                 while (c1 < op.OperatorTypes.Count && c1 < binaryOp.Count)

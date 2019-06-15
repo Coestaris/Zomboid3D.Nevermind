@@ -59,11 +59,6 @@ namespace Nevermind.Compiler
 
     internal static class TokenTypeExtensions
     {
-        public static bool HasFlagFast(this TokenType value, TokenType flag)
-        {
-            return (value & flag) != 0;
-        }
-
         public static IEnumerable<TokenType> GetFlags(this TokenType value)
         {
             foreach (Enum v in Enum.GetValues(typeof(TokenType)))

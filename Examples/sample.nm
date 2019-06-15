@@ -12,8 +12,8 @@ function real func(a : real)
 
 entrypoint function integer main()
 {
-   var a : real = 0.0;
-   if(func(a) == 0)
+   var a : real = 4.1;
+   if(func(a) == 52.668)
    {
        a = ~a;
    } 

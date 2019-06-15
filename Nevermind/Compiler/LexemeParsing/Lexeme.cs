@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Nevermind.Compiler.LexemeParsing.Lexemes;
 
 namespace Nevermind.Compiler.LexemeParsing
 {
@@ -48,45 +47,45 @@ namespace Nevermind.Compiler.LexemeParsing
                 LexemeType.Import,
                 new List<LexemePatternToken>
                 {
-                    new LexemePatternToken(TokenType.ImportKeyword, true),
-                    new LexemePatternToken(TokenType.Identifier,    true)
+                    new LexemePatternToken(TokenType.ImportKeyword),
+                    new LexemePatternToken(TokenType.Identifier   )
                 }),
 
             new LexemeInfo(
                 LexemeType.Module,
                 new List<LexemePatternToken>
                 {
-                    new LexemePatternToken(TokenType.ModuleKeyword, true),
-                    new LexemePatternToken(TokenType.Identifier,    true)
+                    new LexemePatternToken(TokenType.ModuleKeyword),
+                    new LexemePatternToken(TokenType.Identifier   )
                 }),
 
             new LexemeInfo(
                 LexemeType.Var,
                 new List<LexemePatternToken>
                 {
-                    new LexemePatternToken(TokenType.VarKeyword,          true),
-                    new LexemePatternToken(TokenType.Identifier,          true),
-                    new LexemePatternToken(TokenType.Colon,               true),
-                    new LexemePatternToken(TokenType.Identifier,          true),
-                    new LexemePatternToken(TokenType.EqualSign,           true),
-                    new LexemePatternToken(Token.MathExpressionTokenType, true),
+                    new LexemePatternToken(TokenType.VarKeyword         ),
+                    new LexemePatternToken(TokenType.Identifier         ),
+                    new LexemePatternToken(TokenType.Colon              ),
+                    new LexemePatternToken(TokenType.Identifier         ),
+                    new LexemePatternToken(TokenType.EqualSign          ),
+                    new LexemePatternToken(Token.MathExpressionTokenType),
                 }),
 
             new LexemeInfo(
                 LexemeType.If,
                 new List<LexemePatternToken>
                 {
-                    new LexemePatternToken(TokenType.IfKeyword,           true),
-                    new LexemePatternToken(TokenType.BracketOpen,         true),
-                    new LexemePatternToken(Token.MathExpressionTokenType, true),
-                    new LexemePatternToken(TokenType.BracketClosed,       true)
+                    new LexemePatternToken(TokenType.IfKeyword                      ),
+                    new LexemePatternToken(TokenType.BracketOpen                    ),
+                    new LexemePatternToken(Token.MathExpressionTokenType, true, true),
+                    new LexemePatternToken(TokenType.BracketClosed                  )
                 }),
 
             new LexemeInfo(
                 LexemeType.Else,
                 new List<LexemePatternToken>
                 {
-                    new LexemePatternToken(TokenType.ElseKeyword,         true),
+                    new LexemePatternToken(TokenType.ElseKeyword),
                 }),
 
             new LexemeInfo(
@@ -94,22 +93,23 @@ namespace Nevermind.Compiler.LexemeParsing
                 new List<LexemePatternToken>
                 {
                     new LexemePatternToken(
-                        TokenType.PublicKeyword | TokenType.PrivateKeyword | TokenType.EntrypointKeyword |
-                        TokenType.FinalizationKeyword | TokenType.InitializationKeyword, false),
-                    new LexemePatternToken(TokenType.FunctionKeyword, true),
-                    new LexemePatternToken(TokenType.Identifier,      true),
+                        TokenType.PublicKeyword     | TokenType.PrivateKeyword      | 
+                        TokenType.EntrypointKeyword | TokenType.FinalizationKeyword | 
+                        TokenType.InitializationKeyword,              false),
+                    new LexemePatternToken(TokenType.FunctionKeyword       ),
+                    new LexemePatternToken(TokenType.Identifier            ),
                     new LexemePatternToken(TokenType.Identifier,      false),
-                    new LexemePatternToken(TokenType.BracketOpen,     true),
-                    new LexemePatternToken(Token.AnyTokenType,        true),
-                    new LexemePatternToken(TokenType.BracketClosed,   true)
+                    new LexemePatternToken(TokenType.BracketOpen           ),
+                    new LexemePatternToken(Token.AnyTokenType              ),
+                    new LexemePatternToken(TokenType.BracketClosed         )
                 }),
 
            new LexemeInfo(
                 LexemeType.Return,
                 new List<LexemePatternToken>
                 {
-                    new LexemePatternToken(TokenType.ReturnKeyword,       true),
-                    new LexemePatternToken(Token.MathExpressionTokenType, true)
+                    new LexemePatternToken(TokenType.ReturnKeyword      ),
+                    new LexemePatternToken(Token.MathExpressionTokenType)
                 }),
 
             new LexemeInfo(
