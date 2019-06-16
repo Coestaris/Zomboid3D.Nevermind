@@ -1,3 +1,4 @@
+using System;
 using System.Text.RegularExpressions;
 
 namespace Nevermind.Compiler.Formats.Constants
@@ -10,7 +11,10 @@ namespace Nevermind.Compiler.Formats.Constants
         {
             return new Constant(input, program, float.Parse(input.StringValue));
         }
+
+        public override bool VerifyBounds(string input)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
-
-//

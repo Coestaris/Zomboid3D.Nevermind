@@ -11,5 +11,10 @@ namespace Nevermind.Compiler.Formats.Constants
         {
             return new Constant(input, program, Convert.ToInt64(input.StringValue, 8));
         }
+
+        public override bool VerifyBounds(string input)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -20,6 +20,8 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
 
         public int ResultRegisterIndex;
 
+        public bool ParentHasFunction;
+
         public bool IsUnary;
         public Token FunctionCall;
         public Operator UnaryOperator;
@@ -84,7 +86,7 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
-            sb.AppendFormat("%{0} <- ", ResultRegisterIndex);
+            sb.AppendFormat("({0}) %{1} <- ", ParentHasFunction ? '+' : '-', ResultRegisterIndex);
             if (!IsUnary)
             {
                 if (RegOperand1 != -1) sb.AppendFormat("%{0}", RegOperand1);
@@ -125,6 +127,9 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
 
         public static Variable GetVariable(List<NumeratedVariable> locals, ByteCode.ByteCode byteCode, Token token)
         {
+            if (token == null)
+                return null;
+
             var operand = locals.Find(p => p.Variable.Name == token.StringValue)?.Variable;
             if (operand == null)
             {
@@ -141,6 +146,7 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
             ref int localVarIndex, List<ExpressionLineItem> list,
             out List<Variable> registers, List<NumeratedVariable> locals)
         {
+            var currentIndex = 0;
             var instructions = new List<Instruction>();
             registers = new List<Variable>();
 
@@ -148,10 +154,11 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
             {
                 OperatorResult result = null;
                 Variable operand1 = item.RegOperand1 == -1 ? GetVariable(locals, byteCode, item.Operand1.CodeToken) : registers[item.RegOperand1];
+                Variable operand2 = null; 
 
                 if (!item.IsUnary)
                 {
-                    Variable operand2 = item.RegOperand2 == -1 ? GetVariable(locals, byteCode, item.Operand2.CodeToken) : registers[item.RegOperand2];
+                    operand2 = item.RegOperand2 == -1 ? GetVariable(locals, byteCode, item.Operand2.CodeToken) : registers[item.RegOperand2];
                     result = item.Operator.BinaryFunc(new OperatorOperands(func, byteCode, -1, operand1, operand2, item));
                 }
                 else
@@ -162,7 +169,13 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
                         if(funcToCall == null)
                             throw new ParseException(CompileErrorType.UndefinedReference, item.FunctionCall);
 
-                        if(operand1.VariableType != VariableType.Tuple)
+                        if(operand1 == null)
+                        {
+                            if (funcToCall.Parameters.Count != 0)
+                                throw new ParseException(CompileErrorType.WrongParameterCount, item.FunctionCall);
+                            instructions.Add(new InstructionCall(funcToCall, func, byteCode, -1));
+                        }
+                        else if(operand1.VariableType != VariableType.Tuple)
                         {
                             if(funcToCall.Parameters.Count != 1)
                                 throw new ParseException(CompileErrorType.WrongParameterCount, item.FunctionCall);
@@ -175,13 +188,35 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
                         }
                         else
                         {
+                            if (funcToCall.Parameters.Count != operand1.Tuple.Count)
+                                throw new ParseException(CompileErrorType.WrongParameterCount, item.FunctionCall);
 
+                            for(int i = 0; i < operand1.Tuple.Count; i++)
+                                if (!funcToCall.Parameters[i].Type.Equals(operand1.Tuple[i].Type))
+                                    throw new ParseException(CompileErrorType.IncompatibleTypes, item.FunctionCall);
+
+                            for (int i = 0; i < operand1.Tuple.Count; i++)
+                                instructions.Add(new InstructionPush(operand1.Tuple[i], func, byteCode, -1));
+
+                            registers.RemoveRange(registers.Count - funcToCall.Parameters.Count + 1, funcToCall.Parameters.Count- 1);
+                            localVarIndex -= funcToCall.Parameters.Count - 1;
+
+                            for (int i = currentIndex + 1; i < list.Count; i++)
+                            {
+                                if (list[i].RegOperand1 != -1) list[i].RegOperand1 -= funcToCall.Parameters.Count - 1;
+                                if (list[i].RegOperand2 != -1) list[i].RegOperand2 -= funcToCall.Parameters.Count - 1;
+                            }
+
+                            instructions.Add(new InstructionCall(funcToCall, func, byteCode, -1));
                         }
 
-                        if (funcToCall.ReturnType != null)
-                            registers.Add(new Variable(funcToCall.ReturnType, $"__reg{localVarIndex}", func.Scope, null, localVarIndex++, VariableType.Variable));
+                        //if (currentIndex != list.Count - 1)
+                        //{
+                            if (funcToCall.ReturnType != null)
+                                registers.Add(new Variable(funcToCall.ReturnType, $"__reg{localVarIndex}", func.Scope, null, localVarIndex++, VariableType.Variable));
 
-                        instructions.Add(new InstructionPop(registers.Last(), func, byteCode, -1));
+                            instructions.Add(new InstructionPop(registers.Last(), func, byteCode, -1));
+                        //}
 
                     }
 
@@ -193,17 +228,24 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
                 {
                     if (result.Error != null)
                         throw new ParseException(result.Error.ErrorType, item.NearToken);
+                    
+                    var resultVar = new Variable(result.ResultType, $"__reg{localVarIndex}", func.Scope, null, localVarIndex++, 
+                        result.Instruction == null ? VariableType.Tuple : VariableType.Variable);
 
-                    instructions.Add(result.Instruction);
-                    var resultVar = new Variable(result.ResultType, $"__reg{localVarIndex}", func.Scope, null, localVarIndex++, VariableType.Variable);
+                    if (result.Instruction != null)
+                    {
+                        instructions.Add(result.Instruction);
+                        (result.Instruction as ArithmeticIntsruction).Result = resultVar;
+                    }
+                    else
+                    {
+                        resultVar.Tuple = result.ResultTuple;
+                    }
 
-                    (result.Instruction as ArithmeticIntsruction).Result = resultVar;
                     registers.Add(resultVar);
                 }
-                else
-                {
 
-                }
+                currentIndex++;
             }
 
             return instructions;

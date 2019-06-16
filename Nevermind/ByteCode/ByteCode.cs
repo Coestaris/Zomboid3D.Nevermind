@@ -44,7 +44,7 @@ namespace Nevermind.ByteCode
 
                     if (token.UnaryOperators.Count != 0 && token.UnaryOperators[0] != null)
                     {
-                        var unaryRes = token.UnaryOperators[0].UnaryFunc(new OperatorOperands(function, this, labelIndex++, src));
+                        var unaryRes = token.UnaryOperators[0].UnaryFunc(new OperatorOperands(function, this, labelIndexCopy++, src));
                         if (unaryRes.Error != null)
                             throw new ParseException(unaryRes.Error.ErrorType, token.CodeToken);
 
@@ -68,7 +68,7 @@ namespace Nevermind.ByteCode
                     {
                         if (storeResultTo != null)
                         {
-                            instructionSet.Instructions.Add(new InstructionLdi(src, storeResultTo, function, this, labelIndex++));
+                            instructionSet.Instructions.Add(new InstructionLdi(src, storeResultTo, function, this, labelIndexCopy++));
                             resultVar = storeResultTo;
                         }
                         else
@@ -123,7 +123,7 @@ namespace Nevermind.ByteCode
                             registers.
                                 Skip(registerInstructions.Count).
                                 Take(registers.Count - registerInstructions.Count - (storeResultTo != null ? 1 : 0)).
-                                Select(p => new InstructionReg(new NumeratedVariable(p.Index, p), function, this, labelIndexCopy++)));
+                                Select(p => new InstructionReg(new NumeratedVariable(p.Index, p), function, this, -1)));
 
                 res.ForEach(p => p.Label = labelIndexCopy++);
                 instructionSet.Instructions.AddRange(res);
@@ -262,8 +262,18 @@ namespace Nevermind.ByteCode
                 GetInstructionList(function.RawLexeme, function, ref localVarIndex, ref regCount, ref labelIndex,
                     registerInstructions, instructionSet, locals);
 
+                int counter = 0;
+                registerInstructions.ForEach(p => p.Label = locals.Count + counter++);
+
                 instructionSet.Instructions.InsertRange(locals.Count, registerInstructions); //.FindAll(p => p.Variable.Index >= localVarIndex - 1));
                 instructionSet.Instructions.Add(new InstructionRet(function, this, labelIndex++));
+
+                for (int i = locals.Count + registerInstructions.Count; i < instructionSet.Instructions.Count; i++)
+                {
+                    instructionSet.Instructions[i].Label += registerInstructions.Count;
+                    if (instructionSet.Instructions[i] is InstructionJmp)
+                        (instructionSet.Instructions[i] as InstructionJmp).Index += registerInstructions.Count;
+                }
                 Instructions.Add(instructionSet);
             }
         }

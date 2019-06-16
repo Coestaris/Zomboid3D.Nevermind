@@ -118,7 +118,21 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
             new Operator(new List<TokenType> { TokenType.OrSign,          TokenType.EqualSign     }, 1,  (a) => SetFunc(a, BinaryArithmeticIntsructionType.A_SetOr)),
             new Operator(new List<TokenType> { TokenType.EqualSign                                }, 1,  (a) => SetFunc(a, BinaryArithmeticIntsructionType.A_Set)),
 
-            new Operator(new List<TokenType> { TokenType.ComaSign                                 }, 0,  (a) => OperatorFunc(a, BinaryArithmeticIntsructionType.A_Add)),
+            new Operator(new List<TokenType> { TokenType.ComaSign                                 }, 0,  (a) =>
+            {
+                if(!a.LineItem.ParentHasFunction)
+                    return new OperatorResult(new CompileError(CompileErrorType.UnexpectedCommaOperator, a.A.Token));
+
+                List<Variable> result = new List<Variable>();
+
+                if(a.A.VariableType == VariableType.Tuple)
+                    result.AddRange(a.A.Tuple);
+                else
+                    result.Add(a.A);
+                result.Add(a.B);
+
+               return new OperatorResult(result);
+            }),
         };
     }
 }

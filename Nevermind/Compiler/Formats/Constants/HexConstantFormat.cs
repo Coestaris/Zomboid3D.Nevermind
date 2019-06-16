@@ -12,5 +12,10 @@ namespace Nevermind.Compiler.Formats.Constants
             var str = input.StringValue.ToLower().Split('x')[1];
             return new Constant(input, program, Convert.ToInt64(str, 16));
         }
+
+        public override bool VerifyBounds(string input)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

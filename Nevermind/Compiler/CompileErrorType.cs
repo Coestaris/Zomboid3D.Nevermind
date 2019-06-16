@@ -41,6 +41,7 @@ namespace Nevermind.Compiler
         ElseWithoutCondition,
         WrongAssignmentOperation,
         ReturnInVoidFunction,
-        WrongParameterCount
+        WrongParameterCount,
+        UnexpectedCommaOperator
     }
 }

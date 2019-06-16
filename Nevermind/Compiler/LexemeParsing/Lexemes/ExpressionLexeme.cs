@@ -319,6 +319,7 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes
                 }
 
                 result.Last().NearToken = root.SubTokens[maxOperatorIndex].CodeToken;
+                result.Last().ParentHasFunction = root.UnaryFunction != null;
 
                 root.SubTokens.RemoveAt(maxOperatorIndex);
                 root.SubTokens[maxOperatorIndex].CalculatedIndex = resultIndex - 1;

@@ -5,9 +5,8 @@ using Nevermind.Compiler;
 
 namespace Nevermind.ByteCode.Instructions
 {
-    internal class InstructionBrEq : Instruction
+    internal class InstructionBrEq : InstructionJmp
     {
-        public int Index;
         public readonly Variable Variable;
 
         public override List<byte> Serialize()
@@ -20,13 +19,12 @@ namespace Nevermind.ByteCode.Instructions
         public override string SourceValue() =>
             ToSourceValue(Variable.ToSourceValue(), ToFunctionLabel(Index));
 
-        public InstructionBrEq(Variable variable, int index, Function func, ByteCode byteCode, int label) : base(func, byteCode, label)
+        public InstructionBrEq(Variable variable, int index, Function func, ByteCode byteCode, int label) : base(index, func, byteCode, label)
         {
             if (variable.Type.ID != TypeID.Float && variable.Type.ID != TypeID.Integer)
                 throw new ParseException(CompileErrorType.IncompatibleTypes, variable.Token);
 
             Variable = variable;
-            Index = index;
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿using Nevermind.ByteCode;
+﻿using System.Collections.Generic;
+using Nevermind.ByteCode;
+using Nevermind.ByteCode.Functions;
 using Nevermind.ByteCode.Types;
 
 namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
@@ -8,6 +10,7 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
         public readonly CompileError Error;
         public readonly Instruction Instruction;
         public readonly Type ResultType;
+        internal readonly List<Variable> ResultTuple;
 
         public OperatorResult(CompileError error)
         {
@@ -20,6 +23,11 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
             Error = null;
             Instruction = instruction;
             ResultType = resultType;
+        }
+
+        public OperatorResult(List<Variable> resultTuple) : this(null, null)
+        {
+            ResultTuple = resultTuple;
         }
     }
 }

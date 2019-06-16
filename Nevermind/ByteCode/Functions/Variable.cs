@@ -21,10 +21,10 @@ namespace Nevermind.ByteCode.Functions
 
         public readonly Token Token;
 
-        public readonly VariableType VariableType;
+        public VariableType VariableType;
 
         public readonly int ConstIndex;
-        public readonly List<Variable> Tuple;
+        public List<Variable> Tuple;
 
         public Variable(Type type, string name, int scope, Token token, int index, VariableType variableType, int constIndex = -1)
         {
