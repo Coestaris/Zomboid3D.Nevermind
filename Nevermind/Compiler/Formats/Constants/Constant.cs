@@ -100,8 +100,9 @@ namespace Nevermind.Compiler.Formats.Constants
 
         public override bool Equals(object obj)
         {
-            if (obj is Constant constant)
+            if (obj is Constant)
             {
+                var constant = (Constant)obj;
                 if (Type == ConstantType.String && constant.Type == ConstantType.String)
                 {
                     var firstNotSecond = constant.SValue.Except(SValue).ToList();

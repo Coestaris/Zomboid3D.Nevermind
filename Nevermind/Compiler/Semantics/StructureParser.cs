@@ -79,7 +79,8 @@ namespace Nevermind.Compiler.Semantics
                     if(program.ProgramLocals.Find(p => p.Name == lexeme.VarName.StringValue) != null)
                         return new CompileError(CompileErrorType.VariableRedeclaration, lexeme.VarName);
 
-                    if ((error = Type.GetType(program, lexeme.TypeName, out Type t)) != null) return error;
+                    Type t;
+                    if ((error = Type.GetType(program, lexeme.TypeName, out t)) != null) return error;
                     program.ProgramLocals.Add(new Variable(t, lexeme.VarName.StringValue, -1, lexeme.VarName, -1, VariableType.Variable));
 
                 }

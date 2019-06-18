@@ -54,7 +54,10 @@ namespace Nevermind
 
         public NmProgram(NmSource source)
         {
-            Source = source ?? throw new ArgumentNullException(nameof(source));
+            if(Source == null)
+                throw new ArgumentNullException(nameof(source));
+
+            Source = source;
 
             ProgramLocals = new List<Variable>();
             Constants = new List<Constant>();

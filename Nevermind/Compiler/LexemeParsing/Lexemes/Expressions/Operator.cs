@@ -5,6 +5,7 @@ using Nevermind.ByteCode.Functions;
 using Nevermind.ByteCode.Instructions;
 using Nevermind.ByteCode.Instructions.ArithmeticIntsructions;
 using Nevermind.ByteCode.Types;
+using Type = Nevermind.ByteCode.Types.Type;
 
 namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
 {
@@ -40,7 +41,8 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
         private static OperatorResult OperatorFunc(OperatorOperands operands, BinaryArithmeticIntsructionType operatorType)
         {
             CompileError error = null;
-            if ((error = operands.CheckNumericAndGetType(out var type)) != null)
+            Type type;
+            if ((error = operands.CheckNumericAndGetType(out type)) != null)
                 return new OperatorResult(error);
             return new OperatorResult(new BinaryArithmeticIntsruction(operatorType,
                 null, operands.A, operands.B, operands.Function, operands.ByteCode, operands.Label), type);
@@ -123,7 +125,7 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
                 if(!a.LineItem.ParentHasFunction)
                     return new OperatorResult(new CompileError(CompileErrorType.UnexpectedCommaOperator, a.A.Token));
 
-                List<Variable> result = new List<Variable>();
+                var result = new List<Variable>();
 
                 if(a.A.VariableType == VariableType.Tuple)
                     result.AddRange(a.A.Tuple);

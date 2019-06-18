@@ -123,7 +123,8 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes
 
             foreach (var parameter in Parameters)
             {
-                if ((error = ByteCode.Types.Type.GetType(program, parameter.Type, out Type t)) != null) return error;
+                Type t;
+                if ((error = ByteCode.Types.Type.GetType(program, parameter.Type, out t)) != null) return error;
                 parameters.Add(new FunctionParameter(t, parameter.Name.StringValue, parameter.Name));
             }
 

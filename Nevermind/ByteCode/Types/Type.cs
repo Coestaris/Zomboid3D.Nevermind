@@ -19,7 +19,10 @@ namespace Nevermind.ByteCode.Types
 
         public override bool Equals(object obj)
         {
-            return obj is Type type && ID == type.ID && GetBase() == type.GetBase();
+            if (!(obj is Type)) return false;
+
+            var type = (Type)obj;
+            return ID == type.ID && GetBase() == type.GetBase();
         }
 
         public override int GetHashCode()

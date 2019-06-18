@@ -99,7 +99,8 @@ namespace Nevermind.ByteCode
             {
                 Console.WriteLine(string.Join("\n", list));
 
-                var res = ExpressionLineItem.GetInstructions(function, this, ref localVarIndex, list, out var registers, locals);
+                List<Variable> registers;
+                var res = ExpressionLineItem.GetInstructions(function, this, ref localVarIndex, list, out registers, locals);
 
                 if ((res.Last() is BinaryArithmeticIntsruction) && ((BinaryArithmeticIntsruction)res.Last()).CanBeSimplified())
                 {
@@ -164,7 +165,8 @@ namespace Nevermind.ByteCode
                             var expression = ((VarLexeme)lexeme).Expression;
                             var storeResult = locals.Find(p => p.Index == ((VarLexeme)lexeme).Index).Variable;
 
-                            ExpressionToList(expression, lexeme, function, out var variable, ref labelIndex, ref localVarIndex, ref regCount,
+                            Variable variable;
+                            ExpressionToList(expression, lexeme, function, out variable, ref labelIndex, ref localVarIndex, ref regCount,
                                 registerInstructions, instructionSet, locals, storeResult);
                         }
                         break;
@@ -174,7 +176,8 @@ namespace Nevermind.ByteCode
 
                             //Calculate expression
                             var expression = ((IfLexeme)lexeme).Expression;
-                            ExpressionToList(expression, lexeme, function, out var variable, ref labelIndex, ref localVarIndex, ref regCount,
+                            Variable variable;
+                            ExpressionToList(expression, lexeme, function, out variable, ref labelIndex, ref localVarIndex, ref regCount,
                                 registerInstructions, instructionSet, locals, null);
 
                             instructionSet.Instructions.Add(new InstructionBrEq(variable, -1, function, this, labelIndex++));
@@ -206,14 +209,16 @@ namespace Nevermind.ByteCode
                     case LexemeType.Expression:
                         {
                             //Calculate expression
-                            ExpressionToList((ExpressionLexeme)lexeme, lexeme, function, out var variable, ref labelIndex, ref localVarIndex, ref regCount,
+                            Variable variable;
+                            ExpressionToList((ExpressionLexeme)lexeme, lexeme, function, out variable, ref labelIndex, ref localVarIndex, ref regCount,
                                 registerInstructions, instructionSet, locals, null);
                         }
                         break;
                     case LexemeType.Return:
                         {
                             //Calculate expression
-                            ExpressionToList(((ReturnLexeme)lexeme).Expression, lexeme, function, out var variable, ref labelIndex, ref localVarIndex, ref regCount,
+                            Variable variable;
+                            ExpressionToList(((ReturnLexeme)lexeme).Expression, lexeme, function, out variable, ref labelIndex, ref localVarIndex, ref regCount,
                                 registerInstructions, instructionSet, locals, null);
 
                             if (!variable.Type.Equals(function.ReturnType))
