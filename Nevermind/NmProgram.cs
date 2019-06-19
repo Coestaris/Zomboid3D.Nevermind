@@ -18,6 +18,8 @@ namespace Nevermind
         internal bool IsModule;
         internal Module Module;
 
+        public NmMetadata Metadata;
+
         internal List<Import> Imports;
         internal List<Variable> ProgramLocals;
 
@@ -52,7 +54,7 @@ namespace Nevermind
             else return _time[type];
         }
 
-        public NmProgram(NmSource source)
+        public NmProgram(NmSource source, NmMetadata metadata = null)
         {
             if(source == null)
                 throw new ArgumentNullException(nameof(source));
@@ -65,6 +67,9 @@ namespace Nevermind
 
             UsedTypes = new List<ByteCode.Types.Type>();
             AvailableTypes = BuiltInTypes.Get();
+            Imports = new List<Import>();
+
+            Metadata = metadata;
         }
 
         public CompileError Parse()

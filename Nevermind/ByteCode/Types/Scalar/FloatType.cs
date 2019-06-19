@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace Nevermind.ByteCode.Types.Scalar
 {
     internal class FloatType : Type
@@ -14,6 +16,11 @@ namespace Nevermind.ByteCode.Types.Scalar
         public override int GetBase()
         {
             return TypeBase;
+        }
+
+        public override List<byte> Serialize(object value)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

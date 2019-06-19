@@ -84,6 +84,11 @@ namespace Nevermind.Compiler.Semantics
                     program.ProgramLocals.Add(new Variable(t, lexeme.VarName.StringValue, -1, lexeme.VarName, -1, VariableType.Variable));
 
                 }
+                else if(lex.Type == LexemeType.Import)
+                {
+                    //todo: make something =/
+                    program.Imports.Add(new Import((lex as ImportLexeme).ImportName.StringValue));
+                }
                 else if(lex.Type != LexemeType.Module && lex.Type != LexemeType.Import)
                 {
                     return new CompileError(CompileErrorType.UnexpectedLexeme, lex.Tokens?[0]);

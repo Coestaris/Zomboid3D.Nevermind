@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Nevermind.Compiler;
 
 namespace Nevermind.ByteCode.Types
@@ -16,6 +17,8 @@ namespace Nevermind.ByteCode.Types
         }
 
         public virtual int GetBase() { return -1; }
+
+        public abstract List<byte> Serialize(object value);
 
         public override bool Equals(object obj)
         {

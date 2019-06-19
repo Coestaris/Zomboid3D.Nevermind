@@ -11,6 +11,7 @@
     <AssemblyName>Nevermind</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -45,6 +46,10 @@
     <Compile Include="ByteCode\InternalClasses\NumberedVariable.cs" />
     <Compile Include="ByteCode\InternalClasses\NumeratedConstant.cs" />
     <Compile Include="ByteCode\InternalClasses\NumeratedType.cs" />
+    <Compile Include="ByteCode\NMB\Chunk.cs" />
+    <Compile Include="ByteCode\NMB\ChunkType.cs" />
+    <Compile Include="ByteCode\NMB\Codes.cs" />
+    <Compile Include="ByteCode\NMB\CRC32.cs" />
     <Compile Include="ByteCode\NumeratedConstant.cs" />
     <Compile Include="ByteCode\Types\BuiltInTypes.cs" />
     <Compile Include="ByteCode\ByteCode.cs" />
@@ -114,6 +119,7 @@
     <Compile Include="Compiler\Tokenizer.cs" />
     <Compile Include="Compiler\TokenType.cs" />
     <Compile Include="ElapsedTimeType.cs" />
+    <Compile Include="NmMetadata.cs" />
     <Compile Include="NmProgram.cs" />
     <Compile Include="NmSource.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

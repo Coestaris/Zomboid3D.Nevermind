@@ -8,8 +8,10 @@ using Nevermind.Compiler.LexemeParsing.Lexemes;
 using Nevermind.Compiler.LexemeParsing.Lexemes.Expressions;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
+using Nevermind.ByteCode.NMB;
 
 namespace Nevermind.ByteCode
 {
@@ -299,7 +301,26 @@ namespace Nevermind.ByteCode
 
         public byte[] ToBinary()
         {
-            return Header.ToBinary();
+            var buffer = new List<byte>();
+
+            buffer.AddRange(Codes.NMPSignature);
+            buffer.AddRange(Header.GetHeaderChunk().ToBytes());
+            buffer.AddRange(Header.GetTypesChunk().ToBytes());
+            buffer.AddRange(Header.GetConstChunk().ToBytes());
+
+            if(Program.Metadata != null)
+                buffer.AddRange(Program.Metadata.GetChunk().ToBytes());
+
+            return buffer.ToArray();
+        }
+
+        public void SaveToFile(string fileName)
+        {
+            using (var f = new FileStream(fileName, FileMode.OpenOrCreate, FileAccess.Write))
+            {
+                var buffer = ToBinary();
+                f.Write(buffer, 0, buffer.Length);
+            }
         }
     }
 }

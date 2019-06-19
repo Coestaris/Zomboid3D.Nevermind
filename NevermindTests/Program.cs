@@ -29,7 +29,9 @@ namespace NevermindTests
         public static void Main(string[] args)
         {
             var source = NmSource.FromFile("../../../Examples/sample.nm");
-            var program = new NmProgram(source);
+            var metadata = new NmMetadata("Sample Binary", "Example Nevermind Binary",
+                "Coestaris", DateTime.Now, 0, 1);
+            var program = new NmProgram(source, metadata);
 
             CompileError error;
             if ((error = program.Parse()) != null)
@@ -51,6 +53,10 @@ namespace NevermindTests
                 }
                 Console.WriteLine("\n\nASM Program:\n");
                 Console.WriteLine(program.Program.ToSource());
+
+
+                program.Program.SaveToFile("../../../Examples/sample.nmb");
+                Console.WriteLine("File saved!");
             }
 
             Console.ReadKey();

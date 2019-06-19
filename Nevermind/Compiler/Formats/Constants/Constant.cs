@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Nevermind.ByteCode.Functions;
+using Nevermind.ByteCode.NMB;
 using Nevermind.ByteCode.Types;
+using Nevermind.ByteCode.Types.Scalar;
 using Type = Nevermind.ByteCode.Types.Type;
 
 namespace Nevermind.Compiler.Formats.Constants
@@ -127,6 +129,25 @@ namespace Nevermind.Compiler.Formats.Constants
             hashCode = hashCode * -1521134295 + FValue.GetHashCode();
             hashCode = hashCode * -1521134295 + EqualityComparer<List<int>>.Default.GetHashCode(SValue);
             return hashCode;
+        }
+
+        public List<byte> Serialize()
+        {
+            var programType = ToProgramType();
+            switch (Type)
+            {
+                case ConstantType.Integer:
+                    return (programType as IntegerType).Serialize(IValue);
+
+                case ConstantType.Float:
+                    return (programType as FloatType).Serialize(FValue);
+
+                case ConstantType.String:
+                    return (programType as StringType).Serialize(SValue);
+
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
     }
 }

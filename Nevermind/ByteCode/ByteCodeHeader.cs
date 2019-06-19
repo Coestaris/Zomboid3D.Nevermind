@@ -3,6 +3,7 @@ using System.Linq;
 using System.Text;
 using Nevermind.ByteCode.Functions;
 using Nevermind.ByteCode.InternalClasses;
+using Nevermind.ByteCode.NMB;
 using Nevermind.ByteCode.Types;
 using Nevermind.Compiler.Formats.Constants;
 
@@ -73,9 +74,46 @@ namespace Nevermind.ByteCode
             return sb.ToString();
         }
 
-        public byte[] ToBinary()
+        public Chunk GetHeaderChunk()
         {
-            return null;
+            var ch = new Chunk(ChunkType.TYPE);
+            ch.Data.AddRange(Chunk.UInt16ToBytes(Codes.CurrentNMVersion));
+            ch.Data.AddRange(Chunk.Int32ToBytes(Program.Imports.Count));
+            ch.Data.AddRange(Chunk.Int32ToBytes(Program.Program.Instructions.Count));
+            foreach (var import in Program.Imports)
+            {
+                ch.Data.Add(import.Library ? (byte)1 : (byte)0);
+                ch.Data.AddRange(Chunk.Int32ToBytes(import.Name.Length));
+                ch.Data.AddRange(import.Name.Select(p => (byte)p));
+            }
+
+            return ch;
+        }
+
+        public Chunk GetTypesChunk()
+        {
+            var ch = new Chunk(ChunkType.TYPE);
+            ch.Data.AddRange(Chunk.Int32ToBytes(UsedTypes.Count));
+            foreach (var type in UsedTypes)
+            {
+                ch.Data.AddRange(Chunk.Int16ToBytes(Codes.TypeIdDict[type.Type.ID]));
+                ch.Data.Add((byte)type.Type.GetBase());
+            }
+            return ch;
+        }
+
+        public Chunk GetConstChunk()
+        {
+            var ch = new Chunk(ChunkType.CONST);
+            ch.Data.AddRange(Chunk.Int32ToBytes(UsedConstants.Count));
+            foreach (var constant in UsedConstants)
+            {
+                ch.Data.AddRange(Chunk.Int32ToBytes(GetTypeIndex(constant.Constant.ToProgramType())));
+                if(constant.Constant.Type == ConstantType.String)
+                    ch.Data.AddRange(Chunk.Int32ToBytes(constant.Constant.SValue.Count));
+                ch.Data.AddRange(constant.Constant.Serialize());
+            }
+            return ch;
         }
     }
 }
