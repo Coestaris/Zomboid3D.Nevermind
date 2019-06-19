@@ -54,7 +54,7 @@ namespace Nevermind
 
         public NmProgram(NmSource source)
         {
-            if(Source == null)
+            if(source == null)
                 throw new ArgumentNullException(nameof(source));
 
             Source = source;
