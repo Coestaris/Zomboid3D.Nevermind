@@ -1,5 +1,8 @@
+using System;
 using System.Collections.Generic;
 using Nevermind.ByteCode.Functions;
+using Nevermind.ByteCode.Instructions.ArithmeticInstructions;
+using Nevermind.ByteCode.NMB;
 
 namespace Nevermind.ByteCode
 {
@@ -20,6 +23,7 @@ namespace Nevermind.ByteCode
 
         public abstract string InstructionName { get; }
         public abstract int ParameterCount { get; }
+        public abstract InstructionType Type { get; }
         public abstract string SourceValue();
 
         public string ToSource()
@@ -32,9 +36,28 @@ namespace Nevermind.ByteCode
             return $"{InstructionName,-6} {string.Join(", ", objects)}";
         }
 
+        protected List<byte> ToBytes(params IEnumerable<byte>[] lists)
+        {
+            var totalList = new List<byte>();
+            foreach (var list in lists)
+                totalList.AddRange(list);
+            return totalList;
+        }
+
         protected string ToFunctionLabel(int index)
         {
             return $"_{Function.Name}{index}";
+        }
+
+        public UInt16 GetInstructionCode()
+        {
+            if (Type == InstructionType._Binary)
+                return Codes.ABInstructionDict[(this as BinaryArithmeticInstruction).AType];
+
+            if (Type == InstructionType._Unary)
+                return Codes.AUInstructionDict[(this as UnaryArithmeticInstruction).AType];
+
+            return Codes.InstructionDict[Type];
         }
     }
 }

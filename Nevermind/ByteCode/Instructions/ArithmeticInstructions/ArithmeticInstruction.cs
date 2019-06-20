@@ -2,9 +2,9 @@
 using System;
 using System.Collections.Generic;
 
-namespace Nevermind.ByteCode.Instructions.ArithmeticIntsructions
+namespace Nevermind.ByteCode.Instructions.ArithmeticInstructions
 {
-    internal class ArithmeticIntsruction : Instruction
+    internal class ArithmeticInstruction : Instruction
     {
         public Variable Result;
 
@@ -28,7 +28,12 @@ namespace Nevermind.ByteCode.Instructions.ArithmeticIntsructions
             throw new NotImplementedException();
         }
 
-        public ArithmeticIntsruction(Variable res, Function func, ByteCode byteCode, int label) : base(func, byteCode, label)
+        public override InstructionType Type
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        public ArithmeticInstruction(Variable res, Function func, ByteCode byteCode, int label) : base(func, byteCode, label)
         {
             Result = res;
         }

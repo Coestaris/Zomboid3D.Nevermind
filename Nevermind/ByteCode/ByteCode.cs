@@ -1,6 +1,6 @@
 using Nevermind.ByteCode.Functions;
 using Nevermind.ByteCode.Instructions;
-using Nevermind.ByteCode.Instructions.ArithmeticIntsructions;
+using Nevermind.ByteCode.Instructions.ArithmeticInstructions;
 using Nevermind.ByteCode.InternalClasses;
 using Nevermind.Compiler;
 using Nevermind.Compiler.LexemeParsing;
@@ -29,7 +29,7 @@ namespace Nevermind.ByteCode
 
         internal void ExpressionToList(
             ExpressionLexeme expression, Lexeme lexeme, Function function, out Variable resultVar,
-            ref int labelIndex, ref int localVarIndex, ref int regCount, List<InstructionReg> registerInstructions,
+            ref int labelIndex, ref int localVarIndex, ref int regCount, List<Variable> outRegisters,
             FunctionInstruction instructionSet, List<NumeratedVariable> locals, Variable storeResultTo)
 
         {
@@ -52,7 +52,7 @@ namespace Nevermind.ByteCode
 
                         if (storeResultTo != null)
                         {
-                            var lastInstruction = (UnaryArithmeticIntsruction)unaryRes.Instruction;
+                            var lastInstruction = (UnaryArithmeticInstruction)unaryRes.Instruction;
                             if (!unaryRes.ResultType.Equals(storeResultTo.Type))
                                 throw new ParseException(CompileErrorType.IncompatibleTypes, lexeme.Tokens[0]);
                             lastInstruction.Result = storeResultTo;
@@ -60,7 +60,7 @@ namespace Nevermind.ByteCode
                         }
                         else
                         {
-                            resultVar = (unaryRes.Instruction as UnaryArithmeticIntsruction).Result;
+                            resultVar = (unaryRes.Instruction as UnaryArithmeticInstruction).Result;
                         }
 
                         instructionSet.Instructions.Add(unaryRes.Instruction);
@@ -104,14 +104,14 @@ namespace Nevermind.ByteCode
                 List<Variable> registers;
                 var res = ExpressionLineItem.GetInstructions(function, this, ref localVarIndex, list, out registers, locals);
 
-                if ((res.Last() is BinaryArithmeticIntsruction) && ((BinaryArithmeticIntsruction)res.Last()).CanBeSimplified())
+                if ((res.Last() is BinaryArithmeticInstruction) && ((BinaryArithmeticInstruction)res.Last()).CanBeSimplified())
                 {
-                    var last = (BinaryArithmeticIntsruction)res.Last();
+                    var last = (BinaryArithmeticInstruction)res.Last();
 
-                    if (last.Type == BinaryArithmeticIntsructionType.A_Set && res.Count != 1)
+                    if (last.AType == BinaryArithmeticInstructionType.A_Set && res.Count != 1)
                     {
                         res.RemoveAt(res.Count - 1);
-                        (res[res.Count - 1] as ArithmeticIntsruction).Result = last.Operand1;
+                        (res[res.Count - 1] as ArithmeticInstruction).Result = last.Operand1;
                     }
                     else
                     {
@@ -121,19 +121,17 @@ namespace Nevermind.ByteCode
                 }
 
                 regCount = Math.Max(regCount, registers.Count);
-                if (registerInstructions.Count < regCount)
-                    registerInstructions.AddRange(
-                            registers.
-                                Skip(registerInstructions.Count).
-                                Take(registers.Count - registerInstructions.Count - (storeResultTo != null ? 1 : 0)).
-                                Select(p => new InstructionReg(new NumeratedVariable(p.Index, p), function, this, -1)));
+                if (outRegisters.Count < regCount)
+                    outRegisters.AddRange(
+                        registers.Skip(outRegisters.Count)
+                            .Take(registers.Count - outRegisters.Count - (storeResultTo != null ? 1 : 0)));
 
                 res.ForEach(p => p.Label = labelIndexCopy++);
                 instructionSet.Instructions.AddRange(res);
 
                 if (storeResultTo != null)
                 {
-                    var lastInstruction = (ArithmeticIntsruction)instructionSet.Instructions.Last();
+                    var lastInstruction = (ArithmeticInstruction)instructionSet.Instructions.Last();
                     if (!lastInstruction.Result.Type.Equals(storeResultTo.Type))
                         throw new ParseException(CompileErrorType.IncompatibleTypes, lexeme.Tokens[0]);
                     lastInstruction.Result = storeResultTo;
@@ -142,7 +140,7 @@ namespace Nevermind.ByteCode
                 else
                 {
                     var last = instructionSet.Instructions.Last();
-                    resultVar = (last as ArithmeticIntsruction).Result;
+                    resultVar = (last as ArithmeticInstruction).Result;
                 }
             }
 
@@ -151,7 +149,7 @@ namespace Nevermind.ByteCode
         }
 
         private void GetInstructionList(Lexeme rootLexeme, Function function, ref int localVarIndex, ref int regCount, ref int labelIndex,
-            List<InstructionReg> registerInstructions, FunctionInstruction instructionSet, List<NumeratedVariable> locals)
+            List<Variable> registers, FunctionInstruction instructionSet, List<NumeratedVariable> locals)
         {
             foreach (var lexeme in rootLexeme.ChildLexemes)
             {
@@ -169,7 +167,7 @@ namespace Nevermind.ByteCode
 
                             Variable variable;
                             ExpressionToList(expression, lexeme, function, out variable, ref labelIndex, ref localVarIndex, ref regCount,
-                                registerInstructions, instructionSet, locals, storeResult);
+                                registers, instructionSet, locals, storeResult);
                         }
                         break;
                     case LexemeType.If:
@@ -180,14 +178,14 @@ namespace Nevermind.ByteCode
                             var expression = ((IfLexeme)lexeme).Expression;
                             Variable variable;
                             ExpressionToList(expression, lexeme, function, out variable, ref labelIndex, ref localVarIndex, ref regCount,
-                                registerInstructions, instructionSet, locals, null);
+                                registers, instructionSet, locals, null);
 
                             instructionSet.Instructions.Add(new InstructionBrEq(variable, -1, function, this, labelIndex++));
                             var eq = instructionSet.Instructions.Last() as InstructionBrEq;
 
                             //Proceed block
                             GetInstructionList(ifLexeme.Block, function, ref localVarIndex, ref regCount, ref labelIndex,
-                                registerInstructions, instructionSet, locals);
+                                registers, instructionSet, locals);
 
                             if (ifLexeme.ElseLexeme != null)
                             {
@@ -198,7 +196,7 @@ namespace Nevermind.ByteCode
 
                                 //Proceed else block
                                 GetInstructionList(ifLexeme.ElseLexeme.Block, function, ref localVarIndex, ref regCount, ref labelIndex,
-                                    registerInstructions, instructionSet, locals);
+                                    registers, instructionSet, locals);
 
                                 jmp.Index = labelIndex;
                             }
@@ -213,7 +211,7 @@ namespace Nevermind.ByteCode
                             //Calculate expression
                             Variable variable;
                             ExpressionToList((ExpressionLexeme)lexeme, lexeme, function, out variable, ref labelIndex, ref localVarIndex, ref regCount,
-                                registerInstructions, instructionSet, locals, null);
+                                registers, instructionSet, locals, null);
                         }
                         break;
                     case LexemeType.Return:
@@ -221,7 +219,7 @@ namespace Nevermind.ByteCode
                             //Calculate expression
                             Variable variable;
                             ExpressionToList(((ReturnLexeme)lexeme).Expression, lexeme, function, out variable, ref labelIndex, ref localVarIndex, ref regCount,
-                                registerInstructions, instructionSet, locals, null);
+                                registers, instructionSet, locals, null);
 
                             if (!variable.Type.Equals(function.ReturnType))
                                 throw new ParseException(CompileErrorType.IncompatibleTypes, lexeme.Tokens[1]);
@@ -254,7 +252,7 @@ namespace Nevermind.ByteCode
                 foreach (var local in locals)
                 {
                     local.Variable.Index = local.Index;
-                    instructionSet.Instructions.Add(new InstructionLocal(local, function, this, labelIndex++));
+                    //instructionSet.Instructions.Add(new InstructionLocal(local, function, this, labelIndex++));
                 }
 
                 if (function.Parameters.Count != 0)
@@ -263,24 +261,16 @@ namespace Nevermind.ByteCode
                         instructionSet.Instructions.Add(new InstructionPop(param.Variable, function, this, labelIndex++));
                 }
 
-                var registerInstructions = new List<InstructionReg>();
+                var registers = new List<Variable>();
                 var regCount = 0;
 
                 GetInstructionList(function.RawLexeme, function, ref localVarIndex, ref regCount, ref labelIndex,
-                    registerInstructions, instructionSet, locals);
+                    registers, instructionSet, locals);
 
-                int counter = 0;
-                registerInstructions.ForEach(p => p.Label = locals.Count + counter++);
-
-                instructionSet.Instructions.InsertRange(locals.Count, registerInstructions); //.FindAll(p => p.Variable.Index >= localVarIndex - 1));
                 instructionSet.Instructions.Add(new InstructionRet(function, this, labelIndex++));
 
-                for (int i = locals.Count + registerInstructions.Count; i < instructionSet.Instructions.Count; i++)
-                {
-                    instructionSet.Instructions[i].Label += registerInstructions.Count;
-                    if (instructionSet.Instructions[i] is InstructionJmp)
-                        (instructionSet.Instructions[i] as InstructionJmp).Index += registerInstructions.Count;
-                }
+                instructionSet.Registers = registers;
+                instructionSet.Locals = locals.Select(p => p.Variable).ToList();
                 Instructions.Add(instructionSet);
             }
         }
@@ -292,7 +282,16 @@ namespace Nevermind.ByteCode
             sb.AppendLine();
             foreach (var instruction in Instructions)
             {
-                sb.AppendFormat("\n.{0} ({1})\n", instruction.Function.Name, instruction.Function.Index);
+                sb.AppendFormat("\nFunction: {0} ({1})\n", instruction.Function.Name, instruction.Function.Index);
+                sb.AppendFormat("Has {0} locals \n", instruction.Locals.Count);
+                foreach (var local in instruction.Locals)
+                    sb.AppendFormat("  {0}. Type: {1}\n", local.Index, Header.GetTypeIndex(local.Type));
+
+                sb.AppendFormat("Has {0} registers\n", instruction.Registers.Count);
+                foreach (var register in instruction.Registers)
+                    sb.AppendFormat("  {0}. Type: {1}\n", register.Index, Header.GetTypeIndex(register.Type));
+
+                sb.AppendLine("ASM: ");
                 sb.AppendLine(string.Join("\n", instruction.Instructions.Select(p => p.ToSource()).ToList()));
             }
 
@@ -310,6 +309,11 @@ namespace Nevermind.ByteCode
 
             if(Program.Metadata != null)
                 buffer.AddRange(Program.Metadata.GetChunk().ToBytes());
+
+            foreach (var instruction in Instructions)
+            {
+                buffer.AddRange(instruction.GetChunk().ToBytes());
+            }
 
             return buffer.ToArray();
         }

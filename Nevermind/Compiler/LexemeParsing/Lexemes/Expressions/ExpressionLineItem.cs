@@ -1,7 +1,7 @@
 using Nevermind.ByteCode;
 using Nevermind.ByteCode.Functions;
 using Nevermind.ByteCode.Instructions;
-using Nevermind.ByteCode.Instructions.ArithmeticIntsructions;
+using Nevermind.ByteCode.Instructions.ArithmeticInstructions;
 using Nevermind.ByteCode.InternalClasses;
 using System.Collections.Generic;
 using System.Linq;
@@ -235,7 +235,7 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
                     if (result.Instruction != null)
                     {
                         instructions.Add(result.Instruction);
-                        (result.Instruction as ArithmeticIntsruction).Result = resultVar;
+                        (result.Instruction as ArithmeticInstruction).Result = resultVar;
                     }
                     else
                     {

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Nevermind.ByteCode.Functions;
+using Nevermind.ByteCode.NMB;
 using Nevermind.ByteCode.Types;
 using Nevermind.Compiler;
 
@@ -9,10 +10,12 @@ namespace Nevermind.ByteCode.Instructions
     {
         public readonly Variable Variable;
 
-        public override List<byte> Serialize()
-        {
-            throw new System.NotImplementedException();
-        }
+        public override List<byte> Serialize() => ToBytes(
+            Variable.Serialize(),
+            Chunk.Int32ToBytes(Index)
+        );
+
+        public override InstructionType Type => InstructionType.BrEq;
 
         public override string InstructionName => "breq";
         public override int ParameterCount => 2;

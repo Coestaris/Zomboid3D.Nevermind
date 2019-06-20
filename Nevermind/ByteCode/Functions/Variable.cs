@@ -2,6 +2,7 @@
 using Nevermind.ByteCode.Types;
 using System.Collections.Generic;
 using System.Linq;
+using Nevermind.ByteCode.NMB;
 
 namespace Nevermind.ByteCode.Functions
 {
@@ -50,6 +51,22 @@ namespace Nevermind.ByteCode.Functions
                 return $"^{ConstIndex}";
             else
                 return $"tuple({string.Join(", ", Tuple.Select(p => p.ToSourceValue()))})";
+        }
+
+        public IEnumerable<byte> Serialize()
+        {
+            var a = new List<byte>();
+            if(VariableType == VariableType.Variable)
+            {
+                a.Add(0);
+                a.AddRange(Chunk.Int32ToBytes(Index));
+            }
+            else
+            {
+                a.Add(1);
+                a.AddRange(Chunk.Int32ToBytes(ConstIndex));
+            }
+            return a;
         }
     }
 }

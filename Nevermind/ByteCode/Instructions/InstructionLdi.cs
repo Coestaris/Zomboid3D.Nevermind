@@ -1,21 +1,26 @@
 using System.Collections.Generic;
 using Nevermind.ByteCode.Functions;
-using Nevermind.ByteCode.Instructions.ArithmeticIntsructions;
+using Nevermind.ByteCode.Instructions.ArithmeticInstructions;
+using Nevermind.ByteCode.NMB;
 using Nevermind.Compiler;
 
 namespace Nevermind.ByteCode.Instructions
 {
-    internal class InstructionLdi : ArithmeticIntsruction
+    internal class InstructionLdi : ArithmeticInstruction
     {
         public readonly Variable Src;
 
-        public override List<byte> Serialize()
-        {
-            throw new System.NotImplementedException();
-        }
+        public override List<byte> Serialize() => ToBytes(
+            Chunk.Int32ToBytes(Result.Index),
+            Src.Serialize()
+        );
+
+        public override InstructionType Type => InstructionType.Ldi;
 
         public override string InstructionName => "ldi";
+
         public override int ParameterCount => 2;
+
         public override string SourceValue() =>
             ToSourceValue(Result.ToSourceValue(), Src.ToSourceValue());
 

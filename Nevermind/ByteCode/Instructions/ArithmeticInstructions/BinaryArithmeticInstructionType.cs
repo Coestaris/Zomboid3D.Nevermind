@@ -1,6 +1,6 @@
-﻿namespace Nevermind.ByteCode.Instructions.ArithmeticIntsructions
+﻿namespace Nevermind.ByteCode.Instructions.ArithmeticInstructions
 {
-    internal enum BinaryArithmeticIntsructionType
+    internal enum BinaryArithmeticInstructionType
     {
         A_Add,
         A_Sub,
