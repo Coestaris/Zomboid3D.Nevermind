@@ -46,7 +46,7 @@ namespace Nevermind.ByteCode.NMB
         private UInt16 TypeToInt()
         {
             var strType = Types[Type];
-            return (UInt16)((strType[0] << 16) & 0xFF | strType[1] & 0xFF);
+            return (UInt16)((strType[1] << 8) | strType[0]);
         }
 
         public static byte[] Int32ToBytes(Int32 a) => UInt32ToBytes((UInt32) a);
@@ -57,10 +57,10 @@ namespace Nevermind.ByteCode.NMB
         {
             return new[]
             {
-                (byte) ((a << 0) & 0xFF),
-                (byte) ((a << 8) & 0xFF),
-                (byte) ((a << 16) & 0xFF),
-                (byte) ((a << 24) & 0xFF),
+                (byte) ((a >> 0) & 0xFF),
+                (byte) ((a >> 8) & 0xFF),
+                (byte) ((a >> 16) & 0xFF),
+                (byte) ((a >> 24) & 0xFF),
             };
         }
 
@@ -68,8 +68,8 @@ namespace Nevermind.ByteCode.NMB
         {
             return new[]
             {
-                (byte) ((a << 0) & 0xFF),
-                (byte) ((a << 8) & 0xFF),
+                (byte) ((a >> 0) & 0xFF),
+                (byte) ((a >> 8) & 0xFF),
             };
         }
     }

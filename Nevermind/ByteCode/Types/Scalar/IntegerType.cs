@@ -18,7 +18,7 @@ namespace Nevermind.ByteCode.Types.Scalar
 
         public long TrimValue(long l)
         {
-            return l & (2 << (TypeBase - 1 - (Signed ? 1 : 0)));
+            return l & ((2L << (TypeBase - 1 - (Signed ? 1 : 0))) - 1);
         }
 
         public override int GetBase()
@@ -36,7 +36,7 @@ namespace Nevermind.ByteCode.Types.Scalar
 
             var byteCount = TypeBase / 8;
             for (var i = 0; i < byteCount; i++)
-                list.Add((byte) ((trimmed << (i * 8)) & 0xFF));
+                list.Add((byte) ((trimmed >> (i * 8)) & 0xFF));
 
             return list;
         }

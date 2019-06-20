@@ -76,7 +76,7 @@ namespace Nevermind.ByteCode
 
         public Chunk GetHeaderChunk()
         {
-            var ch = new Chunk(ChunkType.TYPE);
+            var ch = new Chunk(ChunkType.HEAD);
             ch.Data.AddRange(Chunk.UInt16ToBytes(Codes.CurrentNMVersion));
             ch.Data.AddRange(Chunk.Int32ToBytes(Program.Imports.Count));
             ch.Data.AddRange(Chunk.Int32ToBytes(Program.Program.Instructions.Count));
