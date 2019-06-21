@@ -28,8 +28,8 @@ namespace NevermindTests
 
         public static void Main(string[] args)
         {
-            var source = NmSource.FromFile("../../../Examples/sample.nm");
-            var metadata = new NmMetadata("Sample Binary", "Example Nevermind Binary",
+            var source = NmSource.FromFile("../../../../Examples/sample.nm");
+            var metadata = new NmMetadata("Sample Binary", "Example NmCompiler Binary",
                 "Coestaris", DateTime.Now, 0, 1);
             var program = new NmProgram(source, metadata);
 
@@ -55,7 +55,7 @@ namespace NevermindTests
                 Console.WriteLine(program.Program.ToSource());
 
 
-                program.Program.SaveToFile("../../../Examples/sample.nmb");
+                program.Program.SaveToFile("../../../../Examples/sample.nmb");
                 Console.WriteLine("File saved!");
             }
 

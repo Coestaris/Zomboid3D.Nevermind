@@ -1,0 +1,4 @@
+/usr/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" /home/maxim/Coding/Zomboid3D.Nevermind/Runner
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/maxim/Coding/Zomboid3D.Nevermind/Runner/cmake-build-debug

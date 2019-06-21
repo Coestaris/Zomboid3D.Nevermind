@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.168
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NevermindTests", "NevermindTests\NevermindTests.csproj", "{56F5BF06-B57F-4D3B-9660-2FF0AB05902C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NmCompilerTests", "NmCompilerTests\NmCompilerTests.csproj", "{56F5BF06-B57F-4D3B-9660-2FF0AB05902C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nevermind", "Nevermind\Nevermind.csproj", "{143AF08C-5D4F-4E94-A88F-26C5F6D4C51F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NmCompiler", "NmCompiler\NmCompiler.csproj", "{143AF08C-5D4F-4E94-A88F-26C5F6D4C51F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{10869229-52EA-4846-8EB0-528F7AC2482B}"
 	ProjectSection(SolutionItems) = preProject

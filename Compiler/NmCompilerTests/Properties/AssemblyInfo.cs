@@ -4,11 +4,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Nevermind")]
+[assembly: AssemblyTitle("NmCompilerTests")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Nevermind")]
+[assembly: AssemblyProduct("NmCompilerTests")]
 [assembly: AssemblyCopyright("Copyright ©  2019")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -19,7 +19,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("143AF08C-5D4F-4E94-A88F-26C5F6D4C51F")]
+[assembly: Guid("56F5BF06-B57F-4D3B-9660-2FF0AB05902C")]
 
 // Version information for an assembly consists of the following four values:
 //
