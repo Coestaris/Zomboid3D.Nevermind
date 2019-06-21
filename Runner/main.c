@@ -1,7 +1,12 @@
 #include <stdio.h>
 
+#include "lib/parser.h"
+
 int main()
 {
-    printf("Hello, World!\n");
+    nmProgram_t* program = parser_fromFile("../../Examples/sample.nmb");
+    if(program == NULL)
+        nmPrintError();
+
     return 0;
 }

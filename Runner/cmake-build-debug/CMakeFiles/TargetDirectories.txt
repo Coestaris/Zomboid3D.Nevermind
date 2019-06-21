@@ -1,3 +1,0 @@
-/home/maxim/Coding/Zomboid3D.Nevermind/Runner/cmake-build-debug/CMakeFiles/rebuild_cache.dir
-/home/maxim/Coding/Zomboid3D.Nevermind/Runner/cmake-build-debug/CMakeFiles/NmRunner.dir
-/home/maxim/Coding/Zomboid3D.Nevermind/Runner/cmake-build-debug/CMakeFiles/edit_cache.dir

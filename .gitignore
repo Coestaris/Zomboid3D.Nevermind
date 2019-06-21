@@ -4,3 +4,4 @@ obj/
 *.user
 \.vs/
 *.nmb
+Runner/cmake-build-debug/
