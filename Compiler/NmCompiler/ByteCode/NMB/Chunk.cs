@@ -57,10 +57,10 @@ namespace Nevermind.ByteCode.NMB
         {
             return new[]
             {
-                (byte) ((a >> 24) & 0xFF),
-                (byte) ((a >> 16) & 0xFF),
-                (byte) ((a >> 8) & 0xFF),
                 (byte) ((a >> 0) & 0xFF),
+                (byte) ((a >> 8) & 0xFF),
+                (byte) ((a >> 16) & 0xFF),
+                (byte) ((a >> 24) & 0xFF),
             };
         }
 
@@ -68,8 +68,8 @@ namespace Nevermind.ByteCode.NMB
         {
             return new[]
             {
-                (byte) ((a >> 8) & 0xFF),
                 (byte) ((a >> 0) & 0xFF),
+                (byte) ((a >> 8) & 0xFF),
             };
         }
     }
