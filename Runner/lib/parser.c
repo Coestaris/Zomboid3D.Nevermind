@@ -6,26 +6,15 @@
 
 nmProgram_t* parser_fromFile(const char* filename)
 {
-    FILE* f = fopen(filename, "r");
-    if(!f)
+    FILE* file = fopen(filename, "rb");
+    if(!file)
     {
         nmPushErrorf("Unable to open file %s", filename);
         return NULL;
     }
-    nmProgram_t* result = parser_load(f);
-    if(fclose(f) == EOF)
-    {
-        nmPushErrorf("Unable to close file %s", filename);
-        return NULL;
-    }
 
-    return result;
-}
-
-nmProgram_t* parser_load(FILE* file)
-{
     uint8_t buffer[sizeof(nmbSignature)];
-    if(fread(buffer, 1, sizeof(nmbSignature), file) != sizeof(nmbSignature))
+    if(fread(buffer, sizeof(nmbSignature), 1, file) != 1)
     {
         nmPushError("Unable to read file signature");
         return NULL;
@@ -38,14 +27,14 @@ nmProgram_t* parser_load(FILE* file)
             return NULL;
         }
 
-    while(1)
+    while(!feof(file))
     {
         uint32_t len;
         uint32_t crc;
         uint16_t type;
         uint8_t* dataBuffer;
 
-        if(fread(&len, 1, sizeof(len), file) != sizeof(len))
+        if(fread(&len, sizeof(len), 1 ,file) != 1)
         {
             nmPushError("Unable to read chunk length from file");
             return NULL;
@@ -67,8 +56,18 @@ nmProgram_t* parser_load(FILE* file)
 
         if(fread(&dataBuffer, 1, sizeof(uint8_t) * len, file) != sizeof(uint8_t) * len)
         {
-            nmPushError("Unable to read data from file");
-            return NULL;
+             nmPushError("Unable to read data from file");
+             return NULL;
         }
+
+        free(dataBuffer);
     }
+
+    if(fclose(file) == EOF)
+    {
+        nmPushErrorf("Unable to close file %s", filename);
+        return NULL;
+    }
+
+    return NULL;
 }
