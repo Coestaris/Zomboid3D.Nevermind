@@ -55,7 +55,7 @@
   * **n * 4 bytes**: local types
   * **4 bytes**  : reg count
   * **m * 4 bytes**: reg types
-  <br>instruction forma t:
+  <br>instruction format:
     * **2 bytes**: instruction index
     * **4 * param count bytes**: parameters
 

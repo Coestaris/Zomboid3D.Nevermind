@@ -1,19 +1,27 @@
 {
-    "files.associations": {
-        "*.vsh": "glsl",
-        "*.fsh": "glsl",
-        "glut.h": "c",
-        "stdio.h": "c",
-        "ft2build.h": "c",
-        "shader.h": "c",
-        "freeglut.h": "c",
-        "freeglut_ext.h": "c",
-        "freeglut_std.h": "c",
-        "gl.h": "c",
-        "glu.h": "c",
-        "gl_mangle.h": "c",
-        "oil.h": "c",
-        "gmath.h": "c"
-    },
-    "glsllint.glslangValidatorPath": "~/Coding/glslang/install/bin/glslangValidator"
+  "files.associations": {
+    "*.vsh": "glsl",
+    "*.fsh": "glsl",
+    "glut.h": "c",
+    "stdio.h": "c",
+    "ft2build.h": "c",
+    "shader.h": "c",
+    "freeglut.h": "c",
+    "freeglut_ext.h": "c",
+    "freeglut_std.h": "c",
+    "gl.h": "c",
+    "glu.h": "c",
+    "gl_mangle.h": "c",
+    "oil.h": "c",
+    "gmath.h": "c",
+    "parser.h": "c"
+  },
+  "glsllint.glslangValidatorPath": "~/Coding/glslang/install/bin/glslangValidator",
+  "files.exclude": {
+    "build": true,
+    "cmake-build-debug": true,
+    ".vscode": true,
+    ".idea": true,
+    "CMakeLists.txt": true
+  }
 }
