@@ -2,9 +2,14 @@
 // Created by maxim on 6/24/19.
 //
 
+#ifndef NMRUNNER_CORETYPES_H
+#define NMRUNNER_CORETYPES_H
+
 #include <stdint.h>
+#include <stddef.h>
 
 #include "runtime/types.h"
+#include "runtime/instructions.h"
 
 typedef struct _nmFunction
 {
@@ -55,7 +60,11 @@ typedef struct _nmMetadata
 
 typedef struct _nmConstant
 {
+    nmType_t* typePtr;
+
     uint32_t typeIndex;
+    uint32_t len;
+
     void* value;
 
 } nmConstant_t;
@@ -76,7 +85,10 @@ typedef struct _nmProgram
     nmType_t** usedTypes;
 
     uint32_t constantCount;
-    nmConstant_t* constants;
+    nmConstant_t** constants;
 
 } nmProgram_t;
 
+void nmProgramFree(nmProgram_t* program);
+
+#endif //NMRUNNER_CORETYPES_H

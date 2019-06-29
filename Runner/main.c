@@ -8,9 +8,11 @@
 
 int main()
 {
-    nmProgram_t* program = parser_fromFile("../../Examples/sample.nmb");
+    nmProgram_t* program = nmParserFromFile("../../Examples/sample.nmb");
     if(program == NULL)
         nmPrintError();
+
+    nmProgramFree(program);
 
     return 0;
 }

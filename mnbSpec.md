@@ -1,32 +1,32 @@
 # .NMB File spec
 #### File Structure:
   * **3 bytes**: "nmb" signature
-  * **rest**   : chunks
+  * **rest**   : Chunks
 
 #### Chunk structure:
-  * **4 bytes**: length
-  * **4 bytes**: crc
-  * **2 bytes**: type
-  * **n bytes**: data
+  * **4 bytes**: Length
+  * **4 bytes**: CRC
+  * **2 bytes**: Type
+  * **n bytes**: Data
 
 #### Chunks:
 ###### "HE" - Header Chunk
   * **2 bytes**: NM version
-  * **4 bytes**: import count
-  * **4 bytes**: function count
+  * **4 bytes**: Import count
+  * **4 bytes**: Function count
   <br>Import format:
-     * **1 byte** : module type (0 = sys library, 1 = import)
-     * **4 bytes**: module name length (filename)
-     * **n bytes**: module name
+     * **1 byte** : Module type (0 = sys library, 1 = import)
+     * **4 bytes**: Module name length (filename)
+     * **n bytes**: Module name
 
 ###### "ME" - Metadata Chunk (optional) 
-  * **8 bytes**: compile date - time
-     * **1 byte** : second
-     * **1 byte** : minute
-     * **1 byte** : hour
-     * **1 byte** : day
-     * **1 byte** : month
-     * **2 bytes**: year
+  * **8 bytes**: Compile date - time
+     * **1 byte** : Second
+     * **1 byte** : Minute
+     * **1 byte** : Hour
+     * **1 byte** : Day
+     * **1 byte** : Nonth
+     * **2 bytes**: Year
   * **2 bytes**: Bianry name length
   * **n bytes**: Binary name
   * **2 bytes**: Binary description length
@@ -37,27 +37,28 @@
   * **2 bytes**: Binary Major verion
 
 ###### "TY" - Type Chunk 
-  * **4 bytes**: type count
+  * **4 bytes**: Type count
   <br>Type format:
-     * **2 bytes**: type signature
-     * **1 byte**:  type base
+     * **2 bytes**: Type signature
+     * **1 byte**:  Type base
 
 ###### "CO" - Constants Chunk 
-  * **4 bytes**: constant count
+  * **4 bytes**: Constant count
    <br>Constant format:
-     * **4 bytes**: type index
-   * **len * type base bytes**: value
+     * **4 bytes**: Type index
+     * **4 bytes**: Constant len
+     * **len * type base bytes**: Value
 
 ###### "FU" - Function chunk 
-  * **4 bytes**  : function index
-  * **4 bytes**  : instructions count
-  * **4 bytes**  : locals count
-  * **n * 4 bytes**: local types
-  * **4 bytes**  : reg count
-  * **m * 4 bytes**: reg types
-  <br>instruction format:
-    * **2 bytes**: instruction index
-    * **4 * param count bytes**: parameters
+  * **4 bytes**  : Function index
+  * **4 bytes**  : Instructions count
+  * **4 bytes**  : Locals count
+  * **n * 4 bytes**: Local types
+  * **4 bytes**  : Reg count
+  * **m * 4 bytes**: Reg types
+  <br>Instruction format:
+    * **2 bytes**: Instruction index
+    * **4 * param count**: Parameters
 
 
 #### Instructions format

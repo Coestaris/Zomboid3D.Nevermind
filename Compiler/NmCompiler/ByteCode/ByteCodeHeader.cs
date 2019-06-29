@@ -109,8 +109,9 @@ namespace Nevermind.ByteCode
             foreach (var constant in UsedConstants)
             {
                 ch.Data.AddRange(Chunk.Int32ToBytes(GetTypeIndex(constant.Constant.ToProgramType())));
-                if(constant.Constant.Type == ConstantType.String)
-                    ch.Data.AddRange(Chunk.Int32ToBytes(constant.Constant.SValue.Count));
+                ch.Data.AddRange(constant.Constant.Type == ConstantType.String
+                    ? Chunk.Int32ToBytes(constant.Constant.SValue.Count)
+                    : Chunk.Int32ToBytes(1));
                 ch.Data.AddRange(constant.Constant.Serialize());
             }
             return ch;

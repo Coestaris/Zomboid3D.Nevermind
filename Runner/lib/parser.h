@@ -39,7 +39,7 @@ static const chunkHanlder_t chunkHanlders[chunkHanldersCount] =
 
 uint16_t getChunkType(const  uint8_t array[2]);
 
-nmProgram_t* parser_fromFile(const char* filename);
-nmProgram_t* parser_load(FILE* file);
+nmProgram_t* nmParserFromFile(const char* filename);
+nmProgram_t* nmParserLoad(FILE* file);
 
 #endif //NMRUNNER_PARSER_H

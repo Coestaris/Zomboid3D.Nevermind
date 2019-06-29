@@ -14,7 +14,8 @@
     "gl_mangle.h": "c",
     "oil.h": "c",
     "gmath.h": "c",
-    "parser.h": "c"
+    "parser.h": "c",
+    "coretypes.h": "c"
   },
   "glsllint.glslangValidatorPath": "~/Coding/glslang/install/bin/glslangValidator",
   "files.exclude": {
