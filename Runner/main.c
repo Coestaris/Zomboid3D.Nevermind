@@ -5,6 +5,8 @@
 #include <stdio.h>
 
 #include "lib/parser.h"
+#include "lib/runtime/environment.h"
+
 
 int main()
 {
@@ -13,6 +15,14 @@ int main()
         nmPrintError();
 
     nmProgramPrint(program, stdout);
+
+    nmEnvironment_t* env = nmEnvCreate(program);
+    nmEnvSetStreams(env, stdout, stdin);
+
+    nmEnvExecute(env);
+    nmEnvDump(env, stdout);
+
+    nmEnvFree(env);
     nmProgramFree(program);
 
     return 0;

@@ -80,6 +80,8 @@ namespace Nevermind.ByteCode
             ch.Data.AddRange(Chunk.UInt16ToBytes(Codes.CurrentNMVersion));
             ch.Data.AddRange(Chunk.Int32ToBytes(Program.Imports.Count));
             ch.Data.AddRange(Chunk.Int32ToBytes(Program.Program.Instructions.Count));
+            ch.Data.AddRange(Chunk.Int32ToBytes(Program.Functions.Find(p => p.Modifier == FunctionModifier.Entrypoint).Index));
+
             foreach (var import in Program.Imports)
             {
                 ch.Data.Add(import.Library ? (byte)1 : (byte)0);

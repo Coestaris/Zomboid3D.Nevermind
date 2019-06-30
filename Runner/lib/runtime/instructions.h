@@ -8,10 +8,6 @@
 #include <stddef.h>
 #include <stdint.h>
 
-typedef struct _nmEnvironment {
-
-} nmEnvironment_t;
-
 typedef struct _nmInstruction;
 
 typedef enum _nmInstructionOperandType {
@@ -35,7 +31,6 @@ typedef struct _nmInstructionData {
 typedef struct _nmInstruction {
 
     nmInstructionData_t* dataPtr;
-    nmEnvironment_t* env;
 
     uint64_t* parameters;
 

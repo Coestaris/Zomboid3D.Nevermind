@@ -78,6 +78,8 @@ typedef struct _nmProgram
     uint32_t funcCount;
     nmFunction_t** functions;
 
+    uint32_t entryPointFuncIndex;
+
     uint32_t importCount;
     nmImport_t** imports;
 

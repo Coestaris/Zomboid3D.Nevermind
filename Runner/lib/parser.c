@@ -140,6 +140,7 @@ uint8_t chunkhandler_header(nmProgram_t* program, FILE* file)
     readValue(program->nmVersion);
     readValue(program->importCount);
     readValue(program->funcCount);
+    readValue(program->entryPointFuncIndex);
 
     program->imports = malloc(sizeof(nmImport_t) * program->importCount);
     program->functions = malloc(sizeof(nmFunction_t) * program->funcCount);
