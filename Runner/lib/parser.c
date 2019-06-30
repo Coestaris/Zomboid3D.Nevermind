@@ -184,7 +184,10 @@ uint8_t chunkhandler_types(nmProgram_t* program, FILE* file)
     for(size_t i = 0; i < count; i++)
     {
         program->usedTypes[i] = malloc(sizeof(nmType_t));
-        readValue(program->usedTypes[i]->typeSignature);
+        uint16_t signature;
+        readValue(signature);
+        program->usedTypes[i]->typeSignature = signature;
+
         readValue(program->usedTypes[i]->typeBase);
         program->usedTypes[i]->typeIndex = i;
         program->usedTypes[i]->typeBase /= 8;

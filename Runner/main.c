@@ -12,7 +12,7 @@ int main()
     if(program == NULL)
         nmPrintError();
 
-    nmProgramPrint(stdout);
+    nmProgramPrint(program, stdout);
     nmProgramFree(program);
 
     return 0;

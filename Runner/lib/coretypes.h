@@ -8,6 +8,7 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <malloc.h>
+#include <stdlib.h>
 
 #include "runtime/types.h"
 #include "runtime/instructions.h"
@@ -89,6 +90,9 @@ typedef struct _nmProgram
     nmConstant_t** constants;
 
 } nmProgram_t;
+
+char* nmConstantToStr(nmConstant_t* c);
+const char* nmTypeSignatureToStr(nmTypeSignature_t signature);
 
 void nmProgramFree(nmProgram_t* program);
 void nmProgramPrint(nmProgram_t* program, FILE* f);

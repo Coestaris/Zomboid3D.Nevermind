@@ -7,9 +7,17 @@
 
 #include <stdint.h>
 
+typedef enum _nmTypeSignature
+{
+    tInteger = 0x1,
+    tFloat = 0x2,
+    tString = 0x3
+
+} nmTypeSignature_t;
+
 typedef struct _nmType
 {
-    uint16_t typeSignature;
+    nmTypeSignature_t typeSignature;
     uint8_t typeBase;
     uint32_t typeIndex;
 
