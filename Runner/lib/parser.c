@@ -167,7 +167,7 @@ uint8_t chunkhandler_metadata(nmProgram_t* program, FILE* file)
 
     readStr(program->metadata->binaryName, uint16_t);
     readStr(program->metadata->binaryDescription, uint16_t);
-    readStr(program->metadata->binaryAutor, uint16_t);
+    readStr(program->metadata->binaryAuthor, uint16_t);
     
     readValue(program->metadata->minorVersion);
     readValue(program->metadata->majorVersion);
@@ -179,6 +179,7 @@ uint8_t chunkhandler_types(nmProgram_t* program, FILE* file)
 {
     uint32_t count;
     readValue(count);
+    program->usedTypesCount = count;
     program->usedTypes = malloc(sizeof(nmType_t*) * count);
     for(size_t i = 0; i < count; i++)
     {
@@ -195,6 +196,7 @@ uint8_t chunkhandler_constants(nmProgram_t* program, FILE* file)
 {
     uint32_t count;
     readValue(count);
+    program->constantCount = count;
     program->constants = malloc(sizeof(nmConstant_t*) * count);
     for(size_t i = 0; i < count; i++)
     {
@@ -215,6 +217,7 @@ uint8_t chunkhandler_functions(nmProgram_t* program, FILE* file)
 {
     uint32_t funcIndex;
     readValue(funcIndex);
+    program->functions[funcIndex] = malloc(sizeof(nmFunction_t));
     program->functions[funcIndex]->index = funcIndex;
     readValue(program->functions[funcIndex]->instructionsCount);
     readValue(program->functions[funcIndex]->localsCount);
@@ -234,8 +237,24 @@ uint8_t chunkhandler_functions(nmProgram_t* program, FILE* file)
     for(size_t i = 0; i < program->functions[funcIndex]->instructionsCount; i++)
     {
         program->functions[funcIndex]->instructions[i] = malloc(sizeof(nmInstruction_t));
-        readValue(program->functions[funcIndex]->instructions[i]->index);
-        
+        uint16_t index;
+        readValue(index);
+
+        program->functions[funcIndex]->instructions[i]->dataPtr = getInstructionData(index);
+
+        if(!program->functions[funcIndex]->instructions[i]->dataPtr)
+        {
+            return 0;
+        }
+
+        size_t count = getOperandsCount(program->functions[funcIndex]->instructions[i]->dataPtr);
+        program->functions[funcIndex]->instructions[i]->parameters = malloc(sizeof(uint64_t) * count);
+        for(size_t j = 0; j < count; j++)
+        {
+            program->functions[funcIndex]->instructions[i]->parameters[j] = 0;
+            if(fread(&program->functions[funcIndex]->instructions[i]->parameters[j],
+                    getOperandSize(program->functions[funcIndex]->instructions[i]->dataPtr->parameterTypes[j]), 1, file) != 1) return 0;
+        }
     }
 
     return 1;

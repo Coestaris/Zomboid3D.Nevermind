@@ -24,7 +24,7 @@ void nmProgramFree(nmProgram_t* program)
     }
     free(program->imports);
 
-    free(program->metadata->binaryAutor);
+    free(program->metadata->binaryAuthor);
     free(program->metadata->binaryName);
     free(program->metadata->binaryDescription);
     free(program->metadata);
@@ -43,4 +43,18 @@ void nmProgramFree(nmProgram_t* program)
     }    
     free(program->functions);
     free(program);
+}
+
+void nmProgramPrint(nmProgram_t* program, FILE* f)
+{
+    fprintf(f, "Metadata: ");
+    if(program.metadata == NULL)
+        fprintf(f, "none");
+    else
+    {
+        putc(f, '\n');
+        fprintf(f, "Binary Name: %s", program->metadata->binaryName);
+        fprintf(f, "Binary Author: %s", program->metadata->binaryAuthor);
+        fprintf(f, "Binary Name: %s", program->metadata->binaryDescription);
+    }
 }

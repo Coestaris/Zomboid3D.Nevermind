@@ -3,4 +3,4 @@ project(NmRunner C)
 
 set(CMAKE_C_STANDARD 99)
 
-add_executable(NmRunner main.c lib/parser.c lib/parser.h lib/nmError.c lib/nmError.h)
+add_executable(NmRunner main.c lib/parser.c lib/parser.h lib/nmError.c lib/nmError.h lib/runtime/instructions.c lib/program.c lib/coretypes.h)

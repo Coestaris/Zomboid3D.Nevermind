@@ -7,6 +7,7 @@
 
 #include <stdint.h>
 #include <stddef.h>
+#include <malloc.h>
 
 #include "runtime/types.h"
 #include "runtime/instructions.h"
@@ -49,7 +50,7 @@ typedef struct _nmMetadata
 {
     char* binaryName;
     char* binaryDescription;
-    char* binaryAutor;
+    char* binaryAuthor;
     
     uint16_t majorVersion;
     uint16_t minorVersion;
@@ -90,5 +91,6 @@ typedef struct _nmProgram
 } nmProgram_t;
 
 void nmProgramFree(nmProgram_t* program);
+void nmProgramPrint(nmProgram_t* program, FILE* f);
 
 #endif //NMRUNNER_CORETYPES_H
