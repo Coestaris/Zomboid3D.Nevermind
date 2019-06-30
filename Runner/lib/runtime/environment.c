@@ -7,16 +7,19 @@
 void nmEnvExecute(nmEnvironment_t* env)
 {
     nmCallableFunction_t** functions =  env->callableFunctions;
+    nmCallableInstruction_t* current;
+
     uint32_t pc = 0;
     uint32_t func = env->program->entryPointFuncIndex;
 
     env->programCounter = &pc;
     env->funcIndex = &func;
 
-    while(pc != functions[env->funcIndex]->instructionsCount)
+    while(pc != functions[func]->instructionsCount)
     {
-       [env->funcIndex]->
-        env->programCounter++;
+        current = functions[func]->callableInstructions[pc];
+        current->function(env, current->parameters);
+        pc++;
     }
 
     env->programCounter = NULL;
@@ -25,12 +28,42 @@ void nmEnvExecute(nmEnvironment_t* env)
 
 void nmEnvSetStreams(nmEnvironment_t* env, FILE* in, FILE* out)
 {
-
+    env->ins = in;
+    env->outs = out;
 }
 
 void nmEnvDump(nmEnvironment_t* env, FILE* f)
 {
+    for(size_t i = 0; i < env->program->funcCount; i++)
+    {
+        fprintf(f, "Variables of function #%i\n", env->program->functions[i]->index);
+        for(size_t j = 0; j < 
+            env->program->functions[i]->localsCount + 
+            env->program->functions[i]->regCount; 
+            j++)
+        {
+            uint8_t isLocal = j <= env->program->functions[i]->localsCount;
+            nmType_t* type = env->program->usedTypes[
+                    isLocal ? 
+                        env->program->functions[i]->localTypes[j] : 
+                        env->program->functions[i]->regTypes[j]
+                ];
 
+            char* sValue = nmConstantToStr(
+                env->callableFunctions[i]->locals[j], 
+                type);
+            
+            fprintf(f, " - %li: is %s of type %i. Value: %s (%p)\n", 
+                j,
+                isLocal ? "local" : "register",
+                type->typeIndex,
+                sValue,
+                env->callableFunctions[i]->locals[j]);
+
+            free(sValue);
+        }
+        
+    }
 }
 
 nmEnvironment_t* nmEnvCreate(nmProgram_t* program)
@@ -61,14 +94,16 @@ nmEnvironment_t* nmEnvCreate(nmProgram_t* program)
 
         env->callableFunctions[i] = malloc(sizeof(nmCallableFunction_t));
         env->callableFunctions[i]->locals = locals;
-        env->callableFunctions[i]->callableInstructions = malloc(sizeof(nmCallableInstruction_t*) * program->functions[i]->instructionsCount);
+        env->callableFunctions[i]->callableInstructions =
+                malloc(sizeof(nmCallableInstruction_t*) * program->functions[i]->instructionsCount);
         env->callableFunctions[i]->instructionsCount = program->functions[i]->instructionsCount;
 
         for(size_t instrIndex = 0; instrIndex < program->functions[i]->instructionsCount; instrIndex++)
         {
             size_t count = getOperandsCount(program->functions[i]->instructions[instrIndex]->dataPtr);
             env->callableFunctions[i]->callableInstructions[instrIndex] = malloc(sizeof(nmCallableInstruction_t));
-            env->callableFunctions[i]->callableInstructions[instrIndex]->function = NULL; //?
+            env->callableFunctions[i]->callableInstructions[instrIndex]->function =
+                    program->functions[i]->instructions[instrIndex]->dataPtr->function;
             env->callableFunctions[i]->callableInstructions[instrIndex]->paramCount = count;
             env->callableFunctions[i]->callableInstructions[instrIndex]->parameters = malloc(sizeof(uint64_t) * count);
 
@@ -101,7 +136,8 @@ nmEnvironment_t* nmEnvCreate(nmProgram_t* program)
                         else
                         {
                             env->callableFunctions[i]->callableInstructions[instrIndex]->parameters[counter++] =
-                                    program->constants[program->functions[i]->instructions[instrIndex]->parameters[parameterIndex]]->value;
+                                    program->constants[program->functions[i]->
+                                        instructions[instrIndex]->parameters[parameterIndex]]->value;
                         }
                         break;
                     }

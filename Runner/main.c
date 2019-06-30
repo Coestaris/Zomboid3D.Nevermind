@@ -12,7 +12,10 @@ int main()
 {
     nmProgram_t* program = nmParserFromFile("../../Examples/sample.nmb");
     if(program == NULL)
+    {
         nmPrintError();
+        return 1;
+    }
 
     nmProgramPrint(program, stdout);
 

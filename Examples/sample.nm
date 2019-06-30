@@ -5,16 +5,9 @@
 import systypes;
 import io;
 
-function integer func(a : integer, b : integer)
-{
-     return b + a * 2;
-}
-
 entrypoint function integer main()
 {
-   var a : integer = 4;
-   if(func(a * 2, a / 2) == 52)
-   {
-       a = ~a;
-   } 
+    var a: integer = 4;
+    var b: integer = 6;
+    var c: integer = a;
 }

@@ -303,6 +303,7 @@ namespace Nevermind.ByteCode
             var buffer = new List<byte>();
 
             buffer.AddRange(Codes.NMPSignature);
+            buffer.AddRange(Chunk.UInt16ToBytes((ushort) ((Program.Metadata == null ? 0 : 1) + 3 + Instructions.Count)));
             buffer.AddRange(Header.GetHeaderChunk().ToBytes());
             buffer.AddRange(Header.GetTypesChunk().ToBytes());
             buffer.AddRange(Header.GetConstChunk().ToBytes());

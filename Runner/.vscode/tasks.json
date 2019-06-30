@@ -10,6 +10,7 @@
             "-Wno-implicit-function-declaration",
             "main.c",
             "lib/*.c",
+            "lib/runtime/*.c",
             "-g", 
             "-o1",
             "-lm",

@@ -45,27 +45,27 @@ void nmProgramFree(nmProgram_t* program)
     free(program);
 }
 
-char* nmConstantToStr(nmConstant_t* c)
+char* nmConstantToStr(void* value, nmType_t* type)
 {
     char* result = NULL;
-    switch(c->typePtr->typeSignature)
+    switch(type->typeSignature)
     {
         case tInteger:
         {
-            uint64_t value = 0;
-            switch(c->typePtr->typeBase)
+            uint64_t i = 0;
+            switch(type->typeBase)
             {
-                case 1: value = *(uint8_t*)c->value;
+                case 1: i = *(uint8_t*)value;
                     break;
-                case 2: value = *(uint16_t*)c->value;
+                case 2: i = *(uint16_t*)value;
                     break;
-                case 4: value = *(uint32_t*)c->value;
+                case 4: i = *(uint32_t*)value;
                     break;
-                case 8: value = *(uint64_t*)c->value;
+                case 8: i = *(uint64_t*)value;
                     break;
             }
             result = malloc(10);
-            snprintf(result, 10, "%li", value);
+            snprintf(result, 10, "%li", i);
             break;
         }
         case tFloat:
@@ -127,7 +127,10 @@ void nmProgramPrint(nmProgram_t* program, FILE* f)
     fprintf(f, "Constants (%i): \n", program->constantCount);
     for(size_t i = 0; i < program->constantCount; i++)
     {
-        char* cValue = nmConstantToStr(program->constants[i]);
+        char* cValue = nmConstantToStr(
+            program->constants[i]->value,
+            program->constants[i]->typePtr);
+
         fprintf(f, " - %i:%i:%s\n",
                 program->constants[i]->typeIndex,
                 program->constants[i]->len,
@@ -148,12 +151,14 @@ void nmProgramPrint(nmProgram_t* program, FILE* f)
     {
         fprintf(f, "- Function#%i\n", program->functions[i]->index);
         fprintf(f, "  - Registers (%i): ", program->functions[i]->regCount);
+        if(program->functions[i]->regCount == 0) fputc('\n', f);
         for(size_t j = 0; j < program->functions[i]->regCount; j++)
         {
             fprintf(f, "%i%s", program->functions[i]->regTypes[j],
                     j == program->functions[i]->regCount - 1 ? "\n" : ", ");
         }
         fprintf(f, "  - Locals (%i): ", program->functions[i]->localsCount);
+        if(program->functions[i]->localsCount == 0) fputc('\n', f);
         for(size_t j = 0; j < program->functions[i]->localsCount; j++)
         {
             fprintf(f, "%i%s", program->functions[i]->localTypes[j],

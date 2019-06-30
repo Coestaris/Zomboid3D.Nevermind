@@ -21,8 +21,7 @@
   "files.exclude": {
     "build": true,
     "cmake-build-debug": true,
-    ".vscode": true,
-    ".idea": true,
-    "CMakeLists.txt": true
+    "CMakeLists.txt": true,
+    ".idea": true
   }
 }

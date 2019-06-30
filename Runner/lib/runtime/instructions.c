@@ -3,190 +3,191 @@
 //
 
 #include "instructions.h"
+#include "environment.h"
 
-void instruction_ret(nmInstruction_t* this)
+void instruction_ret(struct _nmEnvironment* env, void** data)
 {
-    //stub!
+    //stub
 }
 
-void instruction_push(nmInstruction_t* this)
+void instruction_push(struct _nmEnvironment* env, void** data)
 {
-    //stub!
+    pushStack(env->variableStack, data[0]);
 }
 
-void instruction_pop(nmInstruction_t* this)
+void instruction_pop(struct _nmEnvironment* env, void** data)
 {
-    //stub!
+    data[0] = popStack(env->variableStack);
 }
 
-void instruction_ldi(nmInstruction_t* this)
+void instruction_ldi(struct _nmEnvironment* env, void** data)
 {
-    //stub!
+    data[0] = data[1];
 }
 
-void instruction_jmp(nmInstruction_t* this)
+void instruction_jmp(struct _nmEnvironment* env, void** data)
 {
-    //stub!
+    *env->programCounter = *(uint32_t*)data[0];
 }
 
-void instruction_call(nmInstruction_t* this)
+void instruction_call(struct _nmEnvironment* env, void** data)
 {
-    //stub!
+    //stub
 }
 
-void instruction_breq(nmInstruction_t* this)
+void instruction_breq(struct _nmEnvironment* env, void** data)
 {
-    //stub!
+    //stub
 }
 
-void instruction_A_Add(nmInstruction_t* this)
+void instruction_A_Add(struct _nmEnvironment* env, void** data)
 {
-    //stub!
+    //stub
 }
 
-void instruction_A_Sub(nmInstruction_t* this)
+void instruction_A_Sub(struct _nmEnvironment* env, void** data)
 {
-    //stub!
+    //stub
 }
 
-void instruction_A_Mul(nmInstruction_t* this)
+void instruction_A_Mul(struct _nmEnvironment* env, void** data)
 {
-    //stub!
+    //stub
 }
 
-void instruction_A_Div(nmInstruction_t* this)
+void instruction_A_Div(struct _nmEnvironment* env, void** data)
 {
-    //stub!
+    //stub
 }
 
-void instruction_A_lseq(nmInstruction_t* this)
+void instruction_A_lseq(struct _nmEnvironment* env, void** data)
 {
-    //stub!
+    //stub
 }
 
-void instruction_A_ls(nmInstruction_t* this)
+void instruction_A_ls(struct _nmEnvironment* env, void** data)
 {
-    //stub!
+    //stub
 }
 
-void instruction_A_gr(nmInstruction_t* this)
+void instruction_A_gr(struct _nmEnvironment* env, void** data)
 {
-    //stub!
+    //stub
 }
 
-void instruction_A_greq(nmInstruction_t* this)
+void instruction_A_greq(struct _nmEnvironment* env, void** data)
 {
-    //stub!
+    //stub
 }
 
-void instruction_A_neq(nmInstruction_t* this)
+void instruction_A_neq(struct _nmEnvironment* env, void** data)
 {
-    //stub!
+    //stub
 }
 
-void instruction_A_eq(nmInstruction_t* this)
+void instruction_A_eq(struct _nmEnvironment* env, void** data)
 {
-    //stub!
+    //stub
 }
 
-void instruction_A_EDiv(nmInstruction_t* this)
+void instruction_A_EDiv(struct _nmEnvironment* env, void** data)
 {
-    //stub!
+    //stub
 }
 
-void instruction_A_LAnd(nmInstruction_t* this)
+void instruction_A_LAnd(struct _nmEnvironment* env, void** data)
 {
-    //stub!
+    //stub
 }
 
-void instruction_A_LOr(nmInstruction_t* this)
+void instruction_A_LOr(struct _nmEnvironment* env, void** data)
 {
-    //stub!
+    //stub
 }
 
-void instruction_A_And(nmInstruction_t* this)
+void instruction_A_And(struct _nmEnvironment* env, void** data)
 {
-    //stub!
+    //stub
 }
 
-void instruction_A_Xor(nmInstruction_t* this)
+void instruction_A_Xor(struct _nmEnvironment* env, void** data)
 {
-    //stub!
+    //stub
 }
 
-void instruction_A_Or(nmInstruction_t* this)
+void instruction_A_Or(struct _nmEnvironment* env, void** data)
 {
-    //stub!
+    //stub
 }
 
-void instruction_A_lsh(nmInstruction_t* this)
+void instruction_A_lsh(struct _nmEnvironment* env, void** data)
 {
-    //stub!
+    //stub
 }
 
-void instruction_A_rlh(nmInstruction_t* this)
+void instruction_A_rlh(struct _nmEnvironment* env, void** data)
 {
-    //stub!
+    //stub
 }
 
-void instruction_A_SetAdd(nmInstruction_t* this)
+void instruction_A_SetAdd(struct _nmEnvironment* env, void** data)
 {
-    //stub!
+    //stub
 }
 
-void instruction_A_SetSub(nmInstruction_t* this)
+void instruction_A_SetSub(struct _nmEnvironment* env, void** data)
 {
-    //stub!
+    //stub
 }
 
-void instruction_A_SetMul(nmInstruction_t* this)
+void instruction_A_SetMul(struct _nmEnvironment* env, void** data)
 {
-    //stub!
+    //stub
 }
 
-void instruction_A_SetDiv(nmInstruction_t* this)
+void instruction_A_SetDiv(struct _nmEnvironment* env, void** data)
 {
-    //stub!
+    //stub
 }
 
-void instruction_A_SetEDiv(nmInstruction_t* this)
+void instruction_A_SetEDiv(struct _nmEnvironment* env, void** data)
 {
-    //stub!
+    //stub
 }
 
-void instruction_A_SetAnd(nmInstruction_t* this)
+void instruction_A_SetAnd(struct _nmEnvironment* env, void** data)
 {
-    //stub!
+    //stub
 }
 
-void instruction_A_SetXor(nmInstruction_t* this)
+void instruction_A_SetXor(struct _nmEnvironment* env, void** data)
 {
-    //stub!
+    //stub
 }
 
-void instruction_A_SetOr(nmInstruction_t* this)
+void instruction_A_SetOr(struct _nmEnvironment* env, void** data)
 {
-    //stub!
+    //stub
 }
 
-void instruction_A_Set(nmInstruction_t* this)
+void instruction_A_Set(struct _nmEnvironment* env, void** data)
 {
-    //stub!
+    //stub
 }
 
-void instruction_A_Neg(nmInstruction_t* this)
+void instruction_A_Neg(struct _nmEnvironment* env, void** data)
 {
-    //stub!
+    //stub
 }
 
-void instruction_A_Not(nmInstruction_t* this)
+void instruction_A_Not(struct _nmEnvironment* env, void** data)
 {
-    //stub!
+    //stub
 }
 
-void instruction_A_BNeg(nmInstruction_t* this)
+void instruction_A_BNeg(struct _nmEnvironment* env, void** data)
 {
-    //stub!
+    //stub
 }
 
 nmInstructionData_t* getInstructionData(int instrIndex)

@@ -7,8 +7,9 @@
 
 #include <stddef.h>
 #include <stdint.h>
+//#include "environment.h"
 
-typedef struct _nmInstruction;
+struct _nmEnvironment;
 
 typedef enum _nmInstructionOperandType {
     varConstFlag     = 0x1,
@@ -24,55 +25,54 @@ typedef struct _nmInstructionData {
     const char* name;
     uint16_t index;
     nmInstructionOperandType_t parameterTypes[5];
-    void (*function)(struct _nmInstruction* instr);
+    void (*function)(struct _nmEnvironment* env, void** data);
 
 } nmInstructionData_t;
 
 typedef struct _nmInstruction {
 
     nmInstructionData_t* dataPtr;
-
     uint64_t* parameters;
 
 } nmInstruction_t;
 
-void instruction_ret(nmInstruction_t* this);
-void instruction_push(nmInstruction_t* this);
-void instruction_pop(nmInstruction_t* this);
-void instruction_ldi(nmInstruction_t* this);
-void instruction_jmp(nmInstruction_t* this);
-void instruction_call(nmInstruction_t* this);
-void instruction_breq(nmInstruction_t* this);
-void instruction_A_Add(nmInstruction_t* this);
-void instruction_A_Sub(nmInstruction_t* this);
-void instruction_A_Mul(nmInstruction_t* this);
-void instruction_A_Div(nmInstruction_t* this);
-void instruction_A_lseq(nmInstruction_t* this);
-void instruction_A_ls(nmInstruction_t* this);
-void instruction_A_gr(nmInstruction_t* this);
-void instruction_A_greq(nmInstruction_t* this);
-void instruction_A_neq(nmInstruction_t* this);
-void instruction_A_eq(nmInstruction_t* this);
-void instruction_A_EDiv(nmInstruction_t* this);
-void instruction_A_LAnd(nmInstruction_t* this);
-void instruction_A_LOr(nmInstruction_t* this);
-void instruction_A_And(nmInstruction_t* this);
-void instruction_A_Xor(nmInstruction_t* this);
-void instruction_A_Or(nmInstruction_t* this);
-void instruction_A_lsh(nmInstruction_t* this);
-void instruction_A_rlh(nmInstruction_t* this);
-void instruction_A_SetAdd(nmInstruction_t* this);
-void instruction_A_SetSub(nmInstruction_t* this);
-void instruction_A_SetMul(nmInstruction_t* this);
-void instruction_A_SetDiv(nmInstruction_t* this);
-void instruction_A_SetEDiv(nmInstruction_t* this);
-void instruction_A_SetAnd(nmInstruction_t* this);
-void instruction_A_SetXor(nmInstruction_t* this);
-void instruction_A_SetOr(nmInstruction_t* this);
-void instruction_A_Set(nmInstruction_t* this);
-void instruction_A_Neg(nmInstruction_t* this);
-void instruction_A_Not(nmInstruction_t* this);
-void instruction_A_BNeg(nmInstruction_t* this);
+void instruction_ret(struct _nmEnvironment* env, void** data);
+void instruction_push(struct _nmEnvironment* env, void** data);
+void instruction_pop(struct _nmEnvironment* env, void** data);
+void instruction_ldi(struct _nmEnvironment* env, void** data);
+void instruction_jmp(struct _nmEnvironment* env, void** data);
+void instruction_call(struct _nmEnvironment* env, void** data);
+void instruction_breq(struct _nmEnvironment* env, void** data);
+void instruction_A_Add(struct _nmEnvironment* env, void** data);
+void instruction_A_Sub(struct _nmEnvironment* env, void** data);
+void instruction_A_Mul(struct _nmEnvironment* env, void** data);
+void instruction_A_Div(struct _nmEnvironment* env, void** data);
+void instruction_A_lseq(struct _nmEnvironment* env, void** data);
+void instruction_A_ls(struct _nmEnvironment* env, void** data);
+void instruction_A_gr(struct _nmEnvironment* env, void** data);
+void instruction_A_greq(struct _nmEnvironment* env, void** data);
+void instruction_A_neq(struct _nmEnvironment* env, void** data);
+void instruction_A_eq(struct _nmEnvironment* env, void** data);
+void instruction_A_EDiv(struct _nmEnvironment* env, void** data);
+void instruction_A_LAnd(struct _nmEnvironment* env, void** data);
+void instruction_A_LOr(struct _nmEnvironment* env, void** data);
+void instruction_A_And(struct _nmEnvironment* env, void** data);
+void instruction_A_Xor(struct _nmEnvironment* env, void** data);
+void instruction_A_Or(struct _nmEnvironment* env, void** data);
+void instruction_A_lsh(struct _nmEnvironment* env, void** data);
+void instruction_A_rlh(struct _nmEnvironment* env, void** data);
+void instruction_A_SetAdd(struct _nmEnvironment* env, void** data);
+void instruction_A_SetSub(struct _nmEnvironment* env, void** data);
+void instruction_A_SetMul(struct _nmEnvironment* env, void** data);
+void instruction_A_SetDiv(struct _nmEnvironment* env, void** data);
+void instruction_A_SetEDiv(struct _nmEnvironment* env, void** data);
+void instruction_A_SetAnd(struct _nmEnvironment* env, void** data);
+void instruction_A_SetXor(struct _nmEnvironment* env, void** data);
+void instruction_A_SetOr(struct _nmEnvironment* env, void** data);
+void instruction_A_Set(struct _nmEnvironment* env, void** data);
+void instruction_A_Neg(struct _nmEnvironment* env, void** data);
+void instruction_A_Not(struct _nmEnvironment* env, void** data);
+void instruction_A_BNeg(struct _nmEnvironment* env, void** data);
 
 #define totalInstructionsCount 37
 
@@ -82,7 +82,7 @@ static nmInstructionData_t instructionsData[totalInstructionsCount] = {
         { "ret",        0x1,  { 0, 0, 0, 0, 0 },                                instruction_ret   }, // ret
         { "push",       0x2,  { varConstFlag, varConstIndex, 0, 0, 0 },         instruction_push  }, // push
         { "pop",        0x3,  { varIndex, 0, 0, 0, 0 },                         instruction_pop   }, // pop
-        { "ldi",        0x4,  { varIndex, varConstFlag, varIndex, 0, 0 },       instruction_ldi   }, // ldi
+        { "ldi",        0x4,  { varIndex, varConstFlag, varConstIndex, 0, 0 },       instruction_ldi   }, // ldi
         { "jmp",        0x5,  { jumpIndex, 0, 0, 0, 0 },                        instruction_jmp   }, // jmp
         { "call",       0x6,  { functionIndex, 0, 0, 0, 0 },                    instruction_call  }, // call
         { "breq",       0x7,  { varConstFlag, varConstIndex, jumpIndex, 0, 0 }, instruction_breq  }, // breq

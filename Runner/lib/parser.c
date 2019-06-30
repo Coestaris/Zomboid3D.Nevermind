@@ -27,7 +27,15 @@ nmProgram_t* nmParserLoad(FILE* file)
 
     nmProgram_t* program = malloc(sizeof(nmProgram_t));
 
-    while(!feof(file))
+    uint16_t chunkCount;
+    if(fread(&chunkCount, sizeof(chunkCount), 1 ,file) != 1)
+    {
+        nmPushError("Unable to read chunk count");
+        free(program);
+        return NULL;
+    }
+
+    for(size_t i = 0; i < chunkCount; i++)
     {
         uint32_t len;
         uint32_t crc;
@@ -36,24 +44,22 @@ nmProgram_t* nmParserLoad(FILE* file)
 
         if(fread(&len, sizeof(len), 1 ,file) != 1)
         {
-            if(feof(file))
-            {
-                break;
-            }
-
             nmPushError("Unable to read chunk length from file");
+            free(program);
             return NULL;
         }
 
         if(fread(&crc, sizeof(crc), 1, file) != 1)
         {
             nmPushError("Unable to read chunk crc from file");
+            free(program);
             return NULL;
         }
 
         if(fread(&type, sizeof(type), 1, file) != 1)
         {
             nmPushError("Unable to read chunk type from file");
+            free(program);
             return NULL;
         }
 
@@ -62,6 +68,8 @@ nmProgram_t* nmParserLoad(FILE* file)
         if(fread(dataBuffer, sizeof(uint8_t) * len, 1, file) != 1)
         {
              nmPushError("Unable to read data from file");
+             free(program);
+             free(dataBuffer);
              return NULL;
         }
 
@@ -76,15 +84,18 @@ nmProgram_t* nmParserLoad(FILE* file)
         if(handler == NULL)
         {
             nmPushErrorf("Unknown chunk type: %c%c", type & 0xFF, (type >> 8) & 0xFF);
+            free(program);
+            free(dataBuffer);
             return NULL;   
         }
 
-        printf("Found chunk %c%c\n", type & 0xFF, (type >> 8) & 0xFF);
+        printf("[%li\\%i]: Found chunk %c%c\n", i + 1, chunkCount, type & 0xFF, (type >> 8) & 0xFF);
 
         FILE* memStream = fmemopen(dataBuffer, len, "r");  
         if(!memStream)
         {
             nmPushError("Unable to open memstream");
+            free(program);
             free(dataBuffer);
             return NULL;
         }
@@ -92,9 +103,9 @@ nmProgram_t* nmParserLoad(FILE* file)
         if(!handler->hanlder(program, memStream))
         {
             nmPushError("Unable to parse chunk");
+            free(program);
             fclose(memStream);
             free(dataBuffer);
-            
             return NULL;
         }
 

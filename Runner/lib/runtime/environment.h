@@ -10,8 +10,6 @@
 #include "stack.h"
 #include "../coretypes.h"
 
-struct _nmEnvironment;
-
 typedef struct _nmCallableInstruction
 {
     void (*function)(struct _nmEnvironment* env, void** params);
@@ -36,6 +34,8 @@ typedef struct _nmEnvironment
     stack_t* pcStack;
     stack_t* variableStack;
 
+    FILE* outs;
+    FILE* ins;
 
     void* locals;
     void* registers;

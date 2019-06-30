@@ -1,6 +1,7 @@
 # .NMB File spec
 #### File Structure:
   * **3 bytes**: "nmb" signature
+  * **2 bytes**: Chunks count
   * **rest**   : Chunks
 
 #### Chunk structure:

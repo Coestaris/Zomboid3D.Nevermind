@@ -93,7 +93,7 @@ typedef struct _nmProgram
 
 } nmProgram_t;
 
-char* nmConstantToStr(nmConstant_t* c);
+char* nmConstantToStr(void* value, nmType_t* type);
 const char* nmTypeSignatureToStr(nmTypeSignature_t signature);
 
 void nmProgramFree(nmProgram_t* program);
