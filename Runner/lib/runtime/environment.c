@@ -88,17 +88,10 @@ void nmEnvDump(nmEnvironment_t* env, FILE* f)
     for(size_t i = 0; i < env->program->funcCount; i++)
     {
         fprintf(f, "Variables of function #%i\n", env->program->functions[i]->index);
-        for(size_t j = 0; j < 
-            env->program->functions[i]->localsCount + 
-            env->program->functions[i]->regCount; 
-            j++)
+        for(size_t j = 0; j < env->callableFunctions[i]->localsCount; j++)
         {
             uint8_t isLocal = j < env->program->functions[i]->localsCount;
-            nmType_t* type = env->program->usedTypes[
-                    isLocal ? 
-                        env->program->functions[i]->localTypes[j] : 
-                        env->program->functions[i]->regTypes[j - env->program->functions[i]->localsCount]
-                ];
+            nmType_t* type = env->callableFunctions[i]->localTypes[j];
 
             char* sValue = nmConstantToStr(
                 env->callableFunctions[i]->locals[j], 
@@ -141,21 +134,27 @@ nmEnvironment_t* nmEnvCreate(nmProgram_t* program)
     for(size_t i = 0; i < program->funcCount; i++)
     {
         void** locals = malloc(sizeof(void*) * (program->functions[i]->localsCount + program->functions[i]->regCount));
+        nmType_t** localTypes = malloc(sizeof(void*) * (program->functions[i]->localsCount + program->functions[i]->regCount));
         for(size_t localIndex = 0; localIndex < program->functions[i]->localsCount; localIndex++)
         {
             nmType_t* type = program->usedTypes[program->functions[i]->localTypes[localIndex]];
             locals[localIndex] = malloc(sizeof(type->typeBase));
+            localTypes[localIndex] = type;
             setDefaultValue(locals[localIndex], type);
         }
         for(size_t regIndex = 0; regIndex < program->functions[i]->regCount; regIndex++)
         {
             nmType_t* type = program->usedTypes[program->functions[i]->regTypes[regIndex]];
             locals[regIndex + program->functions[i]->localsCount] = malloc(sizeof(type->typeBase));
+            localTypes[regIndex + program->functions[i]->localsCount] = type;
             setDefaultValue(locals[regIndex + program->functions[i]->localsCount], type);
         }
 
         env->callableFunctions[i] = malloc(sizeof(nmCallableFunction_t));
+        env->callableFunctions[i]->localsCount = program->functions[i]->localsCount + program->functions[i]->regCount;
+        env->callableFunctions[i]->localTypes = localTypes;
         env->callableFunctions[i]->locals = locals;
+
         env->callableFunctions[i]->callableInstructions =
                 malloc(sizeof(nmCallableInstruction_t*) * program->functions[i]->instructionsCount);
         env->callableFunctions[i]->instructionsCount = program->functions[i]->instructionsCount;
@@ -225,5 +224,26 @@ nmEnvironment_t* nmEnvCreate(nmProgram_t* program)
 
 void nmEnvFree(nmEnvironment_t* env)
 {
+    freeStack(env->variableStack);
+    freeStack(env->pcStack);
+    freeStack(env->callStack);
+    for(size_t i = 0; i < env->program->funcCount; i++)
+    {
+        for(size_t j = 0; j < env->callableFunctions[i]->instructionsCount; j++)
+        {
+            free(env->callableFunctions[i]->callableInstructions[j]->parameters);
+            free(env->callableFunctions[i]->callableInstructions[j]);
+        }
+        free(env->callableFunctions[i]->callableInstructions);
+        for(size_t j = 0; j < env->callableFunctions[i]->localsCount; j++)
+        {
+            free(env->callableFunctions[i]->locals[j]);
+        }
 
+        free(env->callableFunctions[i]->locals);
+        free(env->callableFunctions[i]->localTypes);
+        free(env->callableFunctions[i]);
+    }
+    free(env->callableFunctions);
+    free(env);
 }

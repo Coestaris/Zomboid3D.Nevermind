@@ -92,6 +92,36 @@ namespace Nevermind.ByteCode
             return ch;
         }
 
+        public Chunk GetDebugChunk()
+        {
+            var ch = new Chunk(ChunkType.DEBUG);
+            if (Program.Source.FileName != null)
+            {
+                ch.Data.AddRange(Chunk.Int32ToBytes(Program.Source.FileName.Length));
+                ch.Data.AddRange(Program.Source.FileName.Select(p => (byte) p));
+            }
+            else
+            {
+                ch.Data.AddRange(Chunk.Int32ToBytes(0));
+            }
+
+            foreach (var func in Program.Functions)
+            {
+                ch.Data.AddRange(Chunk.Int32ToBytes(func.Name.Length));
+                ch.Data.AddRange(func.Name.Select(p => (byte)p));
+                ch.Data.AddRange(Chunk.Int32ToBytes(func.Token.LineIndex));
+                ch.Data.AddRange(Chunk.Int32ToBytes(func.Token.LineOffset));
+                foreach (var variable in func.LocalVariables)
+                {
+                    ch.Data.AddRange(Chunk.Int32ToBytes(variable.Name.Length));
+                    ch.Data.AddRange(variable.Name.Select(p => (byte)p));
+                    ch.Data.AddRange(Chunk.Int32ToBytes(variable.Token.LineIndex));
+                    ch.Data.AddRange(Chunk.Int32ToBytes(variable.Token.LineOffset));
+                }
+            }
+            return ch;
+        }
+
         public Chunk GetTypesChunk()
         {
             var ch = new Chunk(ChunkType.TYPE);

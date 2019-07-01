@@ -31,7 +31,7 @@ namespace NevermindTests
             var source = NmSource.FromFile("../../../../Examples/sample.nm");
             var metadata = new NmMetadata("Sample Binary", "Example NmCompiler Binary",
                 "Coestaris", DateTime.Now, 0, 1);
-            var program = new NmProgram(source, metadata);
+            var program = new NmProgram(source, metadata) { SaveDebugInfo = true };
 
             CompileError error;
             if ((error = program.Parse()) != null)

@@ -12,6 +12,7 @@ namespace Nevermind.ByteCode.Functions
         public readonly string Name;
         public readonly BlockLexeme RawLexeme;
         public FunctionModifier Modifier;
+        public Token Token;
 
         public Type ReturnType;
         public List<FunctionParameter> Parameters;

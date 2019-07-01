@@ -6,6 +6,7 @@ namespace Nevermind.ByteCode.NMB
         METADATA,
         TYPE,
         CONST,
-        FUNC
+        FUNC,
+        DEBUG,
     }
 }

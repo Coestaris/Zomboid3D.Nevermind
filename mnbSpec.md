@@ -11,7 +11,7 @@
   * **n bytes**: Data
 
 #### Chunks:
-###### "HE" - Header Chunk
+###### "HE" - Header Chunk (unique, required)
   * **2 bytes**: NM version
   * **4 bytes**: Import count
   * **4 bytes**: Function count
@@ -21,7 +21,7 @@
      * **4 bytes**: Module name length (filename)
      * **n bytes**: Module name
 
-###### "ME" - Metadata Chunk (optional) 
+###### "ME" - Metadata Chunk (unique)
   * **8 bytes**: Compile date - time
      * **1 byte** : Second
      * **1 byte** : Minute
@@ -38,20 +38,20 @@
   * **2 bytes**: Binary Minor verion
   * **2 bytes**: Binary Major verion
 
-###### "TY" - Type Chunk 
+###### "TY" - Type Chunk (unique, required)
   * **4 bytes**: Type count
   <br>Type format:
      * **2 bytes**: Type signature
      * **1 byte**:  Type base
 
-###### "CO" - Constants Chunk 
+###### "CO" - Constants Chunk (unique, required)
   * **4 bytes**: Constant count
    <br>Constant format:
      * **4 bytes**: Type index
      * **4 bytes**: Constant len
      * **len * type base bytes**: Value
 
-###### "FU" - Function chunk 
+###### "FU" - Function chunk (required)
   * **4 bytes**  : Function index
   * **4 bytes**  : Instructions count
   * **4 bytes**  : Locals count
@@ -62,6 +62,19 @@
     * **2 bytes**: Instruction index
     * **4 * param count**: Parameters
 
+###### "DE" - Debug information (unique)
+  * **4 bytes**: Source filename length (if compiled from text = 0)
+  * **n bytes**: Source filename
+  For every function in chunk order
+  * **4 bytes**: Function name length
+  * **n bytes**: Function name
+  * **4 bytes**: Function definition line index
+  * **4 bytes**: Function definition char index
+  <br>Locals info:
+     * **4 bytes**: Local name length
+     * **n bytes**: Local name
+     * **4 bytes**: Local definition line index
+     * **4 bytes**: Local definition char index
 
 #### Instructions format
 ###### ret (0x1)

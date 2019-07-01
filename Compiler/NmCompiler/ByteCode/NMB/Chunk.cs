@@ -40,7 +40,8 @@ namespace Nevermind.ByteCode.NMB
             {ChunkType.METADATA, "ME"},
             {ChunkType.TYPE, "TY"},
             {ChunkType.CONST, "CO"},
-            {ChunkType.FUNC, "FU"}
+            {ChunkType.FUNC, "FU"},
+            {ChunkType.DEBUG, "DE"}
         };
 
         private UInt16 TypeToInt()

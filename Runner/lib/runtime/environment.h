@@ -22,6 +22,9 @@ typedef struct _nmCallableFunction
 {
     size_t instructionsCount;
     nmCallableInstruction_t** callableInstructions;
+
+    size_t localsCount;
+    nmType_t** localTypes;
     void** locals;
 
 } nmCallableFunction_t;

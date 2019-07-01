@@ -19,6 +19,7 @@ namespace Nevermind
         internal Module Module;
 
         public NmMetadata Metadata;
+        public bool SaveDebugInfo;
 
         internal List<Import> Imports;
         internal List<Variable> ProgramLocals;

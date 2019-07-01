@@ -143,7 +143,10 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes
                 if ((error = ByteCode.Types.Type.GetType(program, ReturnType, out returnType)) != null) return error;
             if ((error = GetParameterList(program, out parameters)) != null) return error;
 
-            func = new Function(program, Name.StringValue, Modifier, returnType, Block.Scope, parameters, Block);
+            func = new Function(program, Name.StringValue, Modifier, returnType, Block.Scope, parameters, Block)
+            {
+                Token = Name
+            };
             return null;
         }
     }

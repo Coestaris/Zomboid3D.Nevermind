@@ -8,11 +8,11 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NmCompiler", "NmCompiler\NmCompiler.csproj", "{143AF08C-5D4F-4E94-A88F-26C5F6D4C51F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{10869229-52EA-4846-8EB0-528F7AC2482B}"
-	ProjectSection(SolutionItems) = preProject
-		.gitignore = .gitignore
-		LICENSE = LICENSE
-		README.md = README.md
-	EndProjectSection
+ProjectSection(SolutionItems) = preProject
+	..\LICENSE = ..\LICENSE
+	..\mnbSpec.md = ..\mnbSpec.md
+	..\README.md = ..\README.md
+EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
