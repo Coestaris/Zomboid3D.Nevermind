@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace Nevermind.Compiler
 {
-    internal struct TokenIterator<T>
+    public struct TokenIterator<T>
     {
         private readonly List<T> _list;
         public T Current;

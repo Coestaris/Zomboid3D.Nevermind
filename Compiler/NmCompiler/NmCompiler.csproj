@@ -40,7 +40,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CLParser\HelpProviderAttribute.cs" />
+    <Compile Include="CLParser\ArgumentParser.cs" />
+    <Compile Include="CLParser\Flag.cs" />
+    <Compile Include="CLParser\FlagAttribute.cs" />
+    <Compile Include="CLParser\InlineValue.cs" />
+    <Compile Include="CLParser\InlineValueAttribute.cs" />
+    <Compile Include="CLParser\Value.cs" />
+    <Compile Include="CLParser\ValueAttribute.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
