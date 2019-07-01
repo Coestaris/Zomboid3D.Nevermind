@@ -12,22 +12,22 @@ void instruction_ret(struct _nmEnvironment* env, void** data)
 
 void instruction_push(struct _nmEnvironment* env, void** data)
 {
-    pushStack(env->variableStack, data[0]);
+    pushStack(env->variableStack, (void*)(*(uint64_t*)data[0]));
 }
 
 void instruction_pop(struct _nmEnvironment* env, void** data)
 {
-    data[0] = popStack(env->variableStack);
+    *(uint32_t*)data[0] = *(uint32_t*)popStack(env->variableStack);
 }
 
 void instruction_ldi(struct _nmEnvironment* env, void** data)
 {
-    data[0] = data[1];
+    *(uint32_t*)data[0] = *(uint32_t*)data[1];
 }
 
 void instruction_jmp(struct _nmEnvironment* env, void** data)
 {
-    *env->programCounter = *(uint32_t*)data[0];
+    *env->programCounter = *(uint64_t*)data[0];
 }
 
 void instruction_call(struct _nmEnvironment* env, void** data)
@@ -42,17 +42,17 @@ void instruction_breq(struct _nmEnvironment* env, void** data)
 
 void instruction_A_Add(struct _nmEnvironment* env, void** data)
 {
-    //stub
+    *(uint32_t*)data[0] = *(uint32_t*)data[1] + *(uint32_t*)data[2];
 }
 
 void instruction_A_Sub(struct _nmEnvironment* env, void** data)
 {
-    //stub
+    *(uint32_t*)data[0] = *(uint32_t*)data[1] - *(uint32_t*)data[2];
 }
 
 void instruction_A_Mul(struct _nmEnvironment* env, void** data)
 {
-    //stub
+    *(uint32_t*)data[0] = *(uint32_t*)data[1] * *(uint32_t*)data[2];
 }
 
 void instruction_A_Div(struct _nmEnvironment* env, void** data)

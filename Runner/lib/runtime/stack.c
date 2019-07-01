@@ -36,3 +36,14 @@ void pushStack(stack_t* stack, void* value)
 
     stack->stack[stack->position++] = value;
 }
+
+void printStack(stack_t* stack, FILE* file)
+{
+    if(stack->position == 0)
+        fprintf(file, "empty\n");
+    else
+    {
+        for(size_t i = 0; i < stack->position; i++)
+            fprintf(file, "%p%s", stack->stack[i], i == stack->position - 1 ? "\n" : ", ");
+    }
+}

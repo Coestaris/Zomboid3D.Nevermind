@@ -2,7 +2,52 @@
 // Created by maxim on 6/30/19.
 //
 
+#include <math.h>
 #include "environment.h"
+
+void setDefaultValue(void* var, nmType_t* type)
+{
+    switch(type->typeSignature)
+    {
+        case tInteger:
+        {
+            switch(type->typeBase)
+            {
+                case 1:
+                    *(uint8_t*)var = 0;
+                    break;
+                case 2:
+                    *(uint16_t*)var = 0;
+                    break;
+                case 4:
+                    *(uint32_t*)var = 0;
+                    break;
+                case 8:
+                    *(uint64_t*)var = 0ul;
+                    break;
+            }
+            break;
+        }
+        case tFloat:
+        {
+            switch(type->typeBase)
+            {
+                case 4:
+                    *(float*)var = 0.0f;
+                    break;
+                case 8:
+                    *(double*)var = 0.0;
+                    break;
+            }
+            break;
+        }
+        case tString:
+        {
+            //hm...
+            break;
+        }
+    }
+}
 
 void nmEnvExecute(nmEnvironment_t* env)
 {
@@ -11,6 +56,8 @@ void nmEnvExecute(nmEnvironment_t* env)
 
     uint32_t pc = 0;
     uint32_t func = env->program->entryPointFuncIndex;
+
+    pushStack(env->callStack, &func);
 
     env->programCounter = &pc;
     env->funcIndex = &func;
@@ -21,6 +68,8 @@ void nmEnvExecute(nmEnvironment_t* env)
         current->function(env, current->parameters);
         pc++;
     }
+
+    popStack(env->callStack);
 
     env->programCounter = NULL;
     env->funcIndex = NULL;
@@ -34,6 +83,8 @@ void nmEnvSetStreams(nmEnvironment_t* env, FILE* in, FILE* out)
 
 void nmEnvDump(nmEnvironment_t* env, FILE* f)
 {
+    fputs("===Memory Dump===\n\n", f);
+
     for(size_t i = 0; i < env->program->funcCount; i++)
     {
         fprintf(f, "Variables of function #%i\n", env->program->functions[i]->index);
@@ -42,11 +93,11 @@ void nmEnvDump(nmEnvironment_t* env, FILE* f)
             env->program->functions[i]->regCount; 
             j++)
         {
-            uint8_t isLocal = j <= env->program->functions[i]->localsCount;
+            uint8_t isLocal = j < env->program->functions[i]->localsCount;
             nmType_t* type = env->program->usedTypes[
                     isLocal ? 
                         env->program->functions[i]->localTypes[j] : 
-                        env->program->functions[i]->regTypes[j]
+                        env->program->functions[i]->regTypes[j - env->program->functions[i]->localsCount]
                 ];
 
             char* sValue = nmConstantToStr(
@@ -62,8 +113,17 @@ void nmEnvDump(nmEnvironment_t* env, FILE* f)
 
             free(sValue);
         }
-        
     }
+    fputc('\n', f);
+
+    fprintf(f, "Variable Stack: ");
+    printStack(env->variableStack, f);
+    fprintf(f, "Call Stack: ");
+    printStack(env->callStack, f);
+    fprintf(f, "PC Stack: ");
+    printStack(env->pcStack, f);
+    fputc('\n', f);
+
 }
 
 nmEnvironment_t* nmEnvCreate(nmProgram_t* program)
@@ -85,11 +145,13 @@ nmEnvironment_t* nmEnvCreate(nmProgram_t* program)
         {
             nmType_t* type = program->usedTypes[program->functions[i]->localTypes[localIndex]];
             locals[localIndex] = malloc(sizeof(type->typeBase));
+            setDefaultValue(locals[localIndex], type);
         }
         for(size_t regIndex = 0; regIndex < program->functions[i]->regCount; regIndex++)
         {
             nmType_t* type = program->usedTypes[program->functions[i]->regTypes[regIndex]];
-            locals[regIndex] = malloc(sizeof(type->typeBase));
+            locals[regIndex + program->functions[i]->localsCount] = malloc(sizeof(type->typeBase));
+            setDefaultValue(locals[regIndex + program->functions[i]->localsCount], type);
         }
 
         env->callableFunctions[i] = malloc(sizeof(nmCallableFunction_t));
@@ -143,14 +205,14 @@ nmEnvironment_t* nmEnvCreate(nmProgram_t* program)
                     }
                     case functionIndex:
                     {
-                        env->callableFunctions[i]->callableInstructions[instrIndex]->parameters[counter++] =
-                                &program->functions[i]->instructions[instrIndex]->parameters[parameterIndex];
+                        *(uint64_t*)env->callableFunctions[i]->callableInstructions[instrIndex]->parameters[counter++]
+                            = program->functions[i]->instructions[instrIndex]->parameters[parameterIndex];
                         break;
                     }
                     case jumpIndex:
                     {
-                        env->callableFunctions[i]->callableInstructions[instrIndex]->parameters[counter++] =
-                                &program->functions[i]->instructions[instrIndex]->parameters[parameterIndex];
+                        *(uint64_t*)env->callableFunctions[i]->callableInstructions[instrIndex]->parameters[counter++]
+                                = program->functions[i]->instructions[instrIndex]->parameters[parameterIndex];
                         break;
                     }
                 }

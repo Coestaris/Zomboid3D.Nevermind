@@ -37,15 +37,14 @@ typedef struct _nmEnvironment
     FILE* outs;
     FILE* ins;
 
-    void* locals;
-    void* registers;
-
     nmCallableFunction_t** callableFunctions;
 
     uint32_t* funcIndex;
     uint32_t* programCounter;
 
 } nmEnvironment_t;
+
+void setDefaultValue(void* var, nmType_t* type);
 
 void nmEnvExecute(nmEnvironment_t* env);
 void nmEnvSetStreams(nmEnvironment_t* env, FILE* in, FILE* out);
