@@ -7,3 +7,5 @@ obj/
 \.vs/
 *.nmb
 Runner/cmake-build-debug/
+
+Compiler/packages/
