@@ -96,6 +96,7 @@ namespace Nevermind.Compiler
                     if (LineIndex == -1)
                     {
                         Type = TokenType.Identifier;
+                        return;
                     }
 
                     bool found = false;

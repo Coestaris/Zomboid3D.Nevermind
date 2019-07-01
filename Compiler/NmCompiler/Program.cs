@@ -29,7 +29,7 @@ namespace NevermindTests
         public static void Main(string[] args)
         {
             var source = NmSource.FromFile("../../../../Examples/sample.nm");
-            var metadata = new NmMetadata("Sample Binary", "Example NmCompiler Binary",
+            var metadata = new NmMetadata("Sample Binary", "Example NmCompilerLib Binary",
                 "Coestaris", DateTime.Now, 0, 1);
             var program = new NmProgram(source, metadata) { SaveDebugInfo = true };
 

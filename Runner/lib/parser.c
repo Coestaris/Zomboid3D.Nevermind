@@ -74,6 +74,15 @@ nmProgram_t* nmParserLoad(FILE* file)
              return NULL;
         }
 
+        uint32_t dataCrc = crc32(dataBuffer, len);
+        if(dataCrc != crc)
+        {
+            nmPushErrorf("CRCs doesnt match. Calculated %X but expected %X", dataCrc, crc);
+            free(program);
+            free(dataBuffer);
+            return NULL;
+        }
+
         chunkHanlder_t* handler = NULL;
         for(size_t i = 0; i < chunkHanldersCount; i++)
             if(getChunkType(chunkHanlders[i].chunktype) == type)
@@ -87,10 +96,11 @@ nmProgram_t* nmParserLoad(FILE* file)
             nmPushErrorf("Unknown chunk type: %c%c", type & 0xFF, (type >> 8) & 0xFF);
             free(program);
             free(dataBuffer);
-            return NULL;   
+            return NULL;
         }
 
         printf("[%li\\%i]: Found chunk %c%c\n", i + 1, chunkCount, type & 0xFF, (type >> 8) & 0xFF);
+
 
         FILE* memStream = fmemopen(dataBuffer, len, "r");  
         if(!memStream)

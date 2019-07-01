@@ -22,7 +22,6 @@ namespace Nevermind
         public static NmSource FromFile(string fileName)
         {
             return new NmSource(null, fileName);
-
         }
 
         public static NmSource FromFile(FileInfo fi)

@@ -1,0 +1,134 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{143AF08C-5D4F-4E94-A88F-26C5F6D4C51F}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Nevermind</RootNamespace>
+    <AssemblyName>NmCompilerLib</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ByteCode\Instructions\InstructionCall.cs" />
+    <Compile Include="ByteCode\Instructions\InstructionPush.cs" />
+    <Compile Include="ByteCode\Instructions\InstructionPop.cs" />
+    <Compile Include="ByteCode\InstructionType.cs" />
+    <Compile Include="ByteCode\InternalClasses\FunctionInstruction.cs" />
+    <Compile Include="ByteCode\InternalClasses\NumberedVariable.cs" />
+    <Compile Include="ByteCode\InternalClasses\NumeratedConstant.cs" />
+    <Compile Include="ByteCode\InternalClasses\NumeratedType.cs" />
+    <Compile Include="ByteCode\NMB\Chunk.cs" />
+    <Compile Include="ByteCode\NMB\ChunkType.cs" />
+    <Compile Include="ByteCode\NMB\Codes.cs" />
+    <Compile Include="ByteCode\NMB\CRC32.cs" />
+    <Compile Include="ByteCode\NumeratedConstant.cs" />
+    <Compile Include="ByteCode\Types\BuiltInTypes.cs" />
+    <Compile Include="ByteCode\ByteCode.cs" />
+    <Compile Include="ByteCode\ByteCodeHeader.cs" />
+    <Compile Include="ByteCode\Functions\Function.cs" />
+    <Compile Include="ByteCode\Functions\FunctionModifier.cs" />
+    <Compile Include="ByteCode\Functions\FunctionParameter.cs" />
+    <Compile Include="ByteCode\Functions\Variable.cs" />
+    <Compile Include="ByteCode\Instruction.cs" />
+    <Compile Include="ByteCode\Instructions\ArithmeticInstructions\ArithmeticInstruction.cs" />
+    <Compile Include="ByteCode\Instructions\ArithmeticInstructions\BinaryArithmeticInstructionType.cs" />
+    <Compile Include="ByteCode\Instructions\ArithmeticInstructions\UnaryArithmeticInstructionType.cs" />
+    <Compile Include="ByteCode\Instructions\InstructionBrEq.cs" />
+    <Compile Include="ByteCode\Instructions\InstructionJmp.cs" />
+    <Compile Include="ByteCode\Instructions\InstructionRet.cs" />
+    <Compile Include="ByteCode\Instructions\ArithmeticInstructions\UnaryArithmeticInstruction.cs" />
+    <Compile Include="ByteCode\Instructions\ArithmeticInstructions\BinaryArithmeticInstruction.cs" />
+    <Compile Include="ByteCode\Instructions\InstructionLdi.cs" />
+    <Compile Include="ByteCode\InternalClasses\NamedType.cs" />
+    <Compile Include="ByteCode\Types\Type.cs" />
+    <Compile Include="ByteCode\Types\TypeID.cs" />
+    <Compile Include="ByteCode\Types\Scalar\FloatType.cs" />
+    <Compile Include="ByteCode\Types\Scalar\IntegerType.cs" />
+    <Compile Include="ByteCode\Types\Scalar\StringType.cs" />
+    <Compile Include="Compiler\CompileError.cs" />
+    <Compile Include="Compiler\CompileErrorType.cs" />
+    <Compile Include="Compiler\Formats\Constants\BinConstantFormat.cs" />
+    <Compile Include="Compiler\Formats\Constants\Constant.cs" />
+    <Compile Include="Compiler\Formats\Constants\ConstantFormat.cs" />
+    <Compile Include="Compiler\Formats\Constants\ConstantType.cs" />
+    <Compile Include="Compiler\Formats\Constants\DecConstantFormat.cs" />
+    <Compile Include="Compiler\Formats\Constants\FloatConstantFormat.cs" />
+    <Compile Include="Compiler\Formats\Constants\HexConstantFormat.cs" />
+    <Compile Include="Compiler\Formats\Constants\OctConstantFormat.cs" />
+    <Compile Include="Compiler\Formats\IdentifierFormat.cs" />
+    <Compile Include="Compiler\Formats\StringFormat.cs" />
+    <Compile Include="Compiler\LexemeParsing\ComplexLexeme.cs" />
+    <Compile Include="Compiler\LexemeParsing\Lexeme.cs" />
+    <Compile Include="Compiler\LexemeParsing\LexemeInfo.cs" />
+    <Compile Include="Compiler\LexemeParsing\LexemePatternToken.cs" />
+    <Compile Include="Compiler\LexemeParsing\Lexemes\BlockLexeme.cs" />
+    <Compile Include="Compiler\LexemeParsing\Lexemes\ExpressionLexeme.cs" />
+    <Compile Include="Compiler\LexemeParsing\Lexemes\Expressions\ExpressionLineItem.cs" />
+    <Compile Include="Compiler\LexemeParsing\Lexemes\Expressions\ExpressionToken.cs" />
+    <Compile Include="Compiler\LexemeParsing\Lexemes\Expressions\Operator.cs" />
+    <Compile Include="Compiler\LexemeParsing\Lexemes\Expressions\OperatorOperands.cs" />
+    <Compile Include="Compiler\LexemeParsing\Lexemes\Expressions\OperatorResult.cs" />
+    <Compile Include="Compiler\LexemeParsing\Lexemes\FunctionLexeme.cs" />
+    <Compile Include="Compiler\LexemeParsing\Lexemes\ElseLexeme.cs" />
+    <Compile Include="Compiler\LexemeParsing\Lexemes\IfLexeme.cs" />
+    <Compile Include="Compiler\LexemeParsing\Lexemes\ReturnLexeme.cs" />
+    <Compile Include="Compiler\LexemeParsing\Lexemes\ImportLexeme.cs" />
+    <Compile Include="Compiler\LexemeParsing\Lexemes\ModuleLexeme.cs" />
+    <Compile Include="Compiler\LexemeParsing\Lexemes\UnknownLexeme.cs" />
+    <Compile Include="Compiler\LexemeParsing\Lexemes\VarLexeme.cs" />
+    <Compile Include="Compiler\LexemeParsing\LexemeType.cs" />
+    <Compile Include="Compiler\LexemeParsing\Lexemizer.cs" />
+    <Compile Include="Compiler\ParseException.cs" />
+    <Compile Include="Compiler\Semantics\Import.cs" />
+    <Compile Include="Compiler\Semantics\Module.cs" />
+    <Compile Include="Compiler\Semantics\ModuleItem.cs" />
+    <Compile Include="Compiler\Semantics\StructureParser.cs" />
+    <Compile Include="Compiler\Token.cs" />
+    <Compile Include="Compiler\TokenIterator.cs" />
+    <Compile Include="Compiler\Tokenizer.cs" />
+    <Compile Include="Compiler\TokenType.cs" />
+    <Compile Include="ElapsedTimeType.cs" />
+    <Compile Include="NmMetadata.cs" />
+    <Compile Include="NmProgram.cs" />
+    <Compile Include="NmSource.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+         Other similar extension points exist, see Microsoft.Common.targets.
+    <Target Name="BeforeBuild">
+    </Target>
+    <Target Name="AfterBuild">
+    </Target>
+    -->
+</Project>

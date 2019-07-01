@@ -9,7 +9,7 @@
 #include <stdint.h>
 
 #include "nmError.h"
-
+#include "crc32.h"
 #include "coretypes.h"
 
 static const uint8_t nmbSignature[] = { 'N', 'M', 'B' };
