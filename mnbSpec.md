@@ -65,7 +65,7 @@
 ###### "DE" - Debug information (unique)
   * **4 bytes**: Source filename length (if compiled from text = 0)
   * **n bytes**: Source filename
-  For every function in chunk order
+  <br>For every function in chunk order:
   * **4 bytes**: Function name length
   * **n bytes**: Function name
   * **4 bytes**: Function definition line index
