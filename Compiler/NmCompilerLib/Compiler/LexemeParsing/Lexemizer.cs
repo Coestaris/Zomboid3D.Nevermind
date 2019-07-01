@@ -190,7 +190,7 @@ namespace Nevermind.Compiler.LexemeParsing
             root.Print(level);
         }
 
-        public static List<Lexeme> Lexemize(List<Token> tokens, out CompileError error)
+        public static List<Lexeme> Lexemize(List<Token> tokens, out CompileError error, bool verose)
         {
             error = null;
 
@@ -213,7 +213,8 @@ namespace Nevermind.Compiler.LexemeParsing
             if (error != null)
                 return null;
 
-            PrintLexemeTree(root, 0);
+            if(verose)
+                PrintLexemeTree(root, 0);
 
             return root.ChildLexemes;
         }

@@ -13,7 +13,8 @@ sudo apt install -y mono-complete
 cd Compiler
 xbuild NmCompiler.sln
 cd NmCompilerTests/bin/Debug/
-mono ./NmCompilerTests.exe <NM Source FileName>
+mono ./NmCompilerTests.exe -td <inputSourceFile> -o <outputBinaryFile>
+#Use mono ./NmCompilerTests.exe --help for more detailed info
 
 #To Run Runner
 sudo apt install -y gcc libc-dev-bin cmake make

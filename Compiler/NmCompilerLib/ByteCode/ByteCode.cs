@@ -99,7 +99,8 @@ namespace Nevermind.ByteCode
             }
             else
             {
-                Console.WriteLine(string.Join("\n", list));
+                 if(function.Program.Verbose)
+                     Console.WriteLine(string.Join("\n", list));
 
                 List<Variable> registers;
                 var res = ExpressionLineItem.GetInstructions(function, this, ref localVarIndex, list, out registers, locals);

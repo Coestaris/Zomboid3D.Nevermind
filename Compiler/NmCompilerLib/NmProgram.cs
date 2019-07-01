@@ -20,6 +20,7 @@ namespace Nevermind
 
         public NmMetadata Metadata;
         public bool SaveDebugInfo;
+        public bool Verbose;
 
         internal List<Import> Imports;
         internal List<Variable> ProgramLocals;
@@ -89,7 +90,10 @@ namespace Nevermind
             {
                 StartMeasureTime();
                 tokens = Tokenizer.Tokenize(source, Source.FileName, this);
-                Console.WriteLine(string.Join("\n", tokens));
+
+                if(Verbose)
+                    Console.WriteLine(string.Join("\n", tokens));
+
                 EndMeasureTime(ElapsedTimeType.Tokenizing);
             }
             catch (ParseException ex)
@@ -98,7 +102,7 @@ namespace Nevermind
             }
 
             StartMeasureTime();
-            Lexemes = Lexemizer.Lexemize(tokens, out error);
+            Lexemes = Lexemizer.Lexemize(tokens, out error, Verbose);
             EndMeasureTime(ElapsedTimeType.Lexemizing);
             if (error != null)
                 return error;
