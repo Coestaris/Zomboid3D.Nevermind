@@ -25,6 +25,14 @@ typedef struct _nmFunction
 
     nmInstruction_t** instructions;
 
+    //Debug info
+    char** variableNames;
+    uint32_t* variableSourceLineIndices;
+    uint32_t* variableSourceCharIndices;
+    char* name;
+    uint32_t sourceLineIndex;
+    uint32_t sourceCharIndex;
+
 } nmFunction_t;
 
 typedef struct _nmImport
@@ -90,6 +98,9 @@ typedef struct _nmProgram
 
     uint32_t constantCount;
     nmConstant_t** constants;
+
+    //Debug info
+    char* sourceFilename;
 
 } nmProgram_t;
 

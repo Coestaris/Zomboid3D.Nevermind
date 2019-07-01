@@ -26,6 +26,7 @@ nmProgram_t* nmParserLoad(FILE* file)
         }
 
     nmProgram_t* program = malloc(sizeof(nmProgram_t));
+    program->sourceFilename = NULL;
 
     uint16_t chunkCount;
     if(fread(&chunkCount, sizeof(chunkCount), 1 ,file) != 1)
@@ -236,6 +237,12 @@ uint8_t chunkhandler_functions(nmProgram_t* program, FILE* file)
     program->functions[funcIndex]->index = funcIndex;
     readValue(program->functions[funcIndex]->instructionsCount);
     readValue(program->functions[funcIndex]->localsCount);
+
+    program->functions[funcIndex]->variableNames = NULL;
+    program->functions[funcIndex]->variableSourceCharIndices = NULL;
+    program->functions[funcIndex]->variableSourceLineIndices = NULL;
+    program->functions[funcIndex]->name = NULL;
+
     program->functions[funcIndex]->localTypes = malloc(
         sizeof(uint32_t) * program->functions[funcIndex]->localsCount);
     for(size_t i = 0; i < program->functions[funcIndex]->localsCount; i++)
@@ -272,5 +279,27 @@ uint8_t chunkhandler_functions(nmProgram_t* program, FILE* file)
         }
     }
 
+    return 1;
+}
+
+uint8_t chunkhandler_debug(nmProgram_t* program, FILE* file)
+{
+    readStr(program->sourceFilename, uint32_t);
+    for(size_t i = 0; i < program->funcCount; i++)
+    {
+        readStr(program->functions[i]->name, uint32_t);
+        readValue(program->functions[i]->sourceLineIndex);
+        readValue(program->functions[i]->sourceCharIndex);
+
+        program->functions[i]->variableNames = malloc(sizeof(char*) * program->functions[i]->localsCount);
+        program->functions[i]->variableSourceLineIndices = malloc(sizeof(uint32_t) * program->functions[i]->localsCount);
+        program->functions[i]->variableSourceCharIndices = malloc(sizeof(uint32_t) * program->functions[i]->localsCount);
+        for(size_t j = 0; j < program->functions[i]->localsCount; j++)
+        {
+            readStr(program->functions[i]->variableNames[j], uint32_t);
+            readValue(program->functions[i]->variableSourceLineIndices[j]);
+            readValue(program->functions[i]->variableSourceCharIndices[j]);
+        }
+    }
     return 1;
 }

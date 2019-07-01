@@ -96,14 +96,38 @@ void nmEnvDump(nmEnvironment_t* env, FILE* f)
             char* sValue = nmConstantToStr(
                 env->callableFunctions[i]->locals[j], 
                 type);
-            
-            fprintf(f, " - %li: is %s of type %i. Value: %s (%p)\n", 
-                j,
-                isLocal ? "local" : "register",
-                type->typeIndex,
-                sValue,
-                env->callableFunctions[i]->locals[j]);
 
+            if(env->program->sourceFilename)
+            {
+                if(isLocal)
+                {
+                    fprintf(f, " - \"%s\" (%li) at %i:%i: local of type %i. Value: %s (%p)\n",
+                            env->program->functions[i]->variableNames[j],
+                            j,
+                            env->program->functions[i]->variableSourceLineIndices[j],
+                            env->program->functions[i]->variableSourceCharIndices[j],
+                            type->typeIndex,
+                            sValue,
+                            env->callableFunctions[i]->locals[j]);
+                }
+                else
+                {
+                    fprintf(f, " - (%li): register of type %i. Value: %s (%p)\n",
+                            j,
+                            type->typeIndex,
+                            sValue,
+                            env->callableFunctions[i]->locals[j]);
+                }
+            }
+            else
+            {
+                fprintf(f, " - %li: is %s of type %i. Value: %s (%p)\n",
+                        j,
+                        isLocal ? "local" : "register",
+                        type->typeIndex,
+                        sValue,
+                        env->callableFunctions[i]->locals[j]);
+            }
             free(sValue);
         }
     }

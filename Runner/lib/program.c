@@ -29,6 +29,9 @@ void nmProgramFree(nmProgram_t* program)
     free(program->metadata->binaryDescription);
     free(program->metadata);
 
+    if(program->sourceFilename)
+        free(program->sourceFilename);
+
     for(size_t i = 0; i < program->funcCount; i++)
     {
         free(program->functions[i]->localTypes);
@@ -39,6 +42,17 @@ void nmProgramFree(nmProgram_t* program)
             free(program->functions[i]->instructions[j]);
         }
         free(program->functions[i]->instructions);
+
+        if(program->functions[i]->name)
+        {
+            free(program->functions[i]->name);
+            for(size_t j = 0; j < program->functions[i]->localsCount; j++)
+                free(program->functions[i]->variableNames[j]);
+            free(program->functions[i]->variableNames);
+            free(program->functions[i]->variableSourceLineIndices);
+            free(program->functions[i]->variableSourceCharIndices);
+        }
+
         free(program->functions[i]);
     }    
     free(program->functions);
@@ -95,6 +109,9 @@ void nmProgramPrint(nmProgram_t* program, FILE* f)
 {
     fprintf(f, "NmVersion: %i\n", program->nmVersion);
 
+    if(program->sourceFilename)
+        fprintf(f, "Source FileName: %s\n", program->sourceFilename);
+
     fprintf(f, "Metadata: ");
     if(program->metadata == NULL)
         fprintf(f, "none");
@@ -149,7 +166,14 @@ void nmProgramPrint(nmProgram_t* program, FILE* f)
     fprintf(f, "Functions (%i): \n", program->funcCount);
     for(size_t i = 0; i < program->funcCount; i++)
     {
-        fprintf(f, "- Function#%i\n", program->functions[i]->index);
+        if(program->functions[i]->name)
+            fprintf(f, "- Function \"%s\" at %i:%i (#%i)\n",
+                    program->functions[i]->name,
+                    program->functions[i]->sourceLineIndex, program->functions[i]->sourceCharIndex,
+                    program->functions[i]->index);
+        else
+            fprintf(f, "- Function#%i\n", program->functions[i]->index);
+
         fprintf(f, "  - Registers (%i): ", program->functions[i]->regCount);
         if(program->functions[i]->regCount == 0) fputc('\n', f);
         for(size_t j = 0; j < program->functions[i]->regCount; j++)
@@ -157,12 +181,29 @@ void nmProgramPrint(nmProgram_t* program, FILE* f)
             fprintf(f, "%i%s", program->functions[i]->regTypes[j],
                     j == program->functions[i]->regCount - 1 ? "\n" : ", ");
         }
+
         fprintf(f, "  - Locals (%i): ", program->functions[i]->localsCount);
-        if(program->functions[i]->localsCount == 0) fputc('\n', f);
-        for(size_t j = 0; j < program->functions[i]->localsCount; j++)
+        if (program->functions[i]->localsCount == 0) fputc('\n', f);
+        if(program->functions[i]->name)
         {
-            fprintf(f, "%i%s", program->functions[i]->localTypes[j],
-                    j == program->functions[i]->localsCount - 1 ? "\n" : ", ");
+            fputc('\n', f);
+            for (size_t j = 0; j < program->functions[i]->localsCount; j++)
+            {
+                fprintf(f, "    - \"%s\" at %i:%i of type %i%s\n",
+                        program->functions[i]->variableNames[j],
+                        program->functions[i]->variableSourceLineIndices[j],
+                        program->functions[i]->variableSourceCharIndices[j],
+                        program->functions[i]->localTypes[j],
+                        j == program->functions[i]->localsCount - 1 ? "\n" : ", ");
+            }
+        }
+        else
+        {
+            for (size_t j = 0; j < program->functions[i]->localsCount; j++)
+            {
+                fprintf(f, "%i%s", program->functions[i]->localTypes[j],
+                        j == program->functions[i]->localsCount - 1 ? "\n" : ", ");
+            }
         }
         fprintf(f, "  - Instructions (%i): \n", program->functions[i]->instructionsCount);
         for(size_t j = 0; j < program->functions[i]->instructionsCount; j++)
