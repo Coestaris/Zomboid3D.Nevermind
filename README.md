@@ -14,12 +14,12 @@ cd Zomboid3D.Nevermind
 sudo apt install -y mono-complete
 cd Compiler
 xbuild NmCompiler.sln
-cd NmCompilerTests/bin/Debug/
-mono ./NmCompilerTests.exe -td <inputSourceFile> -o <outputBinaryFile>
+cd NmCompiler/bin/Debug/
+mono ./NmCompiler.exe -td <inputSourceFile> -o <outputBinaryFile>
 ```
 You can get list of all possible options by running:
 ```bash
-mono ./NmCompilerTests.exe --help
+mono ./NmCompiler.exe --help
 ```
 Put following to ~/.bashrc file to use compiler shortcut:
 ```bash
