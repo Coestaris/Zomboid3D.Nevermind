@@ -83,6 +83,21 @@ char* nmConstantToStr(void* value, nmType_t* type)
             break;
         }
         case tFloat:
+        {
+            double i = 0;
+            switch(type->typeBase)
+            {
+                case 4:
+                    i = *(float*)value;
+                    break;
+                case 8:
+                    i = *(double*)value;
+                    break;
+            }
+            result = malloc(10);
+            snprintf(result, 10, "%lf", i);
+            break;
+        }
         case tString:
         default:
             return NULL;

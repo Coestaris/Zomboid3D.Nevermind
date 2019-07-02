@@ -7,7 +7,5 @@ import io;
 
 entrypoint function integer main()
 {
-    var a: integer = 4;
-
-    var b : real = 2.4 + 1.223;
+    var a: integer = !(1 - 1 * 0);
 }

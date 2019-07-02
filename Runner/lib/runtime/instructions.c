@@ -5,190 +5,89 @@
 #include "instructions.h"
 #include "environment.h"
 
-void instruction_ret(struct _nmEnvironment* env, void** data)
-{
-    //stub
-}
+declareRetInstruction(instruction_ret_u8, uint8_t);
+declareRetInstruction(instruction_ret_u16, uint16_t);
+declareRetInstruction(instruction_ret_u32, uint32_t);
+declareRetInstruction(instruction_ret_u64, uint64_t);
+declareRetInstruction(instruction_ret_f32, float);
+declareRetInstruction(instruction_ret_f64, double);
 
-void instruction_push(struct _nmEnvironment* env, void** data)
-{
-    pushStack(env->variableStack, (void*)(*(uint64_t*)data[0]));
-}
+declarePushInstruction(instruction_push_u8, uint8_t);
+declarePushInstruction(instruction_push_u16, uint16_t);
+declarePushInstruction(instruction_push_u32, uint32_t);
+declarePushInstruction(instruction_push_u64, uint64_t);
+declarePushInstruction(instruction_push_f32, float);
+declarePushInstruction(instruction_push_f64, double);
 
-void instruction_pop(struct _nmEnvironment* env, void** data)
-{
-    *(uint32_t*)data[0] = *(uint32_t*)popStack(env->variableStack);
-}
+declarePopInstruction(instruction_pop_u8, uint8_t);
+declarePopInstruction(instruction_pop_u16, uint16_t);
+declarePopInstruction(instruction_pop_u32, uint32_t);
+declarePopInstruction(instruction_pop_u64, uint64_t);
+declarePopInstruction(instruction_pop_f32, float);
+declarePopInstruction(instruction_pop_f64, double);
 
-void instruction_ldi(struct _nmEnvironment* env, void** data)
-{
-    *(uint32_t*)data[0] = *(uint32_t*)data[1];
-}
+declareLdiInstruction(instruction_ldi_u8, uint8_t);
+declareLdiInstruction(instruction_ldi_u16, uint16_t);
+declareLdiInstruction(instruction_ldi_u32, uint32_t);
+declareLdiInstruction(instruction_ldi_u64, uint64_t);
+declareLdiInstruction(instruction_ldi_f32, float);
+declareLdiInstruction(instruction_ldi_f64, double);
 
-void instruction_jmp(struct _nmEnvironment* env, void** data)
-{
-    *env->programCounter = *(uint64_t*)data[0];
-}
+declareJmpInstruction(instruction_jmp_u8, uint8_t);
+declareJmpInstruction(instruction_jmp_u16, uint16_t);
+declareJmpInstruction(instruction_jmp_u32, uint32_t);
+declareJmpInstruction(instruction_jmp_u64, uint64_t);
+declareJmpInstruction(instruction_jmp_f32, float);
+declareJmpInstruction(instruction_jmp_f64, double);
 
-void instruction_call(struct _nmEnvironment* env, void** data)
-{
-    //stub
-}
+declareCallInstruction(instruction_call_u8, uint8_t);
+declareCallInstruction(instruction_call_u16, uint16_t);
+declareCallInstruction(instruction_call_u32, uint32_t);
+declareCallInstruction(instruction_call_u64, uint64_t);
+declareCallInstruction(instruction_call_f32, float);
+declareCallInstruction(instruction_call_f64, double);
 
-void instruction_breq(struct _nmEnvironment* env, void** data)
-{
-    //stub
-}
+declareBreqInstruction(instruction_breq_u8, uint8_t);
+declareBreqInstruction(instruction_breq_u16, uint16_t);
+declareBreqInstruction(instruction_breq_u32, uint32_t);
+declareBreqInstruction(instruction_breq_u64, uint64_t);
+declareBreqInstruction(instruction_breq_f32, float);
+declareBreqInstruction(instruction_breq_f64, double);
 
-void instruction_A_Add(struct _nmEnvironment* env, void** data)
-{
-    *(uint32_t*)data[0] = *(uint32_t*)data[1] + *(uint32_t*)data[2];
-}
+declareABInstruction(instruction_A_Add, +)
+declareABInstruction(instruction_A_Sub, -)
+declareABInstruction(instruction_A_Mul, *)
+declareABInstruction(instruction_A_Div, /)
+declareABInstruction(instruction_A_lseq, <=)
+declareABInstruction(instruction_A_ls, <)
+declareABInstruction(instruction_A_gr, >)
+declareABInstruction(instruction_A_greq, >=)
+declareABInstruction(instruction_A_neq, !=)
+declareABInstruction(instruction_A_eq, ==)
 
-void instruction_A_Sub(struct _nmEnvironment* env, void** data)
-{
-    *(uint32_t*)data[0] = *(uint32_t*)data[1] - *(uint32_t*)data[2];
-}
+declareABCInstruction(instruction_A_EDiv, %)
+declareABCInstruction(instruction_A_LAnd, &&)
+declareABCInstruction(instruction_A_LOr, ||)
+declareABCInstruction(instruction_A_And, &)
+declareABCInstruction(instruction_A_Xor, ^)
+declareABCInstruction(instruction_A_Or, |)
+declareABCInstruction(instruction_A_lsh, <<)
+declareABCInstruction(instruction_A_rlh, >>)
+/*
+declareABCInstruction(instruction_A_SetEDiv, %=)
+declareABCInstruction(instruction_A_SetAnd, &=)
+declareABCInstruction(instruction_A_SetXor, ^=)
+declareABICnstruction(instruction_A_SetOr, |=)
 
-void instruction_A_Mul(struct _nmEnvironment* env, void** data)
-{
-    *(uint32_t*)data[0] = *(uint32_t*)data[1] * *(uint32_t*)data[2];
-}
+declareABInstruction(instruction_A_SetAdd, +=)
+declareABInstruction(instruction_A_SetSub, -=)
+declareABInstruction(instruction_A_SetMul, *=)
+declareABInstruction(instruction_A_SetDiv, /=)
+declareABInstruction(instruction_A_Set, =) */
 
-void instruction_A_Div(struct _nmEnvironment* env, void** data)
-{
-    //stub
-}
-
-void instruction_A_lseq(struct _nmEnvironment* env, void** data)
-{
-    //stub
-}
-
-void instruction_A_ls(struct _nmEnvironment* env, void** data)
-{
-    //stub
-}
-
-void instruction_A_gr(struct _nmEnvironment* env, void** data)
-{
-    //stub
-}
-
-void instruction_A_greq(struct _nmEnvironment* env, void** data)
-{
-    //stub
-}
-
-void instruction_A_neq(struct _nmEnvironment* env, void** data)
-{
-    //stub
-}
-
-void instruction_A_eq(struct _nmEnvironment* env, void** data)
-{
-    //stub
-}
-
-void instruction_A_EDiv(struct _nmEnvironment* env, void** data)
-{
-    //stub
-}
-
-void instruction_A_LAnd(struct _nmEnvironment* env, void** data)
-{
-    //stub
-}
-
-void instruction_A_LOr(struct _nmEnvironment* env, void** data)
-{
-    //stub
-}
-
-void instruction_A_And(struct _nmEnvironment* env, void** data)
-{
-    //stub
-}
-
-void instruction_A_Xor(struct _nmEnvironment* env, void** data)
-{
-    //stub
-}
-
-void instruction_A_Or(struct _nmEnvironment* env, void** data)
-{
-    //stub
-}
-
-void instruction_A_lsh(struct _nmEnvironment* env, void** data)
-{
-    //stub
-}
-
-void instruction_A_rlh(struct _nmEnvironment* env, void** data)
-{
-    //stub
-}
-
-void instruction_A_SetAdd(struct _nmEnvironment* env, void** data)
-{
-    //stub
-}
-
-void instruction_A_SetSub(struct _nmEnvironment* env, void** data)
-{
-    //stub
-}
-
-void instruction_A_SetMul(struct _nmEnvironment* env, void** data)
-{
-    //stub
-}
-
-void instruction_A_SetDiv(struct _nmEnvironment* env, void** data)
-{
-    //stub
-}
-
-void instruction_A_SetEDiv(struct _nmEnvironment* env, void** data)
-{
-    //stub
-}
-
-void instruction_A_SetAnd(struct _nmEnvironment* env, void** data)
-{
-    //stub
-}
-
-void instruction_A_SetXor(struct _nmEnvironment* env, void** data)
-{
-    //stub
-}
-
-void instruction_A_SetOr(struct _nmEnvironment* env, void** data)
-{
-    //stub
-}
-
-void instruction_A_Set(struct _nmEnvironment* env, void** data)
-{
-    //stub
-}
-
-void instruction_A_Neg(struct _nmEnvironment* env, void** data)
-{
-    //stub
-}
-
-void instruction_A_Not(struct _nmEnvironment* env, void** data)
-{
-    //stub
-}
-
-void instruction_A_BNeg(struct _nmEnvironment* env, void** data)
-{
-    //stub
-}
+declareAUInstruction(instruction_A_Neg, -)
+declareAUInstruction(instruction_A_Not, !)
+declareAUInstruction(instruction_A_BNeg, ~)
 
 nmInstructionData_t* getInstructionData(int instrIndex)
 {

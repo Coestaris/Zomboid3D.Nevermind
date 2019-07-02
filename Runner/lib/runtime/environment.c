@@ -80,6 +80,62 @@ void nmEnvSetStreams(nmEnvironment_t* env, FILE* in, FILE* out)
     env->ins = in;
     env->outs = out;
 }
+int getFuncIndexByType(nmType_t* type)
+{
+    switch (type->typeSignature)
+    {
+        case tInteger:
+        {
+            switch (type->typeBase)
+            {
+                case 1: return 0;
+                case 2: return 1;
+                case 4: return 2;
+                case 8: return 3;
+            }
+            break;
+        }
+        case tFloat:
+        {
+            switch (type->typeBase)
+            {
+                case 4: return 4;
+                case 8: return 5;
+            }
+        }
+        case tString:
+            break;
+    }
+    return -1;
+}
+
+int getFunctionIndex(nmCallableFunction_t* func, nmProgram_t* program, nmInstruction_t* instr)
+{
+    nmInstructionData_t* data = instr->dataPtr;
+
+    //ret, jmp, call
+    if(data->index == 0x1 || data->index == 0x5 || data->index == 0x6) return 0; 
+    
+    if(data->index == 0x2 || data->index == 0x7)
+    {
+        uint64_t flag = instr->parameters[0];
+        if(flag)
+        {
+            //var
+            uint64_t variableIndex = instr->parameters[1];
+            return getFuncIndexByType(func->localTypes[variableIndex]);
+        }
+        else
+        {
+            //const
+            uint64_t constIndex = instr->parameters[1];
+            return getFuncIndexByType(program->constants[constIndex]->typePtr);
+        }
+    }
+
+    uint64_t variableIndex = instr->parameters[0];
+    return getFuncIndexByType(func->localTypes[variableIndex]);
+}
 
 void nmEnvDump(nmEnvironment_t* env, FILE* f)
 {
@@ -188,7 +244,12 @@ nmEnvironment_t* nmEnvCreate(nmProgram_t* program)
             size_t count = getOperandsCount(program->functions[i]->instructions[instrIndex]->dataPtr);
             env->callableFunctions[i]->callableInstructions[instrIndex] = malloc(sizeof(nmCallableInstruction_t));
             env->callableFunctions[i]->callableInstructions[instrIndex]->function =
-                    program->functions[i]->instructions[instrIndex]->dataPtr->function;
+                    program->functions[i]->instructions[instrIndex]->dataPtr->function[
+                        getFunctionIndex(
+                            env->callableFunctions[i],
+                            program,
+                            program->functions[i]->instructions[instrIndex])];
+
             env->callableFunctions[i]->callableInstructions[instrIndex]->paramCount = count;
             env->callableFunctions[i]->callableInstructions[instrIndex]->parameters = malloc(sizeof(uint64_t) * count);
 
