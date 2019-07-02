@@ -10,7 +10,7 @@ cd Zomboid3D.Nevermind
 ```
 
 #### To Run compiler
-```
+```bash
 sudo apt install -y mono-complete
 cd Compiler
 xbuild NmCompiler.sln
@@ -18,16 +18,16 @@ cd NmCompilerTests/bin/Debug/
 mono ./NmCompilerTests.exe -td <inputSourceFile> -o <outputBinaryFile>
 ```
 You can get list of all possible options by running:
-```
+```bash
 mono ./NmCompilerTests.exe --help
 ```
 Put following to ~/.bashrc file to use compiler shortcut:
-```
+```bash
 alias nmc="mono $(readlink -f ./NmCompiler.exe)"
 ```
 
 #### To Run Runner
-```
+```bash
 sudo apt install -y gcc libc-dev-bin cmake make
 cd Runner
 cmake CMakeLists.txtmake
