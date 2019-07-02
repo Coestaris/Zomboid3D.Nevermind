@@ -83,7 +83,7 @@ namespace NevermindCompiler.CLParser
                 Console.WriteLine("   {4}{0,-4}  {5}{1,-20}{2}{3}.",
                     value.Attribute.ShortName + ",",
                     value.Attribute.Name,
-                    value.Attribute.Required ? "(required)" : "",
+                    value.Attribute.Required ? "(required) " : "",
                     value.Attribute.Description,
                     Prefix,
                     FullPrefix);

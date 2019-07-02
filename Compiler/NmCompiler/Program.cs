@@ -1,10 +1,13 @@
 ﻿
 using System;
 using System.IO;
+using System.Linq;
 using System.Text;
 using Nevermind;
 using Nevermind.Compiler;
 using NevermindCompiler.CLParser;
+using Newtonsoft.Json.Linq;
+
 #pragma warning disable 649
 
 namespace NevermindCompiler
@@ -17,13 +20,16 @@ namespace NevermindCompiler
         [Flag("time", 't', "Prints elapsed time")]
         public bool PrintTime;
 
+        [Flag("no-auto-metadata", 'n', "Ignore .json files with possible metadata")]
+        public bool IgnoreMetadataFiles;
+
         [Flag("bytecode", 'b', "Print formatted result bytecode")]
         public bool PrintByteCode;
 
         [Flag("debug", 'd', "Save debug information into binary")]
         public bool UseDebugChunk;
 
-        [Value("log-file", 'l', "Output log filename", null, false, true)]
+        [Value("log-file", 'l', "Output log filename")]
         public string LogFileName;
 
         [InlineValue("source-fileName", "File to be compiled", true)]
@@ -86,25 +92,111 @@ namespace NevermindCompiler
                 .ParseArguments(args).Run(Run);
         }
 
+        private static NmMetadata ParseJSON(string filename)
+        {
+            try
+            {
+                var obj = JObject.Parse(File.ReadAllText(filename).ToLower());
+
+                JToken name, descr, author, vers;
+
+                if(!obj.ContainsKey("name") || (name = obj.GetValue("name")).Type != JTokenType.String)
+                {
+                    Console.WriteLine("JSON file should have string field named \"name'\"");
+                    return null;
+                }
+
+                if(!obj.ContainsKey("description") || (descr = obj.GetValue("description")).Type != JTokenType.String)
+                {
+                    Console.WriteLine("JSON file should have string field named \"description'\"");
+                    return null;
+                }
+
+                if(!obj.ContainsKey("author") || (author = obj.GetValue("author")).Type != JTokenType.String)
+                {
+                    Console.WriteLine("JSON file should have string field named \"author'\"");
+                    return null;
+                }
+
+                if(!obj.ContainsKey("version") || (vers = obj.GetValue("version")).Type != JTokenType.String)
+                {
+                    Console.WriteLine("JSON file should have string field named \"version'\"");
+                    return null;
+                }
+
+                int maj = 1, min = 0;
+                try
+                {
+                    var v = vers.ToObject<string>();
+                    maj = int.Parse(v.Split('.')[0]);
+                    min = int.Parse(v.Split('.')[1]);
+                }
+                catch
+                {
+                    Console.WriteLine("\"{0}\" is wrong version format", vers);
+                    return null;
+                }
+
+                return new NmMetadata(
+                    name.ToObject<string>(),
+                    descr.ToObject<string>(),
+                    author.ToObject<string>(),
+                    DateTime.Now,
+                    (ushort)min, (ushort)maj);
+            }
+            catch
+            {
+                Console.WriteLine("\"{0}\" is not valid JSON", filename);
+                return null;
+            }
+        }
+
+        private static void ResetOutput()
+        {
+            Console.Out.Close();
+            var standardOutput = new StreamWriter(Console.OpenStandardOutput()) {AutoFlush = true};
+            Console.SetOut(standardOutput);
+        }
+
         private static void Run(Options options, bool errors)
         {
             if(errors || options == null) return;
 
-            var source = NmSource.FromFile(options.InputFileName);
-            NmMetadata metadata = null;
+            if (options.MetadataFileName == null && !options.IgnoreMetadataFiles)
+            {
+                var splitted = options.InputFileName.Split('.');
+                var fn = string.Join(".", splitted.Take(splitted.Length - 1)) + ".json";
+                if (File.Exists(fn))
+                {
+                    options.MetadataFileName = fn;
+                    Console.WriteLine("Using \"{0}\" as metadata file", fn);
+                }
+            }
 
-            if (options.BinaryName != null ||
+            var source = NmSource.FromFile(options.InputFileName);
+
+            var metadata = options.MetadataFileName != null ? ParseJSON(options.MetadataFileName) : null;
+
+            if (metadata == null &&
+                (options.BinaryName != null ||
                 options.BinaryAuthor != null ||
                 options.BinaryDescription != null ||
-                options.BinaryVersion != null)
+                options.BinaryVersion != null))
             {
                 var maj = 1;
                 var min = 0;
 
                 if(options.BinaryVersion != null)
                 {
-                    maj = int.Parse(options.BinaryVersion.Split('.')[0]);
-                    min = int.Parse(options.BinaryVersion.Split('.')[1]);
+                    try
+                    {
+                        maj = int.Parse(options.BinaryVersion.Split('.')[0]);
+                        min = int.Parse(options.BinaryVersion.Split('.')[1]);
+                    }
+                    catch
+                    {
+                        Console.WriteLine("\"{0}\" is wrong version format", options.BinaryVersion);
+                    }
                 }
 
                 metadata = new NmMetadata(options.BinaryName ?? "name",options.BinaryDescription ?? "descr",
@@ -116,17 +208,34 @@ namespace NevermindCompiler
                 SaveDebugInfo = options.UseDebugChunk,
                 Verbose = options.Verbose
             };
+
+            if (options.LogFileName != null)
+            {
+                Stream f = File.OpenWrite(options.LogFileName);
+                TextWriter writer = new StreamWriter(f);
+                Console.SetOut(writer);
+            }
+
             CompileError error;
             if ((error = program.Parse()) != null)
             {
+                if (options.LogFileName != null)
+                    ResetOutput();
+
                 Console.WriteLine("Parse error: {0}", error);
             }
             else if ((error = program.Expand()) != null)
             {
+                if (options.LogFileName != null)
+                    ResetOutput();
+
                 Console.WriteLine("Expand error: {0}", error);
             }
             else
             {
+                if (options.LogFileName != null)
+                    ResetOutput();
+
                 if (options.PrintTime)
                 {
                     Console.WriteLine("\n\nElapsed Time (Total: {0}): ",

@@ -1,0 +1,6 @@
+{
+	"name": "Sample binary",
+	"description": "Sample binary compiled with NmCompiler",
+	"author": "Coestaris",
+	"version": "0.1"
+}
