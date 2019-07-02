@@ -25,7 +25,7 @@ namespace Nevermind.ByteCode.Types
             new  NamedType("wstring", new StringType(new IntegerType(16, true))),
         };
 
-        private static List<IntegerType> _intTypes = _builtinTypes.FindAll(p => p.Type.ID == TypeID.Integer).Select(p => (IntegerType)p.Type).ToList();
+        private static List<IntegerType> _intTypes = _builtinTypes.FindAll(p => p.Type.ID == TypeID.Integer || p.Type.ID == TypeID.UInteger).Select(p => (IntegerType)p.Type).ToList();
         private static List<FloatType> _floatTypes = _builtinTypes.FindAll(p => p.Type.ID == TypeID.Float).Select(p => (FloatType)p.Type).ToList();
 
         public static Type DefaultConstIntType => _builtinTypes[5].Type;

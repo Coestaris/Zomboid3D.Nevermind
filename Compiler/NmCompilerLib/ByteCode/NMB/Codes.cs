@@ -13,9 +13,10 @@ namespace Nevermind.ByteCode.NMB
 
         public static readonly Dictionary<TypeID, UInt16> TypeIdDict = new Dictionary<TypeID, ushort>
         {
-            {TypeID.Integer, 0x1},
-            {TypeID.Float,   0x2},
-            {TypeID.String,  0x3},
+            {TypeID.Integer,  0x1},
+            {TypeID.UInteger, 0x2},
+            {TypeID.Float,    0x3},
+            {TypeID.String,   0x4},
         };
 
         public static readonly Dictionary<InstructionType, UInt16> InstructionDict =

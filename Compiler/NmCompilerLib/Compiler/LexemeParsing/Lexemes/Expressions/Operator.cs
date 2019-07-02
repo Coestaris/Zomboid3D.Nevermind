@@ -65,7 +65,7 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
 
         private static OperatorResult UnaryOperatorFunc(OperatorOperands operands, UnaryArithmeticInstructionType operatorType)
         {
-            if (operands.A.Type.ID != TypeID.Float && operands.A.Type.ID != TypeID.Integer)
+            if (operands.A.Type.ID != TypeID.Float && operands.A.Type.ID != TypeID.Integer && operands.A.Type.ID != TypeID.UInteger)
                 return new OperatorResult(new CompileError(CompileErrorType.ExpectedNumericOperands, operands.A.Token));
 
             return new OperatorResult(new UnaryArithmeticInstruction(operatorType, null, operands.A, operands.Function, operands.ByteCode, operands.Label), operands.A.Type);

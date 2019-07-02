@@ -24,7 +24,7 @@ namespace Nevermind.ByteCode.Instructions
 
         public InstructionBrEq(Variable variable, int index, Function func, ByteCode byteCode, int label) : base(index, func, byteCode, label)
         {
-            if (variable.Type.ID != TypeID.Float && variable.Type.ID != TypeID.Integer)
+            if (variable.Type.ID != TypeID.Float && variable.Type.ID != TypeID.Integer && variable.Type.ID != TypeID.UInteger)
                 throw new ParseException(CompileErrorType.IncompatibleTypes, variable.Token);
 
             Variable = variable;

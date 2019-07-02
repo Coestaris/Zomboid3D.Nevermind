@@ -11,7 +11,7 @@ namespace Nevermind.ByteCode.Types.Scalar
 
         public IntegerType(int typeBase, bool signed)
         {
-            ID = TypeID.Integer;
+            ID = signed ? TypeID.Integer : TypeID.UInteger;
             Signed = signed;
             TypeBase = typeBase;
         }

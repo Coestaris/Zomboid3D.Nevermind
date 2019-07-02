@@ -36,7 +36,7 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
         public CompileError CheckNumericAndGetType(out Type type)
         {
             type = null;
-            if (!CheckNumericTypes(A.Type, B.Type))
+            if (CheckNumericTypes(A.Type, B.Type))
                 return new CompileError(CompileErrorType.ExpectedNumericOperands, A.Token);
 
             type = ResolveNumericType();
@@ -50,7 +50,10 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
         {
             if (A.Type.ID == TypeID.Float && B.Type.ID == TypeID.Float)
                 return ResolveFloatTypes((FloatType)A.Type, (FloatType)B.Type);
-            else if (A.Type.ID == TypeID.Integer && B.Type.ID == TypeID.Integer)
+
+            else if (A.Type.ID == TypeID.Integer && B.Type.ID == TypeID.Integer ||
+                     A.Type.ID == TypeID.UInteger && B.Type.ID == TypeID.Integer ||
+                     A.Type.ID == TypeID.Integer && B.Type.ID == TypeID.UInteger)
                 return ResolveIntegerTypes((IntegerType)A.Type, (IntegerType)B.Type);
             else
             {
@@ -82,8 +85,8 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
 
         public static bool CheckNumericTypes(Type a, Type b)
         {
-            return (a.ID == TypeID.Integer || a.ID == TypeID.Float) &&
-                   (b.ID == TypeID.Integer || b.ID == TypeID.Float);
+            return (a.ID != TypeID.Integer && a.ID != TypeID.UInteger && a.ID != TypeID.Float) ||
+                   (b.ID != TypeID.Integer && b.ID != TypeID.UInteger && b.ID != TypeID.Float);
         }
     }
 }
