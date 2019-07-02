@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using Nevermind.ByteCode.Functions;
@@ -97,8 +98,9 @@ namespace Nevermind.ByteCode
             var ch = new Chunk(ChunkType.DEBUG);
             if (Program.Source.FileName != null)
             {
-                ch.Data.AddRange(Chunk.Int32ToBytes(Program.Source.FileName.Length));
-                ch.Data.AddRange(Program.Source.FileName.Select(p => (byte) p));
+                var name = new FileInfo(Program.Source.FileName).FullName;
+                ch.Data.AddRange(Chunk.Int32ToBytes(name.Length));
+                ch.Data.AddRange(name.Select(p => (byte) p));
             }
             else
             {

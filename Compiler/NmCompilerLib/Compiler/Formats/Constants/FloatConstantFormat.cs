@@ -9,7 +9,7 @@ namespace Nevermind.Compiler.Formats.Constants
 
         public override Constant Parse(Token input, NmProgram program)
         {
-            return new Constant(input, program, float.Parse(input.StringValue));
+            return new Constant(input, program, double.Parse(input.StringValue));
         }
 
         public override bool VerifyBounds(string input)

@@ -8,6 +8,6 @@ import io;
 entrypoint function integer main()
 {
     var a: integer = 4;
-    var b: integer = 6 + 4;
-    var c: integer = a + 2 * 9;
+
+    var b : real = 2.4 + 1.223;
 }

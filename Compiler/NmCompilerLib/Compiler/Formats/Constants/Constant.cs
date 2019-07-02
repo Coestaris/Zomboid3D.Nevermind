@@ -17,7 +17,7 @@ namespace Nevermind.Compiler.Formats.Constants
         public readonly ConstantType Type;
 
         public readonly long   IValue;
-        public readonly float  FValue;
+        public readonly double FValue;
         public readonly List<int> SValue;
 
         private Constant(Token codeToken, NmProgram program, ConstantType type)
@@ -34,7 +34,7 @@ namespace Nevermind.Compiler.Formats.Constants
             IValue = value;
         }
 
-        public Constant(Token codeToken, NmProgram program, float value) : this(codeToken, program, ConstantType.Float)
+        public Constant(Token codeToken, NmProgram program, double value) : this(codeToken, program, ConstantType.Float)
         {
             FValue = value;
         }

@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Nevermind.ByteCode.Types.Scalar
 {
@@ -20,7 +22,11 @@ namespace Nevermind.ByteCode.Types.Scalar
 
         public override List<byte> Serialize(object value)
         {
-            throw new System.NotImplementedException();
+            var v = (double)value;
+            if (TypeBase == 32)
+                return BitConverter.GetBytes((float)v).ToList();
+            else
+                return BitConverter.GetBytes(v).ToList();
         }
     }
 }
