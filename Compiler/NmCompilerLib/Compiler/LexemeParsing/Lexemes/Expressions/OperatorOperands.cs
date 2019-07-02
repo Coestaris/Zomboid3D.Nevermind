@@ -42,7 +42,6 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
             type = ResolveNumericType();
             if (type == null)
                 return new CompileError(CompileErrorType.WrongResultType, A.Token);
-
             return null;
         }
 

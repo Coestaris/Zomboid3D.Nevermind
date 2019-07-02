@@ -1,0 +1,11 @@
+/*
+ * Simple program example
+ */
+
+import systypes;
+import io;
+
+entrypoint function integer main()
+{
+    5u + 1u;
+}

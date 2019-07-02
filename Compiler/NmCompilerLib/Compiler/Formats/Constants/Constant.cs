@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Markup;
 using Nevermind.ByteCode.Functions;
 using Nevermind.ByteCode.NMB;
 using Nevermind.ByteCode.Types;
@@ -20,26 +21,29 @@ namespace Nevermind.Compiler.Formats.Constants
         public readonly double FValue;
         public readonly List<int> SValue;
 
-        private Constant(Token codeToken, NmProgram program, ConstantType type)
+        public readonly string Literal;
+
+        private Constant(Token codeToken, NmProgram program, ConstantType type, string literal)
         {
             Type = type;
             Program = program;
             CodeToken = codeToken;
+            Literal = literal;
 
             program.Constants.Add(this);
         }
 
-        public Constant(Token codeToken, NmProgram program, long value) : this(codeToken, program, ConstantType.Integer)
+        public Constant(Token codeToken, NmProgram program, long value, string literal) : this(codeToken, program, ConstantType.Integer, literal)
         {
             IValue = value;
         }
 
-        public Constant(Token codeToken, NmProgram program, double value) : this(codeToken, program, ConstantType.Float)
+        public Constant(Token codeToken, NmProgram program, double value, string literal) : this(codeToken, program, ConstantType.Float, literal)
         {
             FValue = value;
         }
 
-        public Constant(Token codeToken, NmProgram program, List<int> value) : this(codeToken, program, ConstantType.String)
+        public Constant(Token codeToken, NmProgram program, List<int> value) : this(codeToken, program, ConstantType.String, "")
         {
             SValue = value;
         }
@@ -84,9 +88,36 @@ namespace Nevermind.Compiler.Formats.Constants
             switch (Type)
             {
                 case ConstantType.Integer:
-                    return BuiltInTypes.DefaultConstIntType;
+                {
+                    if(string.IsNullOrEmpty(Literal))
+                        return BuiltInTypes.DefaultConstInt32Type;
+
+                    switch (Literal)
+                    {
+                        case "o": return BuiltInTypes.DefaultConstInt8Type;
+                        case "uo": return BuiltInTypes.DefaultConstUInt8Type;
+
+                        case "s": return BuiltInTypes.DefaultConstInt16Type;
+                        case "us": return BuiltInTypes.DefaultConstUInt16Type;
+
+                        case "u": return BuiltInTypes.DefaultConstUInt32Type;
+
+                        case "l": return BuiltInTypes.DefaultConstInt64Type;
+                        case "ul": return BuiltInTypes.DefaultConstUInt64Type;
+
+                        default:
+                            return null;
+                    }
+                }
+
                 case ConstantType.Float:
-                    return BuiltInTypes.DefaultConstFloatType;
+                {
+                    if(string.IsNullOrEmpty(Literal))
+                        return BuiltInTypes.DefaultConstFloat64Type;
+
+                    return BuiltInTypes.DefaultConstFloat32Type;
+                }
+
                 case ConstantType.String:
                     return BuiltInTypes.DefaultConstStringType;
                 default:

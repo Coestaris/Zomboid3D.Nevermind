@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace Nevermind.Compiler.Formats.Constants
@@ -5,6 +6,18 @@ namespace Nevermind.Compiler.Formats.Constants
     internal abstract class ConstantFormat
     {
         protected abstract Regex ConstantRegex { get; }
+
+        protected string GetLiteral(string value)
+        {
+            char[] literals = { 'o', 'u', 's', 'l', 'f' };
+            var result = "";
+            var index = value.Length - 1;
+
+            while (literals.Contains(value[index]))
+                result += value[index--];
+
+            return string.Join("", result.Reverse());
+        }
 
         public virtual bool Verify(string input)
         {
@@ -15,7 +28,7 @@ namespace Nevermind.Compiler.Formats.Constants
 
         public virtual Constant Parse(Token input, NmProgram program)
         {
-            return new Constant(input, program, 0);
+            return null;
         }
     }
 }
