@@ -44,49 +44,5 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
                 return new CompileError(CompileErrorType.WrongResultType, A.Token);
             return null;
         }
-
-        public Type ResolveNumericType()
-        {
-            if (A.Type.ID == TypeID.Float && B.Type.ID == TypeID.Float)
-                return ResolveFloatTypes((FloatType)A.Type, (FloatType)B.Type);
-
-            else if (A.Type.ID == TypeID.Integer && B.Type.ID == TypeID.Integer ||
-                     A.Type.ID == TypeID.UInteger && B.Type.ID == TypeID.Integer ||
-                     A.Type.ID == TypeID.Integer && B.Type.ID == TypeID.UInteger ||
-                     A.Type.ID == TypeID.UInteger && B.Type.ID == TypeID.UInteger)
-                return ResolveIntegerTypes((IntegerType)A.Type, (IntegerType)B.Type);
-            else
-            {
-                if (A.Type.ID == TypeID.Float)
-                    return ResolveMixedTypes((IntegerType)B.Type, (FloatType)A.Type);
-                else
-                    return ResolveMixedTypes((IntegerType)A.Type, (FloatType)B.Type);
-            }
-        }
-
-        private static IntegerType ResolveIntegerTypes(IntegerType a, IntegerType b)
-        {
-            bool resultSigned = a.Signed || b.Signed;
-            int typeBase = a.TypeBase > b.TypeBase ? a.TypeBase : b.TypeBase;
-            return BuiltInTypes.GetIntegerType(typeBase, resultSigned);
-        }
-
-        private static FloatType ResolveFloatTypes(FloatType a, FloatType b)
-        {
-            int typeBase = a.TypeBase > b.TypeBase ? a.TypeBase : b.TypeBase;
-            return BuiltInTypes.GetFloatType(typeBase);
-        }
-
-        private static FloatType ResolveMixedTypes(IntegerType a, FloatType b)
-        {
-            int typeBase = a.TypeBase > b.TypeBase ? a.TypeBase : b.TypeBase;
-            return BuiltInTypes.GetFloatType(typeBase);
-        }
-
-        public static bool CheckNumericTypes(Type a, Type b)
-        {
-            return (a.ID != TypeID.Integer && a.ID != TypeID.UInteger && a.ID != TypeID.Float) ||
-                   (b.ID != TypeID.Integer && b.ID != TypeID.UInteger && b.ID != TypeID.Float);
-        }
     }
 }

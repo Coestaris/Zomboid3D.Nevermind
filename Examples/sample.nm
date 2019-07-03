@@ -14,9 +14,5 @@ function void End() { }
 
 entrypoint function integer main()
 {
-    var a : integer = 1;
-
-    a = 1uo;
-    a = 2o;
-    a = 2uo;
+     func(5o)
 }
