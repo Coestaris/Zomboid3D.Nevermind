@@ -105,6 +105,10 @@ namespace Nevermind.Compiler
                         if (constantFormat.Verify(StringValue))
                         {
                             Constant = constantFormat.Parse(this, program);
+
+                            if(!constantFormat.VerifyBounds(Constant))
+                                throw new ParseException(CompileErrorType.OutOfBoundsConstant, this);
+
                             Type = Constant.ToTokenType();
                             found = true;
                             break;

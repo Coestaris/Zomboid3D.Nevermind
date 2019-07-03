@@ -52,7 +52,8 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
 
             else if (A.Type.ID == TypeID.Integer && B.Type.ID == TypeID.Integer ||
                      A.Type.ID == TypeID.UInteger && B.Type.ID == TypeID.Integer ||
-                     A.Type.ID == TypeID.Integer && B.Type.ID == TypeID.UInteger)
+                     A.Type.ID == TypeID.Integer && B.Type.ID == TypeID.UInteger ||
+                     A.Type.ID == TypeID.UInteger && B.Type.ID == TypeID.UInteger)
                 return ResolveIntegerTypes((IntegerType)A.Type, (IntegerType)B.Type);
             else
             {

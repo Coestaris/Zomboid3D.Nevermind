@@ -23,7 +23,24 @@ namespace Nevermind.ByteCode.Types.Scalar
 
         public override int GetBase()
         {
-            return Signed ? TypeBase : -TypeBase;
+            return TypeBase;
+            //return Signed ? TypeBase : -TypeBase;
+        }
+
+        public long Max()
+        {
+            if (Signed)
+                return (2L << (TypeBase - 2)) - 1;
+            else
+                return (2L << (TypeBase - 1)) - 1;
+        }
+
+        public long Min()
+        {
+            if (Signed)
+                return -(2L << (TypeBase - 1)) - 1;
+            else
+                return 0;
         }
 
         public override List<byte> Serialize(object value)

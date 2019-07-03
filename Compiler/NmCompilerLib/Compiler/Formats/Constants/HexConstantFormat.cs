@@ -16,9 +16,9 @@ namespace Nevermind.Compiler.Formats.Constants
             return new Constant(input, program, Convert.ToInt64(str, 16), literal);
         }
 
-        public override bool VerifyBounds(string input)
+        public override bool VerifyBounds(Constant constant)
         {
-            throw new NotImplementedException();
+            return CheckIntBound(constant);
         }
     }
 }

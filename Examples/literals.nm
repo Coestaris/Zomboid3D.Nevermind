@@ -7,5 +7,8 @@ import io;
 
 entrypoint function integer main()
 {
-    5u + 1u;
+    var a : uint = 5u + 1u;
+    var b : short = 5s + 5us;
+    var c : byte = 40o;
+    var v : byte = 100o;
 }
