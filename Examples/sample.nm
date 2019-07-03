@@ -5,8 +5,18 @@
 import systypes;
 import io;
 
+function integer func(a : integer)
+{
+    return 3s + a;
+}
+
+function void End() { }
+
 entrypoint function integer main()
 {
-    var a: byte = 5o;
-    var b: uint = 5u + a;
+    var a : integer = 1;
+
+    a = 1uo;
+    a = 2o;
+    a = 2uo;
 }

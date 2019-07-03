@@ -49,7 +49,7 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
             if(operands.A.Type != type)
             {
                 var castedA = new Variable(type, "_reg", operands.Function.Scope, operands.A.Token,
-                    operands.A.Index, VariableType.Variable);
+                    -1, VariableType.Variable);
                 casts.Add(new InstructionCast(
                         castedA, operands.A, operands.Function, operands.ByteCode, operands.Label
                     ));
@@ -60,7 +60,7 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
             if(operands.B.Type != type)
             {
                 var castedB = new Variable(type, "_reg", operands.Function.Scope, operands.B.Token,
-                    operands.B.Index, VariableType.Variable);
+                    -1, VariableType.Variable);
                 casts.Add(new InstructionCast(
                     castedB, operands.B, operands.Function, operands.ByteCode, operands.Label
                 ));
@@ -74,17 +74,37 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
 
         private static OperatorResult SetFunc(OperatorOperands operands, BinaryArithmeticInstructionType operatorType)
         {
-            if(!operands.A.Type.Equals(operands.B.Type))
-                return new OperatorResult(new CompileError(CompileErrorType.IncompatibleTypes, operands.A.Token));
-            
+            //if(!operands.A.Type.Equals(operands.B.Type))
+            //return new OperatorResult(new CompileError(CompileErrorType.IncompatibleTypes, operands.A.Token));
+
             if(operands.LineItem.Operand1 == null)
                 return new OperatorResult(new CompileError(CompileErrorType.WrongAssignmentOperation, operands.A.Token));
 
             if (operands.A.VariableType != VariableType.Variable)
                 return new OperatorResult(new CompileError(CompileErrorType.WrongAssignmentOperation, operands.A.Token));
 
+            if (operands.A.Type.GetBase() <= operands.B.Type.GetBase() ||
+                ((operands.A.Type.ID == TypeID.Integer || operands.A.Type.ID == TypeID.UInteger) &&
+                 operands.B.Type.ID == TypeID.Float))
+            {
+                return new OperatorResult(new CompileError(CompileErrorType.IncompatibleTypes, operands.A.Token));
+            }
+
+            var casts = new List<InstructionCast>();
+            if(operands.B.Type != operands.A.Type)
+            {
+                var castedB = new Variable(operands.A.Type, "_reg", operands.Function.Scope, operands.B.Token,
+                    -1, VariableType.Variable);
+                casts.Add(new InstructionCast(
+                    castedB, operands.B, operands.Function, operands.ByteCode, operands.Label
+                ));
+
+                operands.B = castedB;
+            }
+
+
             return new OperatorResult(new BinaryArithmeticInstruction(operatorType,
-                null, operands.A, operands.B, operands.Function, operands.ByteCode, operands.Label), operands.A.Type, null);
+                null, operands.A, operands.B, operands.Function, operands.ByteCode, operands.Label), operands.A.Type, casts);
         }
 
         private static OperatorResult UnaryOperatorFunc(OperatorOperands operands, UnaryArithmeticInstructionType operatorType)

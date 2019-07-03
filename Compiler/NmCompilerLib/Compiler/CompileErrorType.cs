@@ -43,6 +43,8 @@ namespace Nevermind.Compiler
         ReturnInVoidFunction,
         WrongParameterCount,
         UnexpectedCommaOperator,
-        OutOfBoundsConstant
+        OutOfBoundsConstant,
+        ExpressionIsNotVariable,
+        WrongUsageOfVoidFunc
     }
 }

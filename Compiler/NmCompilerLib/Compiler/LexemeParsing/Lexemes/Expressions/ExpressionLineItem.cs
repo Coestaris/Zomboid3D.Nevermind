@@ -1,3 +1,4 @@
+using System.CodeDom;
 using Nevermind.ByteCode;
 using Nevermind.ByteCode.Functions;
 using Nevermind.ByteCode.Instructions;
@@ -210,14 +211,16 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
                             instructions.Add(new InstructionCall(funcToCall, func, byteCode, -1));
                         }
 
-                        //if (currentIndex != list.Count - 1)
-                        //{
-                            if (funcToCall.ReturnType != null)
-                                registers.Add(new Variable(funcToCall.ReturnType, $"__reg{localVarIndex}", func.Scope, null, localVarIndex++, VariableType.Variable));
-
+                        if (funcToCall.ReturnType != null)
+                        {
+                            registers.Add(new Variable(funcToCall.ReturnType, $"__reg{localVarIndex}", func.Scope, null, localVarIndex++, VariableType.Variable));
+                            //pop out result
                             instructions.Add(new InstructionPop(registers.Last(), func, byteCode, -1));
-                        //}
-
+                        }
+                        else if(currentIndex != list.Count - 1)
+                        {
+                            throw new ParseException(CompileErrorType.WrongUsageOfVoidFunc, item.NearToken);
+                        }
                     }
 
                     if (item.UnaryOperator != null)
@@ -235,9 +238,11 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
                     if (result.UsedCasts != null && result.UsedCasts.Count != 0)
                     {
                         instructions.AddRange(result.UsedCasts);
+
                         foreach (var cast in result.UsedCasts)
                         {
-                            cast.Dest.Index = localVarIndex++;
+                            cast.Result.Index = localVarIndex++;
+                            //registers.Add(cast.Dest);
                         }
                     }
 
@@ -256,6 +261,9 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
 
                 currentIndex++;
             }
+
+            registers.AddRange(instructions.FindAll(p => p is InstructionCast)
+                .Select(p => ((InstructionCast)p).Result));
 
             return instructions;
         }

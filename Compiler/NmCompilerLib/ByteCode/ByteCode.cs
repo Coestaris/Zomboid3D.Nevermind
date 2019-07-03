@@ -132,6 +132,9 @@ namespace Nevermind.ByteCode
 
                 if (storeResultTo != null)
                 {
+                    if (!(instructionSet.Instructions.Last() is ArithmeticInstruction))
+                        throw new ParseException(CompileErrorType.ExpressionIsNotVariable, lexeme.Tokens[1]);
+
                     var lastInstruction = (ArithmeticInstruction)instructionSet.Instructions.Last();
                     if (!lastInstruction.Result.Type.Equals(storeResultTo.Type))
                         throw new ParseException(CompileErrorType.IncompatibleTypes, lexeme.Tokens[0]);
@@ -141,7 +144,11 @@ namespace Nevermind.ByteCode
                 else
                 {
                     var last = instructionSet.Instructions.Last();
-                    resultVar = (last as ArithmeticInstruction).Result;
+
+                    if (!(last is ArithmeticInstruction))
+                        resultVar = null;
+                    else
+                        resultVar = (last as ArithmeticInstruction).Result;
                 }
             }
 
@@ -180,6 +187,9 @@ namespace Nevermind.ByteCode
                             Variable variable;
                             ExpressionToList(expression, lexeme, function, out variable, ref labelIndex, ref localVarIndex, ref regCount,
                                 registers, instructionSet, locals, null);
+
+                            if(variable == null)
+                                throw new ParseException(CompileErrorType.ExpressionIsNotVariable, lexeme.Tokens[1]);
 
                             instructionSet.Instructions.Add(new InstructionBrEq(variable, -1, function, this, labelIndex++));
                             var eq = instructionSet.Instructions.Last() as InstructionBrEq;

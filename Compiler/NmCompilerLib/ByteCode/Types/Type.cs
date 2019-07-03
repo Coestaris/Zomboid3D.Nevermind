@@ -38,6 +38,15 @@ namespace Nevermind.ByteCode.Types
 
         public static bool operator ==(Type a, Type b)
         {
+            var aNull = (object) a == null;
+            var bNull = (object) b == null;
+
+            if (aNull && bNull)
+                return true;
+
+            if (!aNull && bNull || aNull && !bNull)
+                return false;
+
             return a.Equals(b);
         }
 
