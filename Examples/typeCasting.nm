@@ -1,0 +1,35 @@
+/*
+ * Simple program example
+ */
+
+import systypes;
+import io;
+
+function integer func1(a : integer)
+{
+    return 3s + a;
+}
+
+function double func2(f : double, b : uint)
+{
+    return f + b;
+}
+
+entrypoint function integer main()
+{
+    //implicit casting to int
+    var a : integer = 0;
+    a = 1;
+    a += 5o;
+    a += 5us;
+
+    //implicit casting to float
+    var f : double = 0.1;
+    f += 0.5;
+    f += 1;
+    f += 1us;
+
+    //implicit casting in function calls
+    func(2us);
+    func2(0.5f, 11uo);
+}

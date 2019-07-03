@@ -7,6 +7,7 @@ using Nevermind.ByteCode.InternalClasses;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Nevermind.ByteCode.Types;
 
 namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
 {
@@ -174,6 +175,7 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
                         {
                             if (funcToCall.Parameters.Count != 0)
                                 throw new ParseException(CompileErrorType.WrongParameterCount, item.FunctionCall);
+
                             instructions.Add(new InstructionCall(funcToCall, func, byteCode, -1));
                         }
                         else if(operand1.VariableType != VariableType.Tuple)
@@ -181,8 +183,17 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
                             if(funcToCall.Parameters.Count != 1)
                                 throw new ParseException(CompileErrorType.WrongParameterCount, item.FunctionCall);
 
-                            if(!funcToCall.Parameters[0].Type.Equals(operand1.Type))
-                                throw new ParseException(CompileErrorType.IncompatibleTypes, item.FunctionCall);
+                            if (funcToCall.Parameters[0].Type != operand1.Type)
+                            {
+                                //not equals, but can we cast?
+                                if(!Type.CanCastAssignment(funcToCall.Parameters[0].Type, operand1.Type))
+                                    throw new ParseException(CompileErrorType.IncompatibleTypes, item.FunctionCall);
+
+                                //casting
+                                registers.Add(new Variable(funcToCall.Parameters[0].Type, $"__reg{localVarIndex}", func.Scope, null, localVarIndex++, VariableType.Variable));
+                                instructions.Add(new InstructionCast(registers.Last(), operand1, func, byteCode, -1));
+                                operand1 = registers.Last();
+                            }
 
                             instructions.Add(new InstructionPush(operand1, func, byteCode, -1));
                             instructions.Add(new InstructionCall(funcToCall, func, byteCode, -1));
@@ -193,8 +204,19 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
                                 throw new ParseException(CompileErrorType.WrongParameterCount, item.FunctionCall);
 
                             for(int i = 0; i < operand1.Tuple.Count; i++)
-                                if (!funcToCall.Parameters[i].Type.Equals(operand1.Tuple[i].Type))
-                                    throw new ParseException(CompileErrorType.IncompatibleTypes, item.FunctionCall);
+                                if (funcToCall.Parameters[i].Type != operand1.Tuple[i].Type)
+                                {
+                                    //throw new ParseException(CompileErrorType.IncompatibleTypes, item.FunctionCall);
+
+                                    //not equals, but can we cast?
+                                    if(!Type.CanCastAssignment(funcToCall.Parameters[i].Type, operand1.Tuple[i].Type))
+                                        throw new ParseException(CompileErrorType.IncompatibleTypes, item.FunctionCall);
+
+                                    //casting
+                                    registers.Add(new Variable(funcToCall.Parameters[i].Type, $"__reg{localVarIndex}", func.Scope, null, localVarIndex++, VariableType.Variable));
+                                    instructions.Add(new InstructionCast(registers.Last(), operand1.Tuple[i], func, byteCode, -1));
+                                    operand1.Tuple[i] = registers.Last();
+                                }
 
                             for (int i = 0; i < operand1.Tuple.Count; i++)
                                 instructions.Add(new InstructionPush(operand1.Tuple[i], func, byteCode, -1));

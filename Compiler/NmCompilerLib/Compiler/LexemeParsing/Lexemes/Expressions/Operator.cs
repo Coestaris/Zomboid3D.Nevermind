@@ -83,9 +83,7 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
             if (operands.A.VariableType != VariableType.Variable)
                 return new OperatorResult(new CompileError(CompileErrorType.WrongAssignmentOperation, operands.A.Token));
 
-            if (operands.A.Type.GetBase() <= operands.B.Type.GetBase() ||
-                ((operands.A.Type.ID == TypeID.Integer || operands.A.Type.ID == TypeID.UInteger) &&
-                 operands.B.Type.ID == TypeID.Float))
+            if (!Type.CanCastAssignment(operands.A.Type, operands.B.Type))
             {
                 return new OperatorResult(new CompileError(CompileErrorType.IncompatibleTypes, operands.A.Token));
             }
@@ -101,7 +99,6 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
 
                 operands.B = castedB;
             }
-
 
             return new OperatorResult(new BinaryArithmeticInstruction(operatorType,
                 null, operands.A, operands.B, operands.Function, operands.ByteCode, operands.Label), operands.A.Type, casts);

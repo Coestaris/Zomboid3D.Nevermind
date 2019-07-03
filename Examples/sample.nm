@@ -5,14 +5,6 @@
 import systypes;
 import io;
 
-function integer func(a : integer)
-{
-    return 3s + a;
-}
-
-function void End() { }
-
 entrypoint function integer main()
 {
-     func(5o)
 }

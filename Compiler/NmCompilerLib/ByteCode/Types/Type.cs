@@ -56,7 +56,15 @@ namespace Nevermind.ByteCode.Types
             return !(a == b);
         }
 
-        public static Type CastTypes(Type a, Type b, Type preferedType = null)
+        public static bool CanCastAssignment(Type dest, Type src)
+        {
+            if (dest.ID == TypeID.String || src.ID == TypeID.String)
+                return false;
+
+            return dest.GetBase() >= src.GetBase() && (dest.ID != TypeID.Integer && dest.ID != TypeID.UInteger || src.ID != TypeID.Float);
+        }
+
+        public static Type CastTypes(Type a, Type b, Type preferredType = null)
         {
             //Types the same
             if (a.ID == b.ID && a.GetBase() == b.GetBase())
@@ -68,12 +76,12 @@ namespace Nevermind.ByteCode.Types
                 return a.GetBase() > b.GetBase() ? a : b;
 
             //if we prefer something
-            if (preferedType != null)
+            if (preferredType != null)
             {
                 var type = CastTypes(a, b, null);
 
                 if (type == null) return null;
-                return CastTypes(type, preferedType, null);
+                return CastTypes(type, preferredType, null);
             }
             else
             {

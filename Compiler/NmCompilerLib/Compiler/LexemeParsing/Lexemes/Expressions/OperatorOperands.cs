@@ -1,4 +1,5 @@
-﻿using Nevermind.ByteCode.Functions;
+﻿using System.Runtime.InteropServices;
+using Nevermind.ByteCode.Functions;
 using Nevermind.ByteCode.Types;
 using Nevermind.ByteCode.Types.Scalar;
 
@@ -36,12 +37,12 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
         public CompileError CheckNumericAndGetType(out Type type)
         {
             type = null;
-            if (CheckNumericTypes(A.Type, B.Type))
-                return new CompileError(CompileErrorType.ExpectedNumericOperands, A.Token);
 
-            type = ResolveNumericType();
-            if (type == null)
-                return new CompileError(CompileErrorType.WrongResultType, A.Token);
+            //not numerics
+            if(A.Type.ID == TypeID.String || B.Type.ID == TypeID.String)
+                return new CompileError(CompileErrorType.ExpectedNumericOperands, LineItem.NearToken);
+
+            type = Type.CastTypes(A.Type, B.Type);
             return null;
         }
     }
