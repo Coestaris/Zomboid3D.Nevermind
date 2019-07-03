@@ -1,0 +1,25 @@
+{
+    "name": "nevermind-language",
+    "displayName": "Nevermind Language",
+    "description": "Adds support for Nevermind programming language",
+    "version": "0.0.1",
+    "engines": {
+        "vscode": "^1.36.0"
+    },
+    "categories": [
+        "Programming Languages"
+    ],
+    "contributes": {
+        "languages": [{
+            "id": "nm",
+            "aliases": ["Nevermind", "nm"],
+            "extensions": [".nm"],
+            "configuration": "./language-configuration.json"
+        }],
+        "grammars": [{
+            "language": "nm",
+            "scopeName": "source.nm",
+            "path": "./syntaxes/nm.tmLanguage.json"
+        }]
+    }
+}
