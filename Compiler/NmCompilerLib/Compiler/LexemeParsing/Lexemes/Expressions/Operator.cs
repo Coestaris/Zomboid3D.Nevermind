@@ -44,8 +44,32 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
             Type type;
             if ((error = operands.CheckNumericAndGetType(out type)) != null)
                 return new OperatorResult(error);
+
+            var casts = new List<InstructionCast>();
+            if(operands.A.Type != type)
+            {
+                var castedA = new Variable(type, "_reg", operands.Function.Scope, operands.A.Token,
+                    operands.A.Index, VariableType.Variable);
+                casts.Add(new InstructionCast(
+                        castedA, operands.A, operands.Function, operands.ByteCode, operands.Label
+                    ));
+
+                operands.A = castedA;
+            }
+
+            if(operands.B.Type != type)
+            {
+                var castedB = new Variable(type, "_reg", operands.Function.Scope, operands.B.Token,
+                    operands.B.Index, VariableType.Variable);
+                casts.Add(new InstructionCast(
+                    castedB, operands.B, operands.Function, operands.ByteCode, operands.Label
+                ));
+
+                operands.B = castedB;
+            }
+
             return new OperatorResult(new BinaryArithmeticInstruction(operatorType,
-                null, operands.A, operands.B, operands.Function, operands.ByteCode, operands.Label), type);
+                null, operands.A, operands.B, operands.Function, operands.ByteCode, operands.Label), type, casts);
         }
 
         private static OperatorResult SetFunc(OperatorOperands operands, BinaryArithmeticInstructionType operatorType)
@@ -60,7 +84,7 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
                 return new OperatorResult(new CompileError(CompileErrorType.WrongAssignmentOperation, operands.A.Token));
 
             return new OperatorResult(new BinaryArithmeticInstruction(operatorType,
-                null, operands.A, operands.B, operands.Function, operands.ByteCode, operands.Label), operands.A.Type);
+                null, operands.A, operands.B, operands.Function, operands.ByteCode, operands.Label), operands.A.Type, null);
         }
 
         private static OperatorResult UnaryOperatorFunc(OperatorOperands operands, UnaryArithmeticInstructionType operatorType)
@@ -68,7 +92,7 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
             if (operands.A.Type.ID != TypeID.Float && operands.A.Type.ID != TypeID.Integer && operands.A.Type.ID != TypeID.UInteger)
                 return new OperatorResult(new CompileError(CompileErrorType.ExpectedNumericOperands, operands.A.Token));
 
-            return new OperatorResult(new UnaryArithmeticInstruction(operatorType, null, operands.A, operands.Function, operands.ByteCode, operands.Label), operands.A.Type);
+            return new OperatorResult(new UnaryArithmeticInstruction(operatorType, null, operands.A, operands.Function, operands.ByteCode, operands.Label), operands.A.Type, null);
         }
 
         public static readonly List<Operator> Operators = new List<Operator>

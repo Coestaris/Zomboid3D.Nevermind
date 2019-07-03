@@ -7,28 +7,29 @@ namespace Nevermind.ByteCode.NMB
 {
     internal static class Codes
     {
-        public static readonly UInt16 CurrentNMVersion = 1000;
+        public const UInt16 CurrentNMVersion = 1001;
 
         public static byte[] NMPSignature = {(byte) 'N', (byte) 'M', (byte) 'B'};
 
         public static readonly Dictionary<TypeID, UInt16> TypeIdDict = new Dictionary<TypeID, ushort>
         {
-            {TypeID.Integer,  0x1},
-            {TypeID.UInteger, 0x2},
-            {TypeID.Float,    0x3},
-            {TypeID.String,   0x4},
+            { TypeID.Integer,  0x1 },
+            { TypeID.UInteger, 0x2 },
+            { TypeID.Float,    0x3 },
+            { TypeID.String,   0x4 }
         };
 
         public static readonly Dictionary<InstructionType, UInt16> InstructionDict =
-            new Dictionary<InstructionType, ushort>()
+            new Dictionary<InstructionType, ushort>
             {
-                {InstructionType.Ret,  0x1},
-                {InstructionType.Push, 0x2},
-                {InstructionType.Pop,  0x3},
-                {InstructionType.Ldi,  0x4},
-                {InstructionType.Jmp,  0x5},
-                {InstructionType.Call, 0x6},
-                {InstructionType.BrEq, 0x7}
+                { InstructionType.Ret,  0x1 },
+                { InstructionType.Push, 0x2 },
+                { InstructionType.Pop,  0x3 },
+                { InstructionType.Ldi,  0x4 },
+                { InstructionType.Jmp,  0x5 },
+                { InstructionType.Call, 0x6 },
+                { InstructionType.BrEq, 0x7 },
+                { InstructionType.Cast, 0x8 }
             };
 
         public static readonly Dictionary<BinaryArithmeticInstructionType, UInt16> ABInstructionDict =

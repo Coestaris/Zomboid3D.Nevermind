@@ -9,6 +9,8 @@ namespace Nevermind.ByteCode
         Jmp,
         Call,
         BrEq,
+        Cast,
+
         _Unary,
         _Binary
     }

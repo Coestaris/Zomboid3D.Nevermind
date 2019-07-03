@@ -136,6 +136,10 @@ namespace Nevermind.Compiler.Formats.Constants
             if (obj is Constant)
             {
                 var constant = (Constant)obj;
+
+                if (!constant.ToProgramType().Equals(ToProgramType()))
+                    return false;
+
                 if (Type == ConstantType.String && constant.Type == ConstantType.String)
                 {
                     var firstNotSecond = constant.SValue.Except(SValue).ToList();
@@ -146,7 +150,7 @@ namespace Nevermind.Compiler.Formats.Constants
                 {
                     return Type == constant.Type &&
                         IValue == constant.IValue &&
-                        FValue == constant.FValue;
+                        Math.Abs(FValue - constant.FValue) < 0.0001;
                 }
             }
             else return false;

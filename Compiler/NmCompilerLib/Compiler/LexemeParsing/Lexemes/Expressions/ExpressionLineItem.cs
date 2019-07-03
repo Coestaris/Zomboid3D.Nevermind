@@ -232,6 +232,15 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
                     var resultVar = new Variable(result.ResultType, $"__reg{localVarIndex}", func.Scope, null, localVarIndex++, 
                         result.Instruction == null ? VariableType.Tuple : VariableType.Variable);
 
+                    if (result.UsedCasts != null && result.UsedCasts.Count != 0)
+                    {
+                        instructions.AddRange(result.UsedCasts);
+                        foreach (var cast in result.UsedCasts)
+                        {
+                            cast.Dest.Index = localVarIndex++;
+                        }
+                    }
+
                     if (result.Instruction != null)
                     {
                         instructions.Add(result.Instruction);

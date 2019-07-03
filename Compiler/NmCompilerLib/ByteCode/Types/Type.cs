@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Nevermind.Compiler;
 
@@ -34,5 +35,15 @@ namespace Nevermind.ByteCode.Types
         }
 
         public abstract bool HasLength { get; }
+
+        public static bool operator ==(Type a, Type b)
+        {
+            return a.Equals(b);
+        }
+
+        public static bool operator !=(Type a, Type b)
+        {
+            return !(a == b);
+        }
     }
 }
