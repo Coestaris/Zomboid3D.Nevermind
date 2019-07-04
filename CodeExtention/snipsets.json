@@ -1,0 +1,11 @@
+{
+   "Function declaration": {
+		"prefix": "function",
+		"body": 
+		[
+			"private function $1 $2()",
+			"{",
+			"}"
+		]
+	}
+}

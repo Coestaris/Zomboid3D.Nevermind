@@ -4,7 +4,7 @@
     "description": "Adds support for Nevermind programming language",
     "version": "0.0.1",
     "engines": {
-        "vscode": "^1.36.0"
+        "vscode": "^1.35.1"
     },
     "categories": [
         "Programming Languages"
@@ -20,6 +20,11 @@
             "language": "nm",
             "scopeName": "source.nm",
             "path": "./syntaxes/nm.tmLanguage.json"
+        }],
+        "snippets": [{
+            "language": "javascript",
+            "path": "./snippets.json"
         }]
-    }
+    },
+    "publisher": "Coestaris"
 }

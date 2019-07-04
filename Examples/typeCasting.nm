@@ -30,6 +30,6 @@ entrypoint function integer main()
     f += 1us;
 
     //implicit casting in function calls
-    func(2us);
+    func1(2us);
     func2(0.5f, 11uo);
 }

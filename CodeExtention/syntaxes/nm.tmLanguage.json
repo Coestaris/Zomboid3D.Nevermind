@@ -6,6 +6,8 @@
 		{ "include": "#keywords" },
 		{ "include": "#strings" },
 		{ "include": "#types" },
+		{ "include": "#typesDecalration" },
+		{ "include": "#typesFunc" },
 		{ "include": "#slComment" },
 		{ "include": "#mlComment" },
 		{ "include": "#function" },
@@ -21,8 +23,8 @@
 		},
 		"types": 
 		{
-			"name": "entity.name.type",
-			"match": "\\b(byte|char|short|ushort|integer|uint|long|ulong|real|double|string|wstring)\\b"
+			"name": "entity.name.type.nm",
+			"match" : "\\b(byte|char|short|ushort|integer|uint|long|ulong|real|double|string|wstring)\\b"
 		},
 		"slComment":
 		{
@@ -81,12 +83,24 @@
 			"patterns": 
 			[
 				{
-					"name": "constant.character.escape.char.nm",
-					"match": "\\\\."
+					"name": "constant.character.escape.hex.nm",
+					"match": "\\\\x[0-9a-fA-F]{2}"
 				},
 				{
-					"name": "constant.character.escape.char.nm",
-					"match": "\\\\x\\d{2}"
+					"name": "constant.character.escape.dec.nm",
+					"match": "\\\\[0-9]{3}"
+				},
+				{
+					"name": "constant.character.escape.oct.nm",
+					"match": "\\\\o[0-7]{3}"
+				},
+				{
+					"name": "constant.character.escape.bin.nm",
+					"match": "\\\\p[01]{8}"
+				},
+				{
+					"name": "constant.character.escape.single.nm",
+					"match": "\\\\."
 				}
 			]
 		}

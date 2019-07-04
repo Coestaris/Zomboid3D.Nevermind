@@ -221,14 +221,14 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
                             for (int i = 0; i < operand1.Tuple.Count; i++)
                                 instructions.Add(new InstructionPush(operand1.Tuple[i], func, byteCode, -1));
 
-                            registers.RemoveRange(registers.Count - funcToCall.Parameters.Count + 1, funcToCall.Parameters.Count- 1);
-                            localVarIndex -= funcToCall.Parameters.Count - 1;
+                            //registers.RemoveRange(registers.Count - funcToCall.Parameters.Count + 1, funcToCall.Parameters.Count- 1);
+                            //localVarIndex -= funcToCall.Parameters.Count - 1;
 
-                            for (int i = currentIndex + 1; i < list.Count; i++)
+                            /*for (int i = currentIndex + 1; i < list.Count; i++)
                             {
                                 if (list[i].RegOperand1 != -1) list[i].RegOperand1 -= funcToCall.Parameters.Count - 1;
                                 if (list[i].RegOperand2 != -1) list[i].RegOperand2 -= funcToCall.Parameters.Count - 1;
-                            }
+                            }*/
 
                             instructions.Add(new InstructionCall(funcToCall, func, byteCode, -1));
                         }
@@ -254,19 +254,18 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
                     if (result.Error != null)
                         throw new ParseException(result.Error.ErrorType, item.NearToken);
                     
-                    var resultVar = new Variable(result.ResultType, $"__reg{localVarIndex}", func.Scope, null, localVarIndex++, 
-                        result.Instruction == null ? VariableType.Tuple : VariableType.Variable);
-
                     if (result.UsedCasts != null && result.UsedCasts.Count != 0)
                     {
                         instructions.AddRange(result.UsedCasts);
-
                         foreach (var cast in result.UsedCasts)
                         {
                             cast.Result.Index = localVarIndex++;
                             //registers.Add(cast.Dest);
                         }
                     }
+
+                    var resultVar = new Variable(result.ResultType, $"__reg{localVarIndex}", func.Scope, null, localVarIndex++,
+                        result.Instruction == null ? VariableType.Tuple : VariableType.Variable);
 
                     if (result.Instruction != null)
                     {
@@ -286,6 +285,8 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
 
             registers.AddRange(instructions.FindAll(p => p is InstructionCast)
                 .Select(p => ((InstructionCast)p).Result));
+
+            registers = registers.OrderBy(p => p.Index).ToList();
 
             return instructions;
         }
