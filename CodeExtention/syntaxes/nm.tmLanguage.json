@@ -3,36 +3,75 @@
 	"name": "Nevermind",
 	"patterns": 
 	[
-		{
-			"include": "#keywords"
-		},
-		{
-			"include": "#strings"
-		}
+		{ "include": "#keywords" },
+		{ "include": "#strings" },
+		{ "include": "#types" },
+		{ "include": "#slComment" },
+		{ "include": "#mlComment" },
+		{ "include": "#function" },
+		{ "include": "#number" },
+		{ "include": "#moduleName" }
 	],
 	"repository": 
 	{
 		"keywords": 
 		{
+			"name": "keyword.control.nm",
+			"match": "\\b(private|public|entrypoint|initialization|finalization|function|var|void|import|module|return)\\b"
+		},
+		"types": 
+		{
+			"name": "entity.name.type",
+			"match": "\\b(byte|char|short|ushort|integer|uint|long|ulong|real|double|string|wstring)\\b"
+		},
+		"slComment":
+		{
+			"name": "comment.nm",
+			"begin": "//",
+			"end": "\\n"
+		},
+		"mlComment":
+		{
+			"name": "comment.nm",
+			"begin": "\\/\\*",
+			"end": "\\*\\/"
+		},
+		"function":
+		{
+			"name" : "entity.name.function.nm",
+			"match": "\\b[^\\d\\s]\\w*\\s*(?=\\()"
+		},
+		"number":
+		{
+			"name" : "constant.numeric.nm",
 			"patterns": 
 			[
-				{
-					"name": "keyword.control.nm",
-					"match": "\\b(var|void|import|function)\\b"
+				{ 
+					"match": "\\b[0-9]+(o|uo|s|us|u|l|ul)?\\b",
+					"name":"constant.numeric.dec.nm" 
 				},
-				{
-					"name": "keyword.type.nm",
-					"match": "\\b(integer|int)\\b"
+				{ 
+					"match": "\\b0[bB][01]+(o|uo|s|us|u|l|ul)?\\b",
+					"name":"constant.numeric.bin.nm" 
 				},
-				{
-					"name": "keyword.operator.nm",
-					"match": "\\b(integer|int)\\b"
+				{ 
+					"match": "\\b([0-9]*\\.[0-9]+|[0-9]+)f?\\b",
+					"name":"constant.numeric.float.nm" 
 				},
-				{
-					"name": "keyword.operator.nm",
-					"match": "\\b(integer|int)\\b"
+				{ 
+					"match": "\\b0[xX][0-9a-fA-F]+(o|uo|s|us|u|l|ul)?\\b",
+					"name":"constant.numeric.hex.nm" 
+				},
+				{ 
+					"match": "\\b0[0-7]+(o|uo|s|us|u|l|ul)?\\b",
+					"name":"constant.numeric.oct.nm" 
 				}
 			]
+		},
+		"moduleName":
+		{
+			"name" : "entity.name.class",
+			"match": "\\b(?<=(module)|(import))\\s+\\w+\\b"
 		},
 		"strings": 
 		{
@@ -46,7 +85,7 @@
 					"match": "\\\\."
 				},
 				{
-					"name": "constant.character.escape.hex.nm",
+					"name": "constant.character.escape.char.nm",
 					"match": "\\\\x\\d{2}"
 				}
 			]
