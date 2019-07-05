@@ -16,6 +16,8 @@ namespace Nevermind.ByteCode.Instructions
 
         public override string SourceValue() => ToSourceValue();
 
+        public override bool UsesVariable(int index) => false;
+
         public InstructionRet(Function func, ByteCode byteCode, int label) : base(func, byteCode, label) { }
     }
 }

@@ -28,6 +28,8 @@ namespace Nevermind.ByteCode.Instructions.ArithmeticInstructions
             throw new NotImplementedException();
         }
 
+        public override bool UsesVariable(int index) => Result.Index == index;
+
         public override InstructionType Type
         {
             get { throw new NotImplementedException(); }

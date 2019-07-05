@@ -4,7 +4,7 @@ using Nevermind.ByteCode.NMB;
 
 namespace Nevermind.ByteCode.InternalClasses
 {
-    internal class FunctionInstruction
+    internal class FunctionInstructions
     {
         public List<Variable> Registers;
         public List<Variable> Locals;
@@ -12,7 +12,7 @@ namespace Nevermind.ByteCode.InternalClasses
         public readonly List<Instruction> Instructions;
         public readonly Function Function;
 
-        public FunctionInstruction(Function function)
+        public FunctionInstructions(Function function)
         {
             Function = function;
             Instructions = new List<Instruction>();

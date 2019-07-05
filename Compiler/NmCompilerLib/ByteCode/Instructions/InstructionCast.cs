@@ -25,6 +25,8 @@ namespace Nevermind.ByteCode.Instructions
         public override string SourceValue() => ToSourceValue(
             Result.ToSourceValue(), Source.ToSourceValue() + $" (to {ByteCode.Header.GetTypeIndex(Result.Type)} = {Result.Type.ID}:{Result.Type.GetBase()})");
 
+        public override bool UsesVariable(int index) => base.UsesVariable(index) || Source.Index == index;
+
         public InstructionCast(Variable dest, Variable source, Function func, ByteCode byteCode, int label) : base(dest, func, byteCode, label)
         {
             Source = source;

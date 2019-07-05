@@ -20,6 +20,9 @@ namespace NevermindCompiler
         [Flag("time", 't', "Prints elapsed time")]
         public bool PrintTime;
 
+        [Flag("disable-optimization", 'o', "Disables all optimization during compilation")]
+        public bool DisableOptimization;
+
         [Flag("no-auto-metadata", 'n', "Ignore .json files with possible metadata")]
         public bool IgnoreMetadataFiles;
 
@@ -206,7 +209,8 @@ namespace NevermindCompiler
             var program = new NmProgram(source, metadata)
             {
                 SaveDebugInfo = options.UseDebugChunk,
-                Verbose = options.Verbose
+                Verbose = options.Verbose,
+                DisableOptimization = options.DisableOptimization
             };
 
             if (options.LogFileName != null)

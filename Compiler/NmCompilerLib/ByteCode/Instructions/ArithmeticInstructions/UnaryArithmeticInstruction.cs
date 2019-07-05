@@ -23,6 +23,9 @@ namespace Nevermind.ByteCode.Instructions.ArithmeticInstructions
 
         public override InstructionType Type => InstructionType._Unary;
 
+        public override bool UsesVariable(int index) =>
+            base.UsesVariable(index) || Operand.Index == index;
+
         public UnaryArithmeticInstruction(UnaryArithmeticInstructionType type, Variable res, Variable a, Function func, ByteCode byteCode, int label) : base(res, func, byteCode, label)
         {
             AType = type;

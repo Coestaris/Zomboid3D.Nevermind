@@ -18,9 +18,13 @@ namespace Nevermind.ByteCode.Instructions
         public override InstructionType Type => InstructionType.BrEq;
 
         public override string InstructionName => "breq";
+
         public override int ParameterCount => 2;
+
         public override string SourceValue() =>
             ToSourceValue(Variable.ToSourceValue(), ToFunctionLabel(Index));
+
+        public override bool UsesVariable(int index) => Variable.Index == index;
 
         public InstructionBrEq(Variable variable, int index, Function func, ByteCode byteCode, int label) : base(index, func, byteCode, label)
         {

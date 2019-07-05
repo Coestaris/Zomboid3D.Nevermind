@@ -7,7 +7,8 @@
         SourceReading,
         Tokenizing,
         Lexemizing,
-        StructurePasing,
-        Expanding
+        StructureParsing,
+        Expanding,
+        Optimizing,
     }
 }

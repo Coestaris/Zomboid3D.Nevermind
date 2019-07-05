@@ -28,6 +28,9 @@ namespace Nevermind.ByteCode.Instructions.ArithmeticInstructions
                 Operand2.Serialize()
             );
 
+        public override bool UsesVariable(int index) =>
+            base.UsesVariable(index) || Operand1.Index == index || Operand2.Index == index;
+
         public BinaryArithmeticInstruction(BinaryArithmeticInstructionType type, Variable res, Variable a, Variable b, Function func, ByteCode byteCode, int label) : base(res, func, byteCode, label)
         {
             AType = type;

@@ -18,14 +18,11 @@ function double func2(f : double, b : uint)
 
 entrypoint function integer main()
 {
-    var a : uint = func1(30s);
-/*    a = 1s + 2us;
-
     var b : uint = 0u;
-    b = 1o + 2s;*/
+    b = 1o + 2s;
 
     //implicit casting to int
-    /*var a : integer = 0;
+    var a : integer = 0;
     a = 1;
     a += 5o;
     a += 5us;
@@ -38,5 +35,5 @@ entrypoint function integer main()
 
     //implicit casting in function calls
     func1(2us);
-    func2(0.5f, 11uo);*/
+    func2(0.5f, 11uo);
 }

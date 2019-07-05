@@ -7,4 +7,6 @@ import io;
 
 entrypoint function integer main()
 {
+    var a : integer = 0;
+    a = 1 + (3 + 3);
 }

@@ -24,6 +24,8 @@ namespace Nevermind.ByteCode.Instructions
         public override string SourceValue() =>
             ToSourceValue(Result.ToSourceValue(), Src.ToSourceValue());
 
+        public override bool UsesVariable(int index) => base.UsesVariable(index) || Src.Index == index;
+
         public InstructionLdi(Variable src, Variable dst, Function func, ByteCode byteCode, int label) : base(dst, func, byteCode, label)
         {
             if (dst.Type.ID != src.Type.ID)

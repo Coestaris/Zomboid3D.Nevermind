@@ -25,6 +25,7 @@ namespace Nevermind.ByteCode
         public abstract int ParameterCount { get; }
         public abstract InstructionType Type { get; }
         public abstract string SourceValue();
+        public abstract bool UsesVariable(int index);
 
         public string ToSource()
         {

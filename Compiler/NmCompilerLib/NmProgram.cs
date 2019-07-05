@@ -21,6 +21,7 @@ namespace Nevermind
         public NmMetadata Metadata;
         public bool SaveDebugInfo;
         public bool Verbose;
+        public bool DisableOptimization;
 
         internal List<Import> Imports;
         internal List<Variable> ProgramLocals;
@@ -37,6 +38,7 @@ namespace Nevermind
 
         private Dictionary<ElapsedTimeType, TimeSpan> _time = new Dictionary<ElapsedTimeType, TimeSpan>();
         private DateTime _start;
+
         private void StartMeasureTime()
         {
             _start = DateTime.Now;
@@ -110,7 +112,7 @@ namespace Nevermind
             StartMeasureTime();
             if ((error = StructureParser.Parse(this)) != null)
                 return error;
-            EndMeasureTime(ElapsedTimeType.StructurePasing);
+            EndMeasureTime(ElapsedTimeType.StructureParsing);
 
             return null;
         }
@@ -123,6 +125,13 @@ namespace Nevermind
                 Program = new ByteCode.ByteCode(this);
                 Program.Proceed();
                 EndMeasureTime(ElapsedTimeType.Expanding);
+
+                if (!DisableOptimization)
+                {
+                    StartMeasureTime();
+                    Program.Optimize();
+                    EndMeasureTime(ElapsedTimeType.Optimizing);
+                }
             }
             catch (ParseException ex)
             {

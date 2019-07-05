@@ -21,6 +21,8 @@ namespace Nevermind.ByteCode.Instructions
 
         public override string SourceValue() => ToSourceValue($"{DestFunc.Index}({DestFunc.Name})");
 
+        public override bool UsesVariable(int index) => false;
+
         public InstructionCall(Function destFunc, Function func, ByteCode byteCode, int label) : base(func, byteCode, label)
         {
             DestFunc = destFunc;

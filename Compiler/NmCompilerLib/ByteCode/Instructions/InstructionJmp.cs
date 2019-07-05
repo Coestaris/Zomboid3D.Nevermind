@@ -21,6 +21,8 @@ namespace Nevermind.ByteCode.Instructions
 
         public override string SourceValue() => ToSourceValue(ToFunctionLabel(Index));
 
+        public override bool UsesVariable(int index) => Index == index;
+
         public InstructionJmp(int index, Function func, ByteCode byteCode, int label) : base(func, byteCode, label)
         {
             Index = index;
