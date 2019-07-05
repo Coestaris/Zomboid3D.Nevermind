@@ -12,6 +12,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using Nevermind.ByteCode.NMB;
+using Type = Nevermind.ByteCode.Types.Type;
 
 namespace Nevermind.ByteCode
 {
@@ -50,47 +51,60 @@ namespace Nevermind.ByteCode
                         if (unaryRes.Error != null)
                             throw new ParseException(unaryRes.Error.ErrorType, token.CodeToken);
 
+                        instructionSet.Instructions.Add(unaryRes.Instruction);
+
                         if (storeResultTo != null)
                         {
                             var lastInstruction = (UnaryArithmeticInstruction)unaryRes.Instruction;
-                            if (!unaryRes.ResultType.Equals(storeResultTo.Type))
-                                throw new ParseException(CompileErrorType.IncompatibleTypes, lexeme.Tokens[0]);
-                            lastInstruction.Result = storeResultTo;
+                            if (unaryRes.ResultType != storeResultTo.Type)
+                            {
+                                //but can we cast?
+                                if(!Type.CanCastAssignment(storeResultTo.Type, unaryRes.ResultType))
+                                    throw new ParseException(CompileErrorType.IncompatibleTypes, lexeme.Tokens[0]);
+
+                                var castedVar = new Variable(unaryRes.ResultType, "__unaryReg", function.Scope,
+                                    null, localVarIndex++, VariableType.Variable);
+                                instructionSet.Instructions.Add(new InstructionCast(storeResultTo, castedVar, function, this,
+                                    labelIndexCopy++));
+
+                                lastInstruction.Result = castedVar;
+                                outRegisters.Add(castedVar);
+                            }
+                            else
+                            {
+                                lastInstruction.Result = storeResultTo;
+                            }
+
                             resultVar = storeResultTo;
                         }
                         else
                         {
                             resultVar = (unaryRes.Instruction as UnaryArithmeticInstruction).Result;
                         }
-
-                        instructionSet.Instructions.Add(unaryRes.Instruction);
-
                     }
                     else
                     {
                         if (storeResultTo != null)
                         {
-                            instructionSet.Instructions.Add(new InstructionLdi(src, storeResultTo, function, this, labelIndexCopy++));
-                            resultVar = storeResultTo;
+                            if (storeResultTo.Type != src.Type)
+                            {
+                                //Not equal, cast is needed.
+                                if (!Type.CanCastAssignment(storeResultTo.Type, src.Type))
+                                    throw new ParseException(CompileErrorType.IncompatibleTypes, lexeme.Tokens[0]);
+
+                                instructionSet.Instructions.Add(new InstructionCast(storeResultTo, src, function, this, labelIndexCopy++));
+                                resultVar = storeResultTo;
+                            }
+                            else
+                            {
+                                instructionSet.Instructions.Add(new InstructionLdi(src, storeResultTo, function, this,
+                                    labelIndexCopy++));
+                                resultVar = storeResultTo;
+                            }
                         }
                         else
                         {
 
-                            /*Variable dest = null;
-
-                            if (regCount == 0)
-                            {
-                                new Variable(src.Type, "__reg", function.Scope, null, localVarIndex++);
-                                registerInstructions.Add(new InstructionReg(new NumberedVariable(dest.Index, dest), function, this, labelIndex++));
-                                regCount = 1;
-                            }
-                            else
-                            {
-                                dest = registerInstructions[0].Variable.Variable;
-                            }
-
-                            instructionSet.Instructions.Add(new InstructionLdi(src, dest, function, this, labelIndex++));
-                            resultVar = (instructionSet.Instructions.Last() as InstructionLdi).Dest;*/
                             resultVar = src;
                         }
                     }
@@ -121,11 +135,8 @@ namespace Nevermind.ByteCode
                     registers.RemoveAt(registers.Count - 1);
                 }
 
-                regCount = Math.Max(regCount, registers.Count);
-                if (outRegisters.Count < regCount)
-                    outRegisters.AddRange(
-                        registers.Skip(outRegisters.Count)
-                            .Take(registers.Count - outRegisters.Count - (storeResultTo != null ? 1 : 0)));
+                regCount += registers.Count;
+                outRegisters.AddRange(registers);
 
                 res.ForEach(p => p.Label = labelIndexCopy++);
                 instructionSet.Instructions.AddRange(res);
@@ -135,11 +146,22 @@ namespace Nevermind.ByteCode
                     if (!(instructionSet.Instructions.Last() is ArithmeticInstruction))
                         throw new ParseException(CompileErrorType.ExpressionIsNotVariable, lexeme.Tokens[1]);
 
-                    var lastInstruction = (ArithmeticInstruction)instructionSet.Instructions.Last();
-                    if (!lastInstruction.Result.Type.Equals(storeResultTo.Type))
-                        throw new ParseException(CompileErrorType.IncompatibleTypes, lexeme.Tokens[0]);
-                    lastInstruction.Result = storeResultTo;
+                    var lastInstruction = (ArithmeticInstruction) instructionSet.Instructions.Last();
+                    if (lastInstruction.Result.Type != storeResultTo.Type)
+                    {
+                        //but can we cast?
+                        if (!Type.CanCastAssignment(storeResultTo.Type, lastInstruction.Result.Type))
+                            throw new ParseException(CompileErrorType.IncompatibleTypes, lexeme.Tokens[0]);
+
+                        instructionSet.Instructions.Add(new InstructionCast(storeResultTo, lastInstruction.Result, function, this,
+                            labelIndexCopy++));
+                    }
+                    else
+                    {
+                        lastInstruction.Result = storeResultTo;
+                    }
                     resultVar = storeResultTo;
+
                 }
                 else
                 {
@@ -161,7 +183,7 @@ namespace Nevermind.ByteCode
         {
             foreach (var lexeme in rootLexeme.ChildLexemes)
             {
-                localVarIndex = locals.Count;
+                //localVarIndex = locals.Count;
 
                 switch (lexeme.Type)
                 {
@@ -232,8 +254,20 @@ namespace Nevermind.ByteCode
                             ExpressionToList(((ReturnLexeme)lexeme).Expression, lexeme, function, out variable, ref labelIndex, ref localVarIndex, ref regCount,
                                 registers, instructionSet, locals, null);
 
-                            if (!variable.Type.Equals(function.ReturnType))
-                                throw new ParseException(CompileErrorType.IncompatibleTypes, lexeme.Tokens[1]);
+                            if (variable.Type != function.ReturnType)
+                            {
+                                //but can we cast?
+                                if(!Type.CanCastAssignment(function.ReturnType, variable.Type))
+                                    throw new ParseException(CompileErrorType.IncompatibleTypes, lexeme.Tokens[1]);
+
+                                //casting
+                                var castedVar = new Variable(function.ReturnType, "__castedReg", function.Scope,
+                                    null, localVarIndex++, VariableType.Variable);
+                                instructionSet.Instructions.Add(new InstructionCast(castedVar, variable, function, this,
+                                    labelIndex++));
+                                variable = castedVar;
+                                registers.Add(castedVar);
+                            }
 
                             instructionSet.Instructions.Add(new InstructionPush(variable, function, this, labelIndex++));
                         }

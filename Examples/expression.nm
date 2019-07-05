@@ -5,12 +5,12 @@
 import io;
 import systypes;
 
-entrypoint function integer main(p1 : integer, p2 : integer)
+entrypoint function integer main()
 {
     var a: integer = 0x5 + 0x7a;
     //a = ~3 + 5 - 05;
     //a += 5 + 3 - 0b0010101;
     //a -= 3 == 0124125;
     //a += 1;
-    //a = -a + ~(a + !(5 - 2)) + 4;
+    a = -a + ~(a + !(5 - 2)) + 4;
 }

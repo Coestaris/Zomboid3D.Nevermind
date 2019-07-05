@@ -7,21 +7,22 @@ import io;
 
 function integer func1(a : integer)
 {
-    return 3s + a;
+    return 3s;
 }
 
+/*
 function double func2(f : double, b : uint)
 {
     return f + b;
-}
+}  */
 
 entrypoint function integer main()
 {
-    var a : integer = 0;
-    a = 1s + 2us;
+    var a : uint = func1(30s);
+/*    a = 1s + 2us;
 
     var b : uint = 0u;
-    b = 1o + 2s;
+    b = 1o + 2s;*/
 
     //implicit casting to int
     /*var a : integer = 0;
