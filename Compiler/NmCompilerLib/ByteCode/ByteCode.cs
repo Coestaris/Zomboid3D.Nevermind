@@ -347,7 +347,7 @@ namespace Nevermind.ByteCode
         {
             var buffer = new List<byte>();
 
-            buffer.AddRange(Codes.NMPSignature);
+            buffer.AddRange(Codes.NMBSignature);
             var count = (ushort)(
                 (Program.Metadata != null ? 1 : 0) + //Metadata chunk
                 (Program.SaveDebugInfo    ? 1 : 0) + //Debug chunk

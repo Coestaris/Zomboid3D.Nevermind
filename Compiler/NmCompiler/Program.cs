@@ -57,9 +57,9 @@ namespace NevermindCompiler
         public string BinaryVersion;
     }
 
-    internal class Program
+    internal static class Program
     {
-        public static string ToPrettyFormat(TimeSpan span)
+        private static string ToPrettyFormat(TimeSpan span)
         {
             if (span == TimeSpan.Zero) return "<0 ms";
 

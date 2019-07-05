@@ -14,13 +14,32 @@ void setDefaultValue(void* var, nmType_t* type)
             switch(type->typeBase)
             {
                 case 1:
-                    *(uint8_t*)var = 0;
+                    *(int8_t*)var = 0;
                     break;
                 case 2:
-                    *(uint16_t*)var = 0;
+                    *(int16_t*)var = 0;
                     break;
                 case 4:
-                    *(uint32_t*)var = 0;
+                    *(int32_t*)var = 0;
+                    break;
+                case 8:
+                    *(int64_t*)var = 0l;
+                    break;
+            }
+            break;
+        }
+        case tUInteger:
+        {
+            switch(type->typeBase)
+            {
+                case 1:
+                    *(uint8_t*)var = 0u;
+                    break;
+                case 2:
+                    *(uint16_t*)var = 0u;
+                    break;
+                case 4:
+                    *(uint32_t*)var = 0u;
                     break;
                 case 8:
                     *(uint64_t*)var = 0ul;
@@ -95,12 +114,23 @@ int getFuncIndexByType(nmType_t* type)
             }
             break;
         }
+        case tUInteger:
+        {
+            switch (type->typeBase)
+            {
+                case 1: return 4;
+                case 2: return 5;
+                case 4: return 6;
+                case 8: return 7;
+            }
+            break;
+        }
         case tFloat:
         {
             switch (type->typeBase)
             {
-                case 4: return 4;
-                case 8: return 5;
+                case 4: return 8;
+                case 8: return 9;
             }
         }
         case tString:

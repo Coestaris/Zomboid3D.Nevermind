@@ -66,6 +66,24 @@ char* nmConstantToStr(void* value, nmType_t* type)
     {
         case tInteger:
         {
+            int64_t i = 0;
+            switch(type->typeBase)
+            {
+                case 1: i = *(int8_t*)value;
+                    break;
+                case 2: i = *(int16_t*)value;
+                    break;
+                case 4: i = *(int32_t*)value;
+                    break;
+                case 8: i = *(int64_t*)value;
+                    break;
+            }
+            result = malloc(10);
+            snprintf(result, 10, "%li", i);
+            break;
+        }
+        case tUInteger:
+        {
             uint64_t i = 0;
             switch(type->typeBase)
             {
@@ -79,7 +97,7 @@ char* nmConstantToStr(void* value, nmType_t* type)
                     break;
             }
             result = malloc(10);
-            snprintf(result, 10, "%li", i);
+            snprintf(result, 10, "%lu", i);
             break;
         }
         case tFloat:
@@ -111,6 +129,8 @@ const char* nmTypeSignatureToStr(nmTypeSignature_t signature)
     {
         case tInteger:
             return "integer";
+        case tUInteger:
+            return "uint";
         case tFloat:
             return "float";
         case tString:

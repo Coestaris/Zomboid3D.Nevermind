@@ -7,9 +7,9 @@ namespace Nevermind.ByteCode.NMB
 {
     internal static class Codes
     {
-        public const UInt16 CurrentNMVersion = 1001;
+        public const UInt16 CurrentNMVersion = 1050;
 
-        public static byte[] NMPSignature = {(byte) 'N', (byte) 'M', (byte) 'B'};
+        public static byte[] NMBSignature = {(byte) 'N', (byte) 'M', (byte) 'B'};
 
         public static readonly Dictionary<TypeID, UInt16> TypeIdDict = new Dictionary<TypeID, ushort>
         {

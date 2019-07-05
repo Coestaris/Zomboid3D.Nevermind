@@ -10,8 +10,9 @@
 typedef enum _nmTypeSignature
 {
     tInteger = 0x1,
-    tFloat = 0x2,
-    tString = 0x3
+    tUInteger = 0x2,
+    tFloat = 0x3,
+    tString = 0x4
 
 } nmTypeSignature_t;
 
