@@ -28,7 +28,7 @@ namespace Nevermind.ByteCode
 
         public string ToSource()
         {
-            return $"   _{Function.Name + Label,-6}:  {SourceValue()}";
+            return $"   _{Function.Name + ':' + Label,-6}:  {SourceValue()}";
         }
 
         protected string ToSourceValue(params object[] objects)

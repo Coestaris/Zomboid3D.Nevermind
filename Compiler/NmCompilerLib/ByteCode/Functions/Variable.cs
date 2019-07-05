@@ -1,8 +1,9 @@
-﻿using Nevermind.Compiler;
-using Nevermind.ByteCode.Types;
+﻿using System;
+using Nevermind.Compiler;
 using System.Collections.Generic;
 using System.Linq;
 using Nevermind.ByteCode.NMB;
+using Type = Nevermind.ByteCode.Types.Type;
 
 namespace Nevermind.ByteCode.Functions
 {
@@ -53,6 +54,11 @@ namespace Nevermind.ByteCode.Functions
                 return $"tuple({string.Join(", ", Tuple.Select(p => p.ToSourceValue()))})";
         }
 
+        public override string ToString()
+        {
+            return $"Variable \"{Name}\" - {ToSourceValue()}, at {Token}";
+        }
+
         public IEnumerable<byte> Serialize()
         {
             var a = new List<byte>();
@@ -61,11 +67,12 @@ namespace Nevermind.ByteCode.Functions
                 a.Add(0);
                 a.AddRange(Chunk.Int32ToBytes(Index));
             }
-            else
+            else if(VariableType == VariableType.LinkToConst)
             {
                 a.Add(1);
                 a.AddRange(Chunk.Int32ToBytes(ConstIndex));
             }
+            else throw new ArgumentException("Variable should have Variable or LinkToConst type");
             return a;
         }
     }

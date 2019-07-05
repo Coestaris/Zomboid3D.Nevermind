@@ -190,9 +190,10 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
                                     throw new ParseException(CompileErrorType.IncompatibleTypes, item.FunctionCall);
 
                                 //casting
-                                registers.Add(new Variable(funcToCall.Parameters[0].Type, $"__reg{localVarIndex}", func.Scope, null, localVarIndex++, VariableType.Variable));
-                                instructions.Add(new InstructionCast(registers.Last(), operand1, func, byteCode, -1));
-                                operand1 = registers.Last();
+                                var varCast = new Variable(funcToCall.Parameters[0].Type, $"_castedReg{localVarIndex}",
+                                    func.Scope, null, localVarIndex++, VariableType.Variable);
+                                instructions.Add(new InstructionCast(varCast, operand1, func, byteCode, -1));
+                                operand1 = varCast;
                             }
 
                             instructions.Add(new InstructionPush(operand1, func, byteCode, -1));
@@ -213,14 +214,17 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
                                         throw new ParseException(CompileErrorType.IncompatibleTypes, item.FunctionCall);
 
                                     //casting
-                                    registers.Add(new Variable(funcToCall.Parameters[i].Type, $"__reg{localVarIndex}", func.Scope, null, localVarIndex++, VariableType.Variable));
-                                    instructions.Add(new InstructionCast(registers.Last(), operand1.Tuple[i], func, byteCode, -1));
-                                    operand1.Tuple[i] = registers.Last();
+                                    var varCast = new Variable(funcToCall.Parameters[i].Type,
+                                        $"__castedReg{localVarIndex}", func.Scope, null, localVarIndex++,
+                                        VariableType.Variable);
+                                    instructions.Add(new InstructionCast(varCast, operand1.Tuple[i], func, byteCode, -1));
+                                    operand1.Tuple[i] = varCast;
                                 }
 
                             for (int i = 0; i < operand1.Tuple.Count; i++)
                                 instructions.Add(new InstructionPush(operand1.Tuple[i], func, byteCode, -1));
 
+                            //I dunno what is it, just comment it.
                             //registers.RemoveRange(registers.Count - funcToCall.Parameters.Count + 1, funcToCall.Parameters.Count- 1);
                             //localVarIndex -= funcToCall.Parameters.Count - 1;
 

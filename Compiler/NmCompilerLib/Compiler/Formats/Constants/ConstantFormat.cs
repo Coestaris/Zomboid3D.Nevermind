@@ -26,7 +26,7 @@ namespace Nevermind.Compiler.Formats.Constants
             var max = ((IntegerType)constant.ToProgramType()).Max();
             var min = ((IntegerType)constant.ToProgramType()).Min();
 
-            return constant.IValue < max && constant.IValue > min;
+            return constant.IValue <= max && constant.IValue >= min;
         }
 
         protected bool CheckFloatBound(Constant constant)

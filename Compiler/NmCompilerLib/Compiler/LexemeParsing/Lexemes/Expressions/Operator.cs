@@ -48,7 +48,7 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
             var casts = new List<InstructionCast>();
             if(operands.A.Type != type)
             {
-                var castedA = new Variable(type, "_reg", operands.Function.Scope, operands.A.Token,
+                var castedA = new Variable(type, "__castedReg", operands.Function.Scope, operands.A.Token,
                     -1, VariableType.Variable);
                 casts.Add(new InstructionCast(
                         castedA, operands.A, operands.Function, operands.ByteCode, operands.Label
@@ -59,7 +59,7 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
 
             if(operands.B.Type != type)
             {
-                var castedB = new Variable(type, "_reg", operands.Function.Scope, operands.B.Token,
+                var castedB = new Variable(type, "__castedReg", operands.Function.Scope, operands.B.Token,
                     -1, VariableType.Variable);
                 casts.Add(new InstructionCast(
                     castedB, operands.B, operands.Function, operands.ByteCode, operands.Label
@@ -91,7 +91,7 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
             var casts = new List<InstructionCast>();
             if(operands.B.Type != operands.A.Type)
             {
-                var castedB = new Variable(operands.A.Type, "_reg", operands.Function.Scope, operands.B.Token,
+                var castedB = new Variable(operands.A.Type, "__castedReg", operands.Function.Scope, operands.B.Token,
                     -1, VariableType.Variable);
                 casts.Add(new InstructionCast(
                     castedB, operands.B, operands.Function, operands.ByteCode, operands.Label
