@@ -7,7 +7,6 @@ using Nevermind;
 using Nevermind.Compiler;
 using NevermindCompiler.CLParser;
 using Newtonsoft.Json.Linq;
-
 #pragma warning disable 649
 
 namespace NevermindCompiler
@@ -20,7 +19,7 @@ namespace NevermindCompiler
         [Flag("time", 't', "Prints elapsed time")]
         public bool PrintTime;
 
-        [Flag("disable-optimization", 'o', "Disables all optimization during compilation")]
+        [Flag("disable-optimization", Flag.NoName, "Disables all optimization during compilation")]
         public bool DisableOptimization;
 
         [Flag("no-auto-metadata", 'n', "Ignore .json files with possible metadata")]

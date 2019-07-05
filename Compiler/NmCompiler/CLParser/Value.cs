@@ -13,5 +13,7 @@ namespace NevermindCompiler.CLParser
             ClassField = classField;
             Attribute = attribute;
         }
+
+        public const char NoName = '\0';
     }
 }

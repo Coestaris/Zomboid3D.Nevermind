@@ -27,6 +27,8 @@ namespace Nevermind.ByteCode.Instructions
 
         public override bool UsesVariable(int index) => base.UsesVariable(index) || Source.Index == index;
 
+        public override List<Variable> FetchUsedVariables(int index) => InnerFetch(index, Result, Source);
+
         public InstructionCast(Variable dest, Variable source, Function func, ByteCode byteCode, int label) : base(dest, func, byteCode, label)
         {
             Source = source;

@@ -26,6 +26,8 @@ namespace Nevermind.ByteCode.Instructions
 
         public override bool UsesVariable(int index) => Variable.Index == index;
 
+        public override List<Variable> FetchUsedVariables(int index) => InnerFetch(index, Variable);
+
         public InstructionBrEq(Variable variable, int index, Function func, ByteCode byteCode, int label) : base(index, func, byteCode, label)
         {
             if (variable.Type.ID != TypeID.Float && variable.Type.ID != TypeID.Integer && variable.Type.ID != TypeID.UInteger)

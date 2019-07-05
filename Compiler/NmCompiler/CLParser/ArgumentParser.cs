@@ -68,36 +68,58 @@ namespace NevermindCompiler.CLParser
 
             Console.WriteLine();
 
+            Console.WriteLine("Available flags: ");
             foreach (var flag in Flags)
             {
-                Console.WriteLine("   {3}{0,-4}  {4}{1,-20}{2}.",
-                    flag.Attribute.ShortName + ",",
-                    flag.Attribute.Name,
-                    flag.Attribute.Description,
-                    Prefix,
-                    FullPrefix);
+                if (flag.Attribute.ShortName == Flag.NoName)
+                {
+                    Console.WriteLine("          {2}{0,-22}{1}.",
+                        flag.Attribute.Name,
+                        flag.Attribute.Description,
+                        FullPrefix);
+                }
+                else
+                {
+                    Console.WriteLine("   {3}{0,-4}  {4}{1,-22}{2}.",
+                        flag.Attribute.ShortName + ",",
+                        flag.Attribute.Name,
+                        flag.Attribute.Description,
+                        Prefix,
+                        FullPrefix);
+                }
             }
 
-            foreach (var value in Values)
-            {
-                Console.WriteLine("   {4}{0,-4}  {5}{1,-20}{2}{3}.",
-                    value.Attribute.ShortName + ",",
-                    value.Attribute.Name,
-                    value.Attribute.Required ? "(required) " : "",
-                    value.Attribute.Description,
-                    Prefix,
-                    FullPrefix);
-            }
-
-            Console.WriteLine();
-            Console.WriteLine("          {2}{0,-20}{1}.",
+            Console.WriteLine("          {2}{0,-22}{1}.",
                 HelpCommand,
                 "Outputs list of all commands",
                 FullPrefix);
-            Console.WriteLine("          {2}{0,-20}{1}.",
+            Console.WriteLine("          {2}{0,-22}{1}.",
                 VersionCommand,
                 "Outputs program version",
                 FullPrefix);
+
+            Console.WriteLine("\nAvailable options: ");
+            foreach (var value in Values)
+            {
+                if (value.Attribute.ShortName == Value.NoName)
+                {
+                    Console.WriteLine("          {3}{0,-22}{1}{2}.",
+                        value.Attribute.Name,
+                        value.Attribute.Required ? "(required) " : "",
+                        value.Attribute.Description,
+                        FullPrefix);
+                }
+                else
+                {
+                    Console.WriteLine("   {4}{0,-4}  {5}{1,-22}{2}{3}.",
+                        value.Attribute.ShortName + ",",
+                        value.Attribute.Name,
+                        value.Attribute.Required ? "(required) " : "",
+                        value.Attribute.Description,
+                        Prefix,
+                        FullPrefix);
+                }
+            }
         }
 
         void PrintVersion()

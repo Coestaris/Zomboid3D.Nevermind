@@ -26,6 +26,9 @@ namespace Nevermind.ByteCode.Instructions
 
         public override bool UsesVariable(int index) => base.UsesVariable(index) || Src.Index == index;
 
+        public override List<Variable> FetchUsedVariables(int index) =>
+            InnerFetch(index, Result, Src);
+
         public InstructionLdi(Variable src, Variable dst, Function func, ByteCode byteCode, int label) : base(dst, func, byteCode, label)
         {
             if (dst.Type.ID != src.Type.ID)

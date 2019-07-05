@@ -23,6 +23,8 @@ namespace Nevermind.ByteCode.Instructions
 
         public override bool UsesVariable(int index) => false;
 
+        public override List<Variable> FetchUsedVariables(int index) => InnerFetch(index, null);
+
         public InstructionCall(Function destFunc, Function func, ByteCode byteCode, int label) : base(func, byteCode, label)
         {
             DestFunc = destFunc;

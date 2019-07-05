@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Nevermind.ByteCode.Functions;
 using Nevermind.ByteCode.Instructions.ArithmeticInstructions;
 using Nevermind.ByteCode.NMB;
@@ -26,6 +27,20 @@ namespace Nevermind.ByteCode
         public abstract InstructionType Type { get; }
         public abstract string SourceValue();
         public abstract bool UsesVariable(int index);
+        public abstract List<Variable> FetchUsedVariables(int index);
+
+        protected List<Variable> InnerFetch(int index, params Variable[] variables)
+        {
+            var result = new List<Variable>();
+            if (variables == null) return result;
+
+            if (index == -1)
+                return variables.ToList();
+
+            result.AddRange(variables.Where(variable => variable.Index == index));
+
+            return result;
+        }
 
         public string ToSource()
         {

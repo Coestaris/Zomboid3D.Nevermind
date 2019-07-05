@@ -26,6 +26,9 @@ namespace Nevermind.ByteCode.Instructions.ArithmeticInstructions
         public override bool UsesVariable(int index) =>
             base.UsesVariable(index) || Operand.Index == index;
 
+        public override List<Variable> FetchUsedVariables(int index) =>
+            InnerFetch(index, Result, Operand);
+
         public UnaryArithmeticInstruction(UnaryArithmeticInstructionType type, Variable res, Variable a, Function func, ByteCode byteCode, int label) : base(res, func, byteCode, label)
         {
             AType = type;

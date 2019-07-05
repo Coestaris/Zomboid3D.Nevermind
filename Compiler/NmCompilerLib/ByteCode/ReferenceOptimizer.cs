@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Nevermind.ByteCode.Functions;
 using Nevermind.ByteCode.Instructions;
 using Nevermind.ByteCode.InternalClasses;
@@ -14,7 +15,90 @@ namespace Nevermind.ByteCode
             foreach (var function in byteCode.Instructions)
             {
                 DeleteUnusedRegisters(byteCode, function);
+                OptimizeRegisters(byteCode, function);
+                DeleteDuplicatedRegisters(byteCode, function);
+                FixRegistersIndexes(byteCode, function);
             }
+        }
+
+        private static void FixRegistersIndexes(ByteCode byteCode, FunctionInstructions function)
+        {
+            var index = function.Locals.Count;
+            foreach (var register in function.Registers)
+            {
+                foreach (var instruction in function.Instructions)
+                {
+                    instruction.FetchUsedVariables(register.Index).ForEach(p => p.Index = index);
+                }
+                register.Index = index;
+                index++;
+            }
+        }
+
+        private static void DeleteDuplicatedRegisters(ByteCode byteCode, FunctionInstructions function)
+        {
+            function.Registers = function.Registers.GroupBy(p => p.Index).Select(p => p.ToList()[0]).ToList();
+        }
+
+        private static void OptimizeRegisters(ByteCode byteCode, FunctionInstructions function)
+        {
+            var freeRegisters = GetFreeRegistersList(function);
+            for (var i = 0; i < freeRegisters.Length; i++)
+            {
+                //Some registers are free
+                if (freeRegisters[i] != function.Registers.Count)
+                {
+                    var usedVariables = function.Instructions[i].FetchUsedVariables(-1);
+                    //uses at least one variable
+                    if(usedVariables.Count == 0)
+                        continue;
+
+                    var usedRegisters = usedVariables.FindAll(p => p.Index >= function.Locals.Count);
+
+                    //uses at least one register
+                    if(usedRegisters.Count == 0)
+                        continue;
+
+                    var unusedRegisters = GetFreeRegisters(i, function);
+                    foreach (var unusedRegister in unusedRegisters)
+                    {
+                        var replacableRegister = usedRegisters.Find(p => p.Type == unusedRegister.Type);
+
+                        if (replacableRegister != null)
+                        {
+                            //Can be replaced
+                            ReplaceAllUsages(function, replacableRegister.Index, unusedRegister.Index);
+
+                            //update list and start again
+                            freeRegisters = GetFreeRegistersList(function);
+                            i = 0;
+                        }
+                    }
+                }
+            }
+        }
+
+        private static void ReplaceAllUsages(FunctionInstructions function, int oldIndex, int newIndex)
+        {
+            foreach (var instruction in function.Instructions)
+            {
+                var usedVariables = instruction.FetchUsedVariables(oldIndex);
+                if(usedVariables.Count != 0)
+                    usedVariables.ForEach(p => p.Index = newIndex);
+            }
+        }
+
+        private static int[] GetFreeRegistersList(FunctionInstructions function)
+        {
+            var freeRegisters = new int[function.Instructions.Count];
+            for (var i = 0; i < freeRegisters.Length; i++)
+            {
+                foreach (var register in function.Registers)
+                    if (VariableUsed(register.Index, i, function))
+                        freeRegisters[i] += 1;
+            }
+
+            return freeRegisters;
         }
 
         private static void DeleteUnusedRegisters(ByteCode byteCode, FunctionInstructions function)
@@ -34,6 +118,16 @@ namespace Nevermind.ByteCode
 
             foreach (var variable in toDelete)
                 function.Locals.RemoveAll(p => p.Index == variable);
+        }
+
+        private static List<Variable> GetFreeRegisters(int startIndex, FunctionInstructions function)
+        {
+            var freeRegisters = new List<Variable>();
+            foreach (var register in function.Registers)
+                if (!VariableUsed(register.Index, startIndex, function))
+                    freeRegisters.Add(register);
+
+            return freeRegisters;
         }
 
         private static bool VariableUsed(int registerIndex, int startIndex, FunctionInstructions function)

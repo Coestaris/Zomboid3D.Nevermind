@@ -30,6 +30,11 @@ namespace Nevermind.ByteCode.Instructions.ArithmeticInstructions
 
         public override bool UsesVariable(int index) => Result.Index == index;
 
+        public override List<Variable> FetchUsedVariables(int index)
+        {
+            throw new NotImplementedException();
+        }
+
         public override InstructionType Type
         {
             get { throw new NotImplementedException(); }
