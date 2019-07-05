@@ -2,7 +2,7 @@
 // Created by maxim on 6/30/19.
 //
 
-#include <math.h>
+#include <zconf.h>
 #include "environment.h"
 
 void setDefaultValue(void* var, nmType_t* type)
@@ -81,12 +81,16 @@ void nmEnvExecute(nmEnvironment_t* env)
     env->programCounter = &pc;
     env->funcIndex = &func;
 
+    env->execStartTime = clock();
+
     while(pc != functions[func]->instructionsCount)
     {
         current = functions[func]->callableInstructions[pc];
         current->function(env, current->parameters);
         pc++;
     }
+
+    env->execEndTime = clock();
 
     popStack(env->callStack);
 
@@ -173,7 +177,12 @@ void nmEnvDump(nmEnvironment_t* env, FILE* f)
 
     for(size_t i = 0; i < env->program->funcCount; i++)
     {
-        fprintf(f, "Variables of function #%i\n", env->program->functions[i]->index);
+        if(env->program->sourceFilename)
+            fprintf(f, "Variables of function \"%s\" at %i:%i (#%i)\n",
+                    env->program->functions[i]->name, env->program->functions[i]->sourceLineIndex,
+                    env->program->functions[i]->sourceCharIndex, env->program->functions[i]->index);
+        else
+            fprintf(f, "Variables of function #%i\n", env->program->functions[i]->index);
         for(size_t j = 0; j < env->callableFunctions[i]->localsCount; j++)
         {
             uint8_t isLocal = j < env->program->functions[i]->localsCount;

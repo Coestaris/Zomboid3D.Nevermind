@@ -8,6 +8,9 @@
 #include <stdio.h>
 
 #include "stack.h"
+#include <math.h>
+#include <time.h>
+
 #include "../coretypes.h"
 
 typedef struct _nmCallableInstruction
@@ -44,6 +47,9 @@ typedef struct _nmEnvironment
 
     uint32_t* funcIndex;
     uint32_t* programCounter;
+
+    time_t execStartTime;
+    time_t execEndTime;
 
 } nmEnvironment_t;
 

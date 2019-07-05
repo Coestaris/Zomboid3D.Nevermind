@@ -25,6 +25,8 @@ int main()
     nmEnvExecute(env);
     nmEnvDump(env, stdout);
 
+    printf("Done in %lf ms", 1000 * (env->execEndTime - env->execStartTime) / (double)CLOCKS_PER_SEC);
+
     nmEnvFree(env);
     nmProgramFree(program);
 
