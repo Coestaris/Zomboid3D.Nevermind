@@ -21,12 +21,14 @@ typedef enum _nmInstructionOperandType {
 
 } nmInstructionOperandType_t;
 
+typedef void (*instructionFunction_t)(struct _nmEnvironment* env, void** data);
+
 typedef struct _nmInstructionData {
 
     const char* name;
     uint16_t index;
     nmInstructionOperandType_t parameterTypes[5];
-    void (*function[10])(struct _nmEnvironment* env, void** data);
+    instructionFunction_t function[10];
 
 } nmInstructionData_t;
 
@@ -79,6 +81,30 @@ instructionPrototype(instruction_A_SetXor)
 instructionPrototype(instruction_A_SetOr)
 instructionPrototype(instruction_A_Set)
 
+castFuncPrototype(i8)
+castFuncPrototype(i16)
+castFuncPrototype(i32)
+castFuncPrototype(i64)
+castFuncPrototype(u8)
+castFuncPrototype(u16)
+castFuncPrototype(u32)
+castFuncPrototype(u64)
+castFuncPrototype(f32)
+castFuncPrototype(f64)
+
+static instructionFunction_t castFunctions[] = {
+    enumerateCastFunc(i8)
+    enumerateCastFunc(i16)
+    enumerateCastFunc(i32)
+    enumerateCastFunc(i64)
+    enumerateCastFunc(u8)
+    enumerateCastFunc(u16)
+    enumerateCastFunc(u32)
+    enumerateCastFunc(u64)
+    enumerateCastFunc(f32)
+    enumerateCastFunc(f64)
+};
+
 static nmInstructionData_t instructionsData[totalInstructionsCount] = 
 {
         //   Index     PCnt    Function
@@ -89,7 +115,8 @@ static nmInstructionData_t instructionsData[totalInstructionsCount] =
         { "ldi",        0x4,  { varIndex, varConstFlag, varConstIndex, 0, 0 },  enumerateFunc(instruction_ldi)   }, // ldi
         { "jmp",        0x5,  { jumpIndex, 0, 0, 0, 0 },                        enumerateFunc(instruction_jmp)   }, // jmp
         { "call",       0x6,  { functionIndex, 0, 0, 0, 0 },                    enumerateFunc(instruction_call)  }, // call
-        { "breq",       0x7,  { varConstFlag, varConstIndex, jumpIndex, 0, 0 }, enumerateFunc(instruction_breq)  }, // breq
+        { "breq",       0x7,  { varConstFlag, varConstIndex, jumpIndex, 0, 0 }, enumerateFunc(instruction_breq)  }, // breq,
+        { "cast",       0x8,  { varIndex, varConstFlag, varConstIndex, 0, 0 },  {}                               }, // breq
 
         //Binary Arithmetic instructions
         instructionDataBinary(A_Add,      0x64),

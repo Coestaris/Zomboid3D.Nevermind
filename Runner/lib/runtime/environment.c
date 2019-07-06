@@ -143,32 +143,48 @@ int getFuncIndexByType(nmType_t* type)
     return -1;
 }
 
-int getFunctionIndex(nmCallableFunction_t* func, nmProgram_t* program, nmInstruction_t* instr)
+instructionFunction_t getInstructionFunction(nmCallableFunction_t* func, nmProgram_t* program, nmInstruction_t* instr)
 {
     nmInstructionData_t* data = instr->dataPtr;
 
     //ret, jmp, call
-    if(data->index == 0x1 || data->index == 0x5 || data->index == 0x6) return 0; 
-    
+    if(data->index == 0x1 || data->index == 0x5 || data->index == 0x6)
+        return data->function[0]; //doesn't really care
+
+    //push breq
     if(data->index == 0x2 || data->index == 0x7)
     {
         uint64_t flag = instr->parameters[0];
-        if(flag)
+        if(!flag)
         {
             //var
             uint64_t variableIndex = instr->parameters[1];
-            return getFuncIndexByType(func->localTypes[variableIndex]);
+            return data->function[getFuncIndexByType(func->localTypes[variableIndex])];
         }
         else
         {
             //const
             uint64_t constIndex = instr->parameters[1];
-            return getFuncIndexByType(program->constants[constIndex]->typePtr);
+            return data->function[getFuncIndexByType(program->constants[constIndex]->typePtr)];
         }
     }
 
+    //cast
+    if(data->index == 0x8)
+    {
+        uint64_t index1 = getFuncIndexByType(func->localTypes[instr->parameters[0]]);
+        uint64_t index2;
+        uint64_t flag = instr->parameters[1];
+        if(!flag) //var
+            index2 = getFuncIndexByType(func->localTypes[instr->parameters[2]]);
+        else //const
+            index2 = getFuncIndexByType(program->constants[instr->parameters[2]]->typePtr);
+
+        return castFunctions[index1 * 10 + index2]; //=3
+    }
+
     uint64_t variableIndex = instr->parameters[0];
-    return getFuncIndexByType(func->localTypes[variableIndex]);
+    return data->function[getFuncIndexByType(func->localTypes[variableIndex])];
 }
 
 void nmEnvDump(nmEnvironment_t* env, FILE* f)
@@ -283,11 +299,12 @@ nmEnvironment_t* nmEnvCreate(nmProgram_t* program)
             size_t count = getOperandsCount(program->functions[i]->instructions[instrIndex]->dataPtr);
             env->callableFunctions[i]->callableInstructions[instrIndex] = malloc(sizeof(nmCallableInstruction_t));
             env->callableFunctions[i]->callableInstructions[instrIndex]->function =
-                    program->functions[i]->instructions[instrIndex]->dataPtr->function[
-                        getFunctionIndex(
-                            env->callableFunctions[i],
-                            program,
-                            program->functions[i]->instructions[instrIndex])];
+                        getInstructionFunction(
+                                env->callableFunctions[i],
+                                program,
+                                program->functions[i]->instructions[instrIndex]);
+
+            assert(env->callableFunctions[i]->callableInstructions[instrIndex]->function);
 
             env->callableFunctions[i]->callableInstructions[instrIndex]->paramCount = count;
             env->callableFunctions[i]->callableInstructions[instrIndex]->parameters = malloc(sizeof(uint64_t) * count);

@@ -244,10 +244,12 @@ namespace NevermindCompiler
                     Console.WriteLine("\n\nElapsed Time (Total: {0}): ",
                         ToPrettyFormat(program.GetElapsedTime(ElapsedTimeType.Total)));
                     var i = 0;
-                    foreach (ElapsedTimeType type in (ElapsedTimeType[]) Enum.GetValues(typeof(ElapsedTimeType)))
+                    foreach (var type in (ElapsedTimeType[]) Enum.GetValues(typeof(ElapsedTimeType)))
                     {
                         if (type == ElapsedTimeType.Total) continue;
-                        Console.WriteLine("{0}. {1} - {2}", i++, type, ToPrettyFormat(program.GetElapsedTime(type)));
+                        var time = program.GetElapsedTime(type);
+                        if(time != TimeSpan.Zero)
+                            Console.WriteLine("{0}. {1} - {2}", i++, type, ToPrettyFormat(time));
                     }
                 }
 

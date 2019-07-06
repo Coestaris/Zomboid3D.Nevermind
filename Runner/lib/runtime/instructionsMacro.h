@@ -31,8 +31,8 @@
 #define instructionDataBinary(name, index)  { #name, index, { varIndex, varConstFlag, varConstIndex, varConstFlag, varConstIndex }, enumerateFunc(instruction_ ## name) }
 #define instructionDataUnary(name, index)    { #name, index, { varIndex, varConstFlag, varConstIndex, 0, 0 }, enumerateFunc(instruction_ ## name) }
 
-#define declareRetInstruction(name, type)                   \
-void name(struct _nmEnvironment* env, void** data) { }
+#define declareRetInstruction(name, type)                \
+void name(struct _nmEnvironment* env, void** data) { }   \
 
 #define declarePushInstruction(name, type)           \
 void name(struct _nmEnvironment* env, void** data)   \
@@ -71,7 +71,12 @@ void name(struct _nmEnvironment* env, void** data)  \
 }                                                   \
 
 
-#define decalreABInstruction(name, type, sign) void name(struct _nmEnvironment* env, void** data) { *(type*)data[0] = *(type*)data[1] sign *(type*)data[2]; }
+#define decalreABInstruction(name, type, sign)                  \
+void name(struct _nmEnvironment* env, void** data)              \
+{                                                               \
+    *(type*)data[0] = *(type*)data[1] sign *(type*)data[2];     \
+}
+
 #define decalreABInstructionSet(name1, name2, name3, name4, name5, name6, name7, name8, name9, name10, sign)\
     decalreABInstruction(name1, int8_t, sign)    \
     decalreABInstruction(name2, int16_t, sign)   \
@@ -89,7 +94,12 @@ void name(struct _nmEnvironment* env, void** data)  \
         name ## _u8, name ## _u16, name ## _u32, name ## _u64,      \
         name ## _f32, name ## _f64, sign);
 
-#define decalreABCInstruction(name, type, sign) void name(struct _nmEnvironment* env, void** data) { *(type*)data[0] = (type)((uint64_t)*(type*)data[1] sign (uint64_t)*(type*)data[2]); }
+#define decalreABCInstruction(name, type, sign)                                             \
+void name(struct _nmEnvironment* env, void** data)                                          \
+{                                                                                           \
+    *(type*)data[0] = (type)((uint64_t)*(type*)data[1] sign (uint64_t)*(type*)data[2]);     \
+}
+
 #define decalreABCInstructionSet(name1, name2, name3, name4, name5, name6, name7, name8, name9, name10, sign)\
     decalreABCInstruction(name1, int8_t, sign)    \
     decalreABCInstruction(name2, int16_t, sign)   \
@@ -125,5 +135,43 @@ void name(struct _nmEnvironment* env, void** data)  \
         name ## _i8, name ## _i16, name ## _i32, name ## _i64,      \
         name ## _u8, name ## _u16, name ## _u32, name ## _u64,      \
         name ## _f32, name ## _f64, sign);
+
+
+#define decalreCastInstruction(name, type1, type2)      \
+void name(struct _nmEnvironment* env, void** data)      \
+{                                                       \
+    *(type1*)data[0] = (type1)(*(type2*)data[1]);       \
+}
+
+#define declareCastInstructionSet(fromType, typeName)                                   \
+    decalreCastInstruction(instruction_cast_ ## typeName ## _i8,  fromType, int8_t)     \
+    decalreCastInstruction(instruction_cast_ ## typeName ## _i16, fromType, int16_t)    \
+    decalreCastInstruction(instruction_cast_ ## typeName ## _i32, fromType, int32_t)    \
+    decalreCastInstruction(instruction_cast_ ## typeName ## _i64, fromType, int64_t)    \
+    decalreCastInstruction(instruction_cast_ ## typeName ## _u8,  fromType, uint8_t)    \
+    decalreCastInstruction(instruction_cast_ ## typeName ## _u16, fromType, uint16_t)   \
+    decalreCastInstruction(instruction_cast_ ## typeName ## _u32, fromType, uint32_t)   \
+    decalreCastInstruction(instruction_cast_ ## typeName ## _u64, fromType, uint64_t)   \
+    decalreCastInstruction(instruction_cast_ ## typeName ## _f32, fromType, float)      \
+    decalreCastInstruction(instruction_cast_ ## typeName ## _f64, fromType, double)     \
+
+#define castFuncPrototype(typeName)                                                             \
+        void instruction_cast_ ## typeName ## _i8  (struct _nmEnvironment* env, void** data);   \
+        void instruction_cast_ ## typeName ## _i16 (struct _nmEnvironment* env, void** data);   \
+        void instruction_cast_ ## typeName ## _i32 (struct _nmEnvironment* env, void** data);   \
+        void instruction_cast_ ## typeName ## _i64 (struct _nmEnvironment* env, void** data);   \
+        void instruction_cast_ ## typeName ## _u8  (struct _nmEnvironment* env, void** data);   \
+        void instruction_cast_ ## typeName ## _u16 (struct _nmEnvironment* env, void** data);   \
+        void instruction_cast_ ## typeName ## _u32 (struct _nmEnvironment* env, void** data);   \
+        void instruction_cast_ ## typeName ## _u64 (struct _nmEnvironment* env, void** data);   \
+        void instruction_cast_ ## typeName ## _f32 (struct _nmEnvironment* env, void** data);   \
+        void instruction_cast_ ## typeName ## _f64 (struct _nmEnvironment* env, void** data);   \
+
+#define enumerateCastFunc(typeName)                                                     \
+        instruction_cast_ ## typeName ## _i8, instruction_cast_ ## typeName ## _i16,    \
+        instruction_cast_ ## typeName ## _i32, instruction_cast_ ## typeName ## _i64,   \
+        instruction_cast_ ## typeName ## _u8, instruction_cast_ ## typeName ## _u16,    \
+        instruction_cast_ ## typeName ## _u32, instruction_cast_ ## typeName ## _u64,   \
+        instruction_cast_ ## typeName ## _f32, instruction_cast_ ## typeName ## _f64,   \
 
 #endif //NMRUNNER_INSTRUCTIONSMACRO_H

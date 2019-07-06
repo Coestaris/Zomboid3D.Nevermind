@@ -102,6 +102,11 @@
    * **4 bytes**: var index
    * **4 bytes**: jump index
 
+###### cast (0x8):
+   * **4 bytes**: dest variable index
+   * **1 bytes**: var type
+   * **4 bytes**: src variable
+
 ###### Any ab instruction (0x64 - 0x7E):
    * **4 bytes**: result index
    * **1 byte**: operand1 type

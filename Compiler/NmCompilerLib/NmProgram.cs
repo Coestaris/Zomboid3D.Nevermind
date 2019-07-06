@@ -7,6 +7,7 @@ using Nevermind.ByteCode.Types;
 using Nevermind.Compiler;
 using Nevermind.Compiler.Formats.Constants;
 using Nevermind.Compiler.LexemeParsing;
+using Nevermind.Compiler.LexemeParsing.Lexemes;
 using Nevermind.Compiler.Semantics;
 
 namespace Nevermind
@@ -55,7 +56,13 @@ namespace Nevermind
             {
                 return TimeSpan.FromMilliseconds(_time.Values.ToList().Sum(p => p.TotalMilliseconds));
             }
-            else return _time[type];
+            else
+            {
+                TimeSpan result;
+                if (!_time.TryGetValue(type, out result))
+                    return TimeSpan.Zero;
+                else return result;
+            }
         }
 
         public NmProgram(NmSource source, NmMetadata metadata = null)

@@ -13,7 +13,7 @@ namespace Nevermind.ByteCode.Instructions
 
         public override List<byte> Serialize() => ToBytes(
             Chunk.Int32ToBytes(Result.Index),
-            Chunk.Int32ToBytes(Source.Index)
+            Source.Serialize()
         );
 
         public override InstructionType Type => InstructionType.Cast;

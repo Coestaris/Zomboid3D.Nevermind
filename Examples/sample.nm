@@ -7,10 +7,10 @@ import io;
 
 entrypoint function integer main()
 {
-    var a : integer = 0;
+    var a : integer = 4u;
     //a = 1 + (2 + 3);
 
     //a = 2 + (3 + 4);
 
-    a = (1 + -2) + (4 + 8);
+    a = (1s + 2o) + (4s + 8);
 }

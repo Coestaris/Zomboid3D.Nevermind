@@ -117,6 +117,17 @@ declareAUInstruction(instruction_A_Neg, -)
 declareAUInstruction(instruction_A_Not, !)
 declareAUInstruction(instruction_A_BNeg, ~)
 
+declareCastInstructionSet(int8_t,   i8)
+declareCastInstructionSet(int16_t,  i16)
+declareCastInstructionSet(int32_t,  i32)
+declareCastInstructionSet(int64_t,  i64)
+declareCastInstructionSet(uint8_t,  u8)
+declareCastInstructionSet(uint16_t, u16)
+declareCastInstructionSet(uint32_t, u32)
+declareCastInstructionSet(uint64_t, u64)
+declareCastInstructionSet(float,    f32)
+declareCastInstructionSet(double,   f64)
+
 nmInstructionData_t* getInstructionData(int instrIndex)
 {
     for(size_t i = 0; i < totalInstructionsCount; i++)
