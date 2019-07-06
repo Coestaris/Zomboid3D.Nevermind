@@ -30,6 +30,11 @@ namespace Nevermind.ByteCode.Instructions.ArithmeticInstructions
 
         public override bool UsesVariable(int index) => Result.Index == index;
 
+        public override void ReplaceRegisterUsage(int oldIndex, int newIndex)
+        {
+            if (Result.Index == oldIndex) Result = Result.Clone(newIndex);
+        }
+
         public override List<Variable> FetchUsedVariables(int index)
         {
             throw new NotImplementedException();
@@ -40,7 +45,7 @@ namespace Nevermind.ByteCode.Instructions.ArithmeticInstructions
             get { throw new NotImplementedException(); }
         }
 
-        public ArithmeticInstruction(Variable res, Function func, ByteCode byteCode, int label) : base(func, byteCode, label)
+        protected ArithmeticInstruction(Variable res, Function func, ByteCode byteCode, int label) : base(func, byteCode, label)
         {
             Result = res;
         }

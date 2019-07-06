@@ -29,6 +29,12 @@ namespace Nevermind.ByteCode.Instructions
 
         public override List<Variable> FetchUsedVariables(int index) => InnerFetch(index, Result, Source);
 
+        public override void ReplaceRegisterUsage(int oldIndex, int newIndex)
+        {
+            base.ReplaceRegisterUsage(oldIndex, newIndex);
+            if (Source.Index == oldIndex) Source = Source.Clone(newIndex);
+        }
+
         public InstructionCast(Variable dest, Variable source, Function func, ByteCode byteCode, int label) : base(dest, func, byteCode, label)
         {
             Source = source;

@@ -75,5 +75,10 @@ namespace Nevermind.ByteCode.Functions
             else throw new ArgumentException("Variable should have Variable or LinkToConst type");
             return a;
         }
+
+        public Variable Clone(int newIndex)
+        {
+            return new Variable(Type, Name, Scope, Token, newIndex, VariableType, ConstIndex);
+        }
     }
 }

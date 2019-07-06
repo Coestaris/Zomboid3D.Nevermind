@@ -8,8 +8,8 @@ namespace Nevermind.ByteCode.Instructions.ArithmeticInstructions
 
     internal class BinaryArithmeticInstruction : ArithmeticInstruction
     {
-        public readonly Variable Operand1;
-        public readonly Variable Operand2;
+        public Variable Operand1;
+        public Variable Operand2;
 
         public readonly BinaryArithmeticInstructionType AType;
 
@@ -33,6 +33,13 @@ namespace Nevermind.ByteCode.Instructions.ArithmeticInstructions
 
         public override List<Variable> FetchUsedVariables(int index) =>
             InnerFetch(index, Result, Operand1, Operand2);
+
+        public override void ReplaceRegisterUsage(int oldIndex, int newIndex)
+        {
+            base.ReplaceRegisterUsage(oldIndex, newIndex);
+            if (Operand1.Index == oldIndex) Operand1 = Operand1.Clone(newIndex);
+            if (Operand2.Index == oldIndex) Operand2 = Operand2.Clone(newIndex);
+        }
 
         public BinaryArithmeticInstruction(BinaryArithmeticInstructionType type, Variable res, Variable a, Variable b, Function func, ByteCode byteCode, int label) : base(res, func, byteCode, label)
         {

@@ -62,29 +62,35 @@ namespace Nevermind.ByteCode
                     var unusedRegisters = GetFreeRegisters(i, function);
                     foreach (var unusedRegister in unusedRegisters)
                     {
-                        var replacableRegister = usedRegisters.Find(p => p.Type == unusedRegister.Type);
+                        var replaceableRegister = usedRegisters
+                            .Find(p => p.Type == unusedRegister.Type && !VariableUsedBefore(p.Index, i - 1, function));
 
-                        if (replacableRegister != null)
+                        if (replaceableRegister != null)
                         {
                             //Can be replaced
-                            ReplaceAllUsages(function, replacableRegister.Index, unusedRegister.Index);
+                            ReplaceAllUsages(function, i, replaceableRegister.Index, unusedRegister.Index);
 
                             //update list and start again
                             freeRegisters = GetFreeRegistersList(function);
                             i = 0;
+
+                            function.Registers.RemoveAll(p => p.Index == replaceableRegister.Index);
                         }
                     }
                 }
             }
         }
 
-        private static void ReplaceAllUsages(FunctionInstructions function, int oldIndex, int newIndex)
+        private static void ReplaceAllUsages(FunctionInstructions function, int startIndex, int oldIndex, int newIndex)
         {
-            foreach (var instruction in function.Instructions)
+            for (var i = startIndex; i < function.Instructions.Count; i++)
             {
-                var usedVariables = instruction.FetchUsedVariables(oldIndex);
-                if(usedVariables.Count != 0)
-                    usedVariables.ForEach(p => p.Index = newIndex);
+                function.Instructions[i].ReplaceRegisterUsage(oldIndex, newIndex);
+                /*var usedVariables = instruction.FetchUsedVariables(oldIndex);
+                if (usedVariables.Count != 0)
+                {
+                    //usedVariables.ForEach(p => p.Index = newIndex);
+                }*/
             }
         }
 
@@ -128,6 +134,16 @@ namespace Nevermind.ByteCode
                     freeRegisters.Add(register);
 
             return freeRegisters;
+        }
+
+        private static bool VariableUsedBefore(int registerIndex, int startIndex, FunctionInstructions function)
+        {
+            for (var i = startIndex; i >= 0; i--)
+            {
+                if (function.Instructions[i].UsesVariable(registerIndex))
+                    return true;
+            }
+            return false;
         }
 
         private static bool VariableUsed(int registerIndex, int startIndex, FunctionInstructions function)

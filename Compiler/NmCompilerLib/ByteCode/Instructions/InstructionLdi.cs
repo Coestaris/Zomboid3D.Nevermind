@@ -8,7 +8,7 @@ namespace Nevermind.ByteCode.Instructions
 {
     internal class InstructionLdi : ArithmeticInstruction
     {
-        public readonly Variable Src;
+        public Variable Src;
 
         public override List<byte> Serialize() => ToBytes(
             Chunk.Int32ToBytes(Result.Index),
@@ -28,6 +28,12 @@ namespace Nevermind.ByteCode.Instructions
 
         public override List<Variable> FetchUsedVariables(int index) =>
             InnerFetch(index, Result, Src);
+
+        public override void ReplaceRegisterUsage(int oldIndex, int newIndex)
+        {
+            base.ReplaceRegisterUsage(oldIndex, newIndex);
+            if (Src.Index == oldIndex) Src = Src.Clone(newIndex);
+        }
 
         public InstructionLdi(Variable src, Variable dst, Function func, ByteCode byteCode, int label) : base(dst, func, byteCode, label)
         {

@@ -28,6 +28,7 @@ namespace Nevermind.ByteCode
         public abstract string SourceValue();
         public abstract bool UsesVariable(int index);
         public abstract List<Variable> FetchUsedVariables(int index);
+        public abstract void ReplaceRegisterUsage(int oldIndex, int newIndex);
 
         protected List<Variable> InnerFetch(int index, params Variable[] variables)
         {
@@ -35,9 +36,10 @@ namespace Nevermind.ByteCode
             if (variables == null) return result;
 
             if (index == -1)
-                return variables.ToList();
+                return variables.Where(p => p.VariableType == VariableType.Variable).ToList();
 
-            result.AddRange(variables.Where(variable => variable.Index == index));
+            result.AddRange(variables
+                .Where(variable => variable.Index == index && variable.VariableType == VariableType.Variable));
 
             return result;
         }
@@ -75,5 +77,6 @@ namespace Nevermind.ByteCode
 
             return Codes.InstructionDict[Type];
         }
+
     }
 }

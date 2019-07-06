@@ -6,7 +6,7 @@ namespace Nevermind.ByteCode.Instructions.ArithmeticInstructions
 {
     internal class UnaryArithmeticInstruction : ArithmeticInstruction
     {
-        public readonly Variable Operand;
+        public Variable Operand;
 
         public readonly UnaryArithmeticInstructionType AType;
 
@@ -28,6 +28,12 @@ namespace Nevermind.ByteCode.Instructions.ArithmeticInstructions
 
         public override List<Variable> FetchUsedVariables(int index) =>
             InnerFetch(index, Result, Operand);
+
+        public override void ReplaceRegisterUsage(int oldIndex, int newIndex)
+        {
+            base.ReplaceRegisterUsage(oldIndex, newIndex);
+            if (Operand.Index == oldIndex) Operand = Operand.Clone(newIndex);
+        }
 
         public UnaryArithmeticInstruction(UnaryArithmeticInstructionType type, Variable res, Variable a, Function func, ByteCode byteCode, int label) : base(res, func, byteCode, label)
         {

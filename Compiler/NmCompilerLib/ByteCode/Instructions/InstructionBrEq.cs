@@ -8,7 +8,7 @@ namespace Nevermind.ByteCode.Instructions
 {
     internal class InstructionBrEq : InstructionJmp
     {
-        public readonly Variable Variable;
+        public Variable Variable;
 
         public override List<byte> Serialize() => ToBytes(
             Variable.Serialize(),
@@ -27,6 +27,11 @@ namespace Nevermind.ByteCode.Instructions
         public override bool UsesVariable(int index) => Variable.Index == index;
 
         public override List<Variable> FetchUsedVariables(int index) => InnerFetch(index, Variable);
+
+        public override void ReplaceRegisterUsage(int oldIndex, int newIndex)
+        {
+            if (Variable.Index == oldIndex) Variable = Variable.Clone(newIndex);
+        }
 
         public InstructionBrEq(Variable variable, int index, Function func, ByteCode byteCode, int label) : base(index, func, byteCode, label)
         {

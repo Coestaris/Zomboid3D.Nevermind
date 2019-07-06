@@ -25,6 +25,8 @@ namespace Nevermind.ByteCode.Instructions
 
         public override List<Variable> FetchUsedVariables(int index) => InnerFetch(index, null);
 
+        public override void ReplaceRegisterUsage(int oldIndex, int newIndex) { }
+
         public InstructionJmp(int index, Function func, ByteCode byteCode, int label) : base(func, byteCode, label)
         {
             Index = index;
