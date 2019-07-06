@@ -1,12 +1,14 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using Nevermind.ByteCode.Functions;
 using Nevermind.ByteCode.InternalClasses;
 using Nevermind.ByteCode.NMB;
-using Nevermind.ByteCode.Types;
 using Nevermind.Compiler.Formats.Constants;
+using Type = Nevermind.ByteCode.Types.Type;
 
 namespace Nevermind.ByteCode
 {
@@ -79,6 +81,20 @@ namespace Nevermind.ByteCode
         {
             var ch = new Chunk(ChunkType.HEAD);
             ch.Data.AddRange(Chunk.UInt16ToBytes(Codes.CurrentNMVersion));
+
+            if(Program.Source.FileName == null)
+                ch.Data.AddRange(new byte[16]);
+            else
+            {
+                using (var md5 = MD5.Create())
+                {
+                    using (var stream = File.OpenRead(Program.Source.FileName))
+                    {
+                        ch.Data.AddRange(md5.ComputeHash(stream));
+                    }
+                }
+            }
+
             ch.Data.AddRange(Chunk.Int32ToBytes(Program.Imports.Count));
             ch.Data.AddRange(Chunk.Int32ToBytes(Program.Program.Instructions.Count));
             ch.Data.AddRange(Chunk.Int32ToBytes(Program.Functions.Find(p => p.Modifier == FunctionModifier.Entrypoint).Index));

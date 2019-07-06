@@ -12,10 +12,11 @@
 
 #### Chunks:
 ###### "HE" - Header Chunk (unique, required)
-  * **2 bytes**: NM version
-  * **4 bytes**: Import count
-  * **4 bytes**: Function count
-  * **4 bytes**: Entry point function index
+  * **2 bytes** : NM version
+  * **16 bytes**: Source MD5 hash
+  * **4 bytes** : Import count
+  * **4 bytes** : Function count
+  * **4 bytes** : Entry point function index
   <br>Import format:
      * **1 byte** : Module type (0 = sys library, 1 = import)
      * **4 bytes**: Module name length (filename)

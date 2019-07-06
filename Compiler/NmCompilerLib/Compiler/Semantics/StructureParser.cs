@@ -1,10 +1,13 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Nevermind.ByteCode;
 using Nevermind.ByteCode.Functions;
-using Nevermind.ByteCode.Types;
 using Nevermind.Compiler.Formats;
 using Nevermind.Compiler.LexemeParsing;
 using Nevermind.Compiler.LexemeParsing.Lexemes;
+using Type = Nevermind.ByteCode.Types.Type;
 
 namespace Nevermind.Compiler.Semantics
 {
@@ -86,8 +89,23 @@ namespace Nevermind.Compiler.Semantics
                 }
                 else if(lex.Type == LexemeType.Import)
                 {
-                    //todo: make something =/
-                    program.Imports.Add(new Import((lex as ImportLexeme).ImportName.StringValue));
+                    var importName = (lex as ImportLexeme).ImportName.StringValue;
+                    var files = new List<string>();
+
+                    foreach (var directory in program.IncludeDirectories)
+                        files.AddRange(Directory.GetFiles(directory, "*.nm"));
+
+                    Console.WriteLine(string.Join("\n", files));
+
+                    var matchedFile = files.Find(p => new FileInfo(p).Name == importName + ".nm");
+                    if(matchedFile == null)
+                        return new CompileError(CompileErrorType.UnknownModuleName, lex.Tokens?[0]);
+
+                    Import import;
+                    if((error = Import.CreateImport(importName, matchedFile, out import)) != null)
+                        return error;
+
+                    program.Imports.Add(import);
                 }
                 else if(lex.Type != LexemeType.Module && lex.Type != LexemeType.Import)
                 {

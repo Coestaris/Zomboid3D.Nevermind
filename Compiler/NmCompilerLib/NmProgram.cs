@@ -23,6 +23,7 @@ namespace Nevermind
         public bool SaveDebugInfo;
         public bool Verbose;
         public bool DisableOptimization;
+        public List<string> IncludeDirectories;
 
         internal List<Import> Imports;
         internal List<Variable> ProgramLocals;

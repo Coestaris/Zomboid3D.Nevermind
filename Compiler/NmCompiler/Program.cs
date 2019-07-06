@@ -1,5 +1,6 @@
 ﻿
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -35,7 +36,6 @@ namespace NevermindCompiler
         public string LogFileName;
 
         [InlineValue("source-fileName", "File to be compiled", true)]
-        [Value("input", 'i', "File to be compiled", null, false, true)]
         public string InputFileName;
 
         [Value("output", 'o', "Output binary filename", null, true, false)]
@@ -55,6 +55,9 @@ namespace NevermindCompiler
 
         [Value("binary-version", 'e', "Binary Version in Format <Major Vers>.<Min Vers>")]
         public string BinaryVersion;
+
+        [Value("include", 'i', "Comma separated include paths")]
+        public string IncludeDirectories;
     }
 
     internal static class Program
@@ -205,11 +208,37 @@ namespace NevermindCompiler
                     options.BinaryAuthor ?? "author", DateTime.Now, (ushort)maj, (ushort)min);
             }
 
+            var includeList = new List<string>();
+            if (options.IncludeDirectories != null)
+                includeList.AddRange(options.IncludeDirectories.Split(','));
+            else
+            {
+                var dirName = new FileInfo(options.InputFileName).Directory.FullName;
+                includeList.Add(dirName);
+                Console.WriteLine("Using \"{0}\" as include path", dirName);
+
+                var possibleName = dirName + Path.DirectorySeparatorChar + "modules";
+                if (Directory.Exists(possibleName))
+                {
+                    includeList.Add(possibleName);
+                    Console.WriteLine("Using \"{0}\" as include path", possibleName);
+                }
+
+                possibleName = dirName + Path.DirectorySeparatorChar + "lib";
+                if (Directory.Exists(possibleName))
+                {
+                    includeList.Add(possibleName);
+                    Console.WriteLine("Using \"{0}\" as include path", possibleName);
+                }
+            }
+
+
             var program = new NmProgram(source, metadata)
             {
                 SaveDebugInfo = options.UseDebugChunk,
                 Verbose = options.Verbose,
-                DisableOptimization = options.DisableOptimization
+                DisableOptimization = options.DisableOptimization,
+                IncludeDirectories = includeList
             };
 
             if (options.LogFileName != null)

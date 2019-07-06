@@ -45,6 +45,7 @@ namespace Nevermind.Compiler
         UnexpectedCommaOperator,
         OutOfBoundsConstant,
         ExpressionIsNotVariable,
-        WrongUsageOfVoidFunc
+        WrongUsageOfVoidFunc,
+        UnknownModuleName
     }
 }
