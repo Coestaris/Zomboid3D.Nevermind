@@ -8,6 +8,12 @@ finalization function fin()
 {
 }
 
+private function real io_inner(param : real)
+{
+    return param * 2;
+}
+
 public function io_sample()
 {
+   var a : double = io_inner(5uo);
 }

@@ -111,7 +111,10 @@ namespace Nevermind.Compiler.Semantics
                 else if (lex.Type == LexemeType.Module)
                 {
                     program.IsModule = true;
-                    program.Module = new Module((lex as ModuleLexeme).ModuleName.StringValue, program);
+                    program.Module = new Module((lex as ModuleLexeme).ModuleName.StringValue, program)
+                    {
+                        IsLibrary = (lex as ModuleLexeme).IsLibrary
+                    };
                 }
                 else
                 {

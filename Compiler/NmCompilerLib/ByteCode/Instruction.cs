@@ -30,6 +30,8 @@ namespace Nevermind.ByteCode
         public abstract List<Variable> FetchUsedVariables(int index);
         public abstract void ReplaceRegisterUsage(int oldIndex, int newIndex);
 
+        // -1 = fetch only variables
+        // -2 = fetch all references (constants, tuples, variables)
         protected List<Variable> InnerFetch(int index, params Variable[] variables)
         {
             var result = new List<Variable>();
@@ -38,10 +40,16 @@ namespace Nevermind.ByteCode
             if (index == -1)
                 return variables.Where(p => p.VariableType == VariableType.Variable).ToList();
 
-            result.AddRange(variables
-                .Where(variable => variable.Index == index && variable.VariableType == VariableType.Variable));
-
-            return result;
+            if (index == -2)
+            {
+                return variables.ToList();
+            }
+            else
+            {
+                return variables
+                    .Where(variable => variable.Index == index && variable.VariableType == VariableType.Variable)
+                    .ToList();
+            }
         }
 
         public string ToSource()

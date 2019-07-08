@@ -24,7 +24,7 @@ namespace Nevermind
         public bool Verbose { get; set; }
         public bool DisableOptimization { get; set; }
         public List<string> IncludeDirectories { get; set; }
-        public ByteCode.ByteCode Program { get; set; }
+        public ByteCode.ByteCode ByteCode { get; set; }
         public bool MeasureTime { get; set; }
 
         internal bool PrototypesOnly { get; set; }
@@ -136,14 +136,14 @@ namespace Nevermind
             try
             {
                 StartMeasureTime();
-                Program = new ByteCode.ByteCode(this);
-                Program.Proceed();
+                ByteCode = new ByteCode.ByteCode(this);
+                ByteCode.Proceed();
                 EndMeasureTime(ElapsedTimeType.Expanding);
 
                 if (!DisableOptimization)
                 {
                     StartMeasureTime();
-                    Program.Optimize();
+                    ByteCode.Optimize();
                     EndMeasureTime(ElapsedTimeType.Optimizing);
                 }
             }

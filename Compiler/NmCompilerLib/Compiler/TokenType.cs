@@ -44,17 +44,18 @@ namespace Nevermind.Compiler
         ComaSign              = (ulong)(1UL << 28),
 
         ModuleKeyword         = (ulong)(1UL << 29),
-        PrivateKeyword        = (ulong)(1UL << 30),
-        PublicKeyword         = (ulong)(1UL << 31),
-        InitializationKeyword = (ulong)(1UL << 32),
-        FinalizationKeyword   = (ulong)(1UL << 33),
-        EntrypointKeyword     = (ulong)(1UL << 34),
-        ReturnKeyword         = (ulong)(1UL << 35),
-        ElseKeyword           = (ulong)(1UL << 36),
+        LibraryKeyword        = (ulong)(1UL << 30),
+        PrivateKeyword        = (ulong)(1UL << 31),
+        PublicKeyword         = (ulong)(1UL << 32),
+        InitializationKeyword = (ulong)(1UL << 33),
+        FinalizationKeyword   = (ulong)(1UL << 34),
+        EntrypointKeyword     = (ulong)(1UL << 35),
+        ReturnKeyword         = (ulong)(1UL << 36),
+        ElseKeyword           = (ulong)(1UL << 37),
 
-        StringToken           = (ulong)(1UL << 37),
+        StringToken           = (ulong)(1UL << 38),
 
-        ComplexToken          = (ulong)(1UL << 38)
+        ComplexToken          = (ulong)(1UL << 39)
     }
 
     internal static class TokenTypeExtensions
@@ -100,6 +101,7 @@ namespace Nevermind.Compiler
             { TokenType.ComaSign, "," },
             { TokenType.ComplexToken, "<complex>" },
             { TokenType.ModuleKeyword, "module" },
+            { TokenType.LibraryKeyword, "library" },
             { TokenType.ElseKeyword, "else" },
             { TokenType.PrivateKeyword, "private" },
             { TokenType.PublicKeyword, "public" },

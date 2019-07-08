@@ -35,10 +35,7 @@ namespace Nevermind.ByteCode.Instructions.ArithmeticInstructions
             if (Result.Index == oldIndex) Result = Result.Clone(newIndex);
         }
 
-        public override List<Variable> FetchUsedVariables(int index)
-        {
-            throw new NotImplementedException();
-        }
+        public override List<Variable> FetchUsedVariables(int index) => InnerFetch(index, Result);
 
         public override InstructionType Type
         {

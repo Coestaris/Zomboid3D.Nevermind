@@ -61,6 +61,7 @@ namespace Nevermind.Compiler
             { "import", TokenType.ImportKeyword },
             { "\"", TokenType.Quote },
             { "module", TokenType.ModuleKeyword },
+            { "library", TokenType.LibraryKeyword},
             { "public", TokenType.PublicKeyword },
             { "private", TokenType.PrivateKeyword },
             { "entrypoint", TokenType.EntrypointKeyword },

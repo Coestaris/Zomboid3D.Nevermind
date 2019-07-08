@@ -167,7 +167,9 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
                 {
                     if (item.FunctionCall != null)
                     {
-                        var funcToCall = func.Program.Program.Header.GetFunction(item.FunctionCall.StringValue);
+                        var funcToCall = func.Program.ByteCode.Header
+                            .GetFunction(item.FunctionCall.StringValue, item.NearToken);
+
                         if(funcToCall == null)
                             throw new ParseException(CompileErrorType.UndefinedReference, item.FunctionCall);
 

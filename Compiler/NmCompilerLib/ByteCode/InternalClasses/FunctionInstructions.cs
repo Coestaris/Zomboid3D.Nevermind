@@ -26,11 +26,11 @@ namespace Nevermind.ByteCode.InternalClasses
 
             ch.Data.AddRange(Chunk.Int32ToBytes(Locals.Count));
             foreach (var local in Locals)
-                ch.Data.AddRange(Chunk.Int32ToBytes(Function.Program.Program.Header.GetTypeIndex(local.Type)));
+                ch.Data.AddRange(Chunk.Int32ToBytes(Function.Program.ByteCode.Header.GetTypeIndex(local.Type)));
 
             ch.Data.AddRange(Chunk.Int32ToBytes(Registers.Count));
             foreach (var register in Registers)
-                ch.Data.AddRange(Chunk.Int32ToBytes(Function.Program.Program.Header.GetTypeIndex(register.Type)));
+                ch.Data.AddRange(Chunk.Int32ToBytes(Function.Program.ByteCode.Header.GetTypeIndex(register.Type)));
 
             foreach (var instruction in Instructions)
             {

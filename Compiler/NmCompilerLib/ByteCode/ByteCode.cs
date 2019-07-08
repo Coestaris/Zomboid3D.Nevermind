@@ -318,6 +318,9 @@ namespace Nevermind.ByteCode
                 instructionSet.Locals = locals.Select(p => p.Variable).ToList();
                 Instructions.Add(instructionSet);
             }
+
+            Instructions.AddRange(Header.EmbeddedFunctions);
+            Program.Functions.AddRange(Header.EmbeddedFunctions.Select(p => p.Function));
         }
 
         public string ToSource()

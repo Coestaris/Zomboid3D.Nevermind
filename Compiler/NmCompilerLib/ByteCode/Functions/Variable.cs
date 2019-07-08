@@ -25,7 +25,7 @@ namespace Nevermind.ByteCode.Functions
 
         public VariableType VariableType;
 
-        public readonly int ConstIndex;
+        public int ConstIndex;
         public List<Variable> Tuple;
 
         public Variable(Type type, string name, int scope, Token token, int index, VariableType variableType, int constIndex = -1)

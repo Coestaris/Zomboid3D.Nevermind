@@ -47,6 +47,9 @@ namespace Nevermind.Compiler
         ExpressionIsNotVariable,
         WrongUsageOfVoidFunc,
         UnknownModuleName,
-        InnerCompileException
+        InnerCompileException,
+        NotModuleImport,
+        ImportFunctionShouldBePublic,
+        ModuleFunctionCall
     }
 }

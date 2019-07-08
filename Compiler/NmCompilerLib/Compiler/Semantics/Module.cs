@@ -7,6 +7,7 @@ namespace Nevermind.Compiler.Semantics
         public string Name;
         public Function InitializationFunc;
         public Function FinalizationFunc;
+        public bool IsLibrary;
 
         public NmProgram Program;
 

@@ -47,7 +47,7 @@ namespace Nevermind.Compiler.LexemeParsing
                 LexemeType.Import,
                 new List<LexemePatternToken>
                 {
-                    new LexemePatternToken(TokenType.ImportKeyword),
+                    new LexemePatternToken(TokenType.ImportKeyword | TokenType.LibraryKeyword),
                     new LexemePatternToken(TokenType.Identifier   )
                 }),
 

@@ -5,8 +5,10 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using Nevermind.ByteCode.Functions;
+using Nevermind.ByteCode.Instructions;
 using Nevermind.ByteCode.InternalClasses;
 using Nevermind.ByteCode.NMB;
+using Nevermind.Compiler;
 using Nevermind.Compiler.Formats.Constants;
 using Type = Nevermind.ByteCode.Types.Type;
 
@@ -19,6 +21,8 @@ namespace Nevermind.ByteCode
         public List<NumeratedType> UsedTypes;
         public List<NumeratedConstant> UsedConstants;
 
+        public List<FunctionInstructions> EmbeddedFunctions;
+
         public ByteCodeHeader(NmProgram program)
         {
             Program = program;
@@ -29,28 +33,111 @@ namespace Nevermind.ByteCode
 
             program.UsedTypes.AddRange(UsedConstants.Select(p => p.Constant.ToProgramType()));
             UsedTypes = program.UsedTypes.Distinct().Select(p => new NumeratedType(typeIndex++, p)).ToList();
+
+            EmbeddedFunctions = new List<FunctionInstructions>();
         }
 
-        public Function GetFunction(string name)
+        public Function GetFunction(string name, Token nearToken)
         {
             var native = Program.Functions.Find(p => p.Name == name);
-            if (native != null) return native;
+
+            if (native != null)
+            {
+                if(native.Modifier == FunctionModifier.Finalization ||
+                   native.Modifier == FunctionModifier.Initialization)
+                    throw new ParseException(CompileErrorType.ModuleFunctionCall, nearToken);
+
+                return native;
+            }
+
 
             int index = 0;
             foreach (var import in Program.Imports)
             {
                 //ммм, какая ахуенная рекурсия
-                var func = import.LinkedModule.Program.Program.Header.GetFunction(name);
+                var func = import.LinkedModule.Program.ByteCode.Instructions.Find(p => p.Function.Name == name);
                 if (func != null)
                 {
-                    func.ModuleIndex = index;
-                    return func;
+                    if(func.Function.Modifier != FunctionModifier.Public)
+                        throw new ParseException(CompileErrorType.ImportFunctionShouldBePublic, nearToken);
+
+                    if(func.Function.Modifier == FunctionModifier.Finalization ||
+                       func.Function.Modifier == FunctionModifier.Initialization)
+                        throw new ParseException(CompileErrorType.ModuleFunctionCall, nearToken);
+
+                    if (import.LinkedModule.IsLibrary)
+                    {
+                        //just linking
+                        func.Function.ModuleIndex = index;
+                    }
+                    else
+                    {
+                        //embedding
+                        EmbedFunction(func, nearToken);
+                    }
+                    return func.Function;
                 }
 
                 index++;
             }
 
             return null;
+        }
+
+        private void EmbedFunction(FunctionInstructions function, Token nearToken)
+        {
+            EmbeddedFunctions.Add(function);
+            function.Function.Index = Program.Functions.Count + EmbeddedFunctions.Count;
+
+            //merging types from locals
+            foreach (var local in function.Locals)
+                if (GetTypeIndex(local.Type) == -1)
+                    UsedTypes.Add(new NumeratedType(UsedTypes.Count, local.Type));
+
+            //merging types from constants
+            foreach (var instruction in function.Instructions)
+            {
+                var locals = instruction.FetchUsedVariables(-2);
+                foreach (var local in locals)
+                {
+                    if (local.VariableType == VariableType.LinkToConst)
+                    {
+                        var constant = function.Function.Program.ByteCode.Header.
+                            UsedConstants[local.ConstIndex].Constant;
+
+                        if (GetTypeIndex(constant.ToProgramType()) == -1)
+                            UsedTypes.Add(new NumeratedType(UsedTypes.Count, constant.ToProgramType()));
+
+                        int index;
+                        if((index = GetConstIndex(constant)) == -1)
+                        {
+                            index = UsedConstants.Count;
+                            UsedConstants.Add(new NumeratedConstant(index, constant));
+                        }
+
+                        local.ConstIndex = index;
+                    }
+                }
+
+                if (instruction.Type == InstructionType.Call)
+                {
+                    var func = (instruction as InstructionCall).DestFunc;
+                    var newFunction = function.Function.Program.ByteCode.Instructions.Find(p => p.Function == func);
+
+                    //recursive call
+                    if(newFunction == function)
+                        continue;
+
+                    if(newFunction == null)
+                        throw new ArgumentNullException(nameof(newFunction));
+
+                    if(newFunction.Function.Modifier == FunctionModifier.Finalization ||
+                       newFunction.Function.Modifier == FunctionModifier.Initialization)
+                        throw new ParseException(CompileErrorType.ModuleFunctionCall, nearToken);
+
+                    EmbedFunction(newFunction, nearToken);
+                }
+            }
         }
 
         public int GetTypeIndex(Type t)
@@ -112,7 +199,7 @@ namespace Nevermind.ByteCode
             }
 
             ch.Data.AddRange(Chunk.Int32ToBytes(Program.Imports.Count));
-            ch.Data.AddRange(Chunk.Int32ToBytes(Program.Program.Instructions.Count));
+            ch.Data.AddRange(Chunk.Int32ToBytes(Program.ByteCode.Instructions.Count));
 
             if(Program.EntrypointFunction == null)
                 ch.Data.AddRange(Chunk.Int32ToBytes(-1));

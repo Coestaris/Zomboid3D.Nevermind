@@ -286,7 +286,7 @@ namespace NevermindCompiler
                 if (options.PrintByteCode)
                 {
                     Console.WriteLine("ASM Program:\n");
-                    Console.WriteLine(program.Program.ToSource());
+                    Console.WriteLine(program.ByteCode.ToSource());
                 }
                 try
                 {
@@ -298,7 +298,7 @@ namespace NevermindCompiler
                     return;
                 }
 
-                program.Program.SaveToFile(options.OutputFileName);
+                program.ByteCode.SaveToFile(options.OutputFileName);
                 Console.WriteLine("File saved!");
             }
         }

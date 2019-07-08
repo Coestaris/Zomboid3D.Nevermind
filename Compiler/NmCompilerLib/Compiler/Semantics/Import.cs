@@ -28,12 +28,11 @@ namespace Nevermind.Compiler.Semantics
             var newProgram = new NmProgram(source)
             {
                 Verbose = program.Verbose,
-                //PrototypesOnly = true,
                 MeasureTime = false,
                 IncludeDirectories = program.IncludeDirectories
             };
 
-
+            //todo: pass token for error index
             if(program.Verbose)
                 Console.WriteLine("Compiling {0}", fileName);
             CompileError error;
@@ -49,9 +48,15 @@ namespace Nevermind.Compiler.Semantics
                 return new CompileError(CompileErrorType.InnerCompileException);
             }
 
-            newProgram.Program.SaveToFile(compilerBinaryName);
-            if(program.Verbose)
-                Console.WriteLine("File saved {0}", compilerBinaryName);
+            if(!newProgram.IsModule)
+                return new CompileError(CompileErrorType.NotModuleImport);
+
+            if (newProgram.Module.IsLibrary)
+            {
+                newProgram.ByteCode.SaveToFile(compilerBinaryName);
+                if (program.Verbose)
+                    Console.WriteLine("File saved {0}", compilerBinaryName);
+            }
 
             import = new Import
             {
