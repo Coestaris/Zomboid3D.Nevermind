@@ -21,15 +21,16 @@ You can get list of all possible options by running:
 ```bash
 mono ./NmCompiler.exe --help
 ```
-Put following to ~/.bashrc file to use compiler shortcut:
+Use the following command to put alias at bash config file to use compiler shortcut:
 ```bash
-alias nmc="mono $(readlink -f ./NmCompiler.exe)"
+printf "alias nmc=\"mono $(readlink -f ./NmCompiler.exe)"\" > ~./bashrc
 ```
 
 #### To Run Runner
 ```bash
 sudo apt install -y gcc libc-dev-bin cmake make
 cd Runner
-cmake CMakeLists.txtmake
+cmake CMakeLists.txt
+make
 ./NmRunner <NM Binary FileName>
 ```
