@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace Nevermind.Compiler.Semantics
@@ -15,7 +16,7 @@ namespace Nevermind.Compiler.Semantics
         public static CompileError CreateImport(string name, string fileName, out Import import, NmProgram program)
         {
             var compilerBinaryName = new FileInfo(fileName).Directory.FullName + Path.DirectorySeparatorChar +
-                                     new FileInfo(fileName).Name + Path.DirectorySeparatorChar + ".nmb";
+                                     new FileInfo(fileName).Name + "b";
             import = null;
 
             if (File.Exists(compilerBinaryName))
@@ -27,12 +28,14 @@ namespace Nevermind.Compiler.Semantics
             var newProgram = new NmProgram(source)
             {
                 Verbose = program.Verbose,
-                PrototypesOnly = true,
+                //PrototypesOnly = true,
                 MeasureTime = false,
                 IncludeDirectories = program.IncludeDirectories
             };
 
-            Console.WriteLine("Compiling {0}", fileName);
+
+            if(program.Verbose)
+                Console.WriteLine("Compiling {0}", fileName);
             CompileError error;
             if ((error = newProgram.Parse()) != null)
             {
@@ -40,12 +43,22 @@ namespace Nevermind.Compiler.Semantics
                 return new CompileError(CompileErrorType.InnerCompileException);
             }
 
+            if ((error = newProgram.Expand()) != null)
+            {
+                Console.WriteLine(error);
+                return new CompileError(CompileErrorType.InnerCompileException);
+            }
+
+            newProgram.Program.SaveToFile(compilerBinaryName);
+            if(program.Verbose)
+                Console.WriteLine("File saved {0}", compilerBinaryName);
+
             import = new Import
             {
                 Name = name,
                 Library = true,
                 FileName = fileName,
-                LinkedModule = program.Module
+                LinkedModule = newProgram.Module
             };
 
             return null;

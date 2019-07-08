@@ -20,6 +20,7 @@ namespace Nevermind.ByteCode.Functions
         public int Scope;
         public NmProgram Program;
         public List<Variable> LocalVariables;
+        public int ModuleIndex = -1;
 
         public int Index;
 

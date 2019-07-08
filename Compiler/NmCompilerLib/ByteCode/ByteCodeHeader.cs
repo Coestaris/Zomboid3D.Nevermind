@@ -33,8 +33,24 @@ namespace Nevermind.ByteCode
 
         public Function GetFunction(string name)
         {
-            //todo: Search in modules
-            return Program.Functions.Find(p => p.Name == name);
+            var native = Program.Functions.Find(p => p.Name == name);
+            if (native != null) return native;
+
+            int index = 0;
+            foreach (var import in Program.Imports)
+            {
+                //ммм, какая ахуенная рекурсия
+                var func = import.LinkedModule.Program.Program.Header.GetFunction(name);
+                if (func != null)
+                {
+                    func.ModuleIndex = index;
+                    return func;
+                }
+
+                index++;
+            }
+
+            return null;
         }
 
         public int GetTypeIndex(Type t)
@@ -97,7 +113,11 @@ namespace Nevermind.ByteCode
 
             ch.Data.AddRange(Chunk.Int32ToBytes(Program.Imports.Count));
             ch.Data.AddRange(Chunk.Int32ToBytes(Program.Program.Instructions.Count));
-            ch.Data.AddRange(Chunk.Int32ToBytes(Program.Functions.Find(p => p.Modifier == FunctionModifier.Entrypoint).Index));
+
+            if(Program.EntrypointFunction == null)
+                ch.Data.AddRange(Chunk.Int32ToBytes(-1));
+            else
+                ch.Data.AddRange(Chunk.Int32ToBytes(Program.EntrypointFunction.Index));
 
             foreach (var import in Program.Imports)
             {

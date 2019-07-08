@@ -10,6 +10,7 @@ namespace Nevermind.ByteCode.Instructions
         public Function DestFunc;
 
         public override List<byte> Serialize() => ToBytes(
+            Chunk.Int32ToBytes(DestFunc.ModuleIndex),
             Chunk.Int32ToBytes(DestFunc.Index)
         );
 
@@ -19,7 +20,9 @@ namespace Nevermind.ByteCode.Instructions
 
         public override int ParameterCount => 0;
 
-        public override string SourceValue() => ToSourceValue($"{DestFunc.Index}({DestFunc.Name})");
+        public override string SourceValue() => ToSourceValue(
+            $"{DestFunc.ModuleIndex}({(DestFunc.ModuleIndex != -1 ? DestFunc.Program.Module.Name : "self")})",
+            $"{DestFunc.Index}({DestFunc.Name})");
 
         public override bool UsesVariable(int index) => false;
 

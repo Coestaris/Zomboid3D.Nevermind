@@ -8,5 +8,6 @@ import io;
 entrypoint function integer main()
 {
     var a : integer = 4u;
-    a = (1s + 2o) + (4s + 8);
+
+    io_sample();
 }

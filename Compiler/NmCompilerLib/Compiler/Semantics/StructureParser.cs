@@ -108,7 +108,12 @@ namespace Nevermind.Compiler.Semantics
 
                     program.Imports.Add(import);
                 }
-                else if(lex.Type != LexemeType.Module && lex.Type != LexemeType.Import)
+                else if (lex.Type == LexemeType.Module)
+                {
+                    program.IsModule = true;
+                    program.Module = new Module((lex as ModuleLexeme).ModuleName.StringValue, program);
+                }
+                else
                 {
                     return new CompileError(CompileErrorType.UnexpectedLexeme, lex.Tokens?[0]);
                 }

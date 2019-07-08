@@ -96,6 +96,7 @@
    * **4 bytes**: index
 
 ###### call (0x6):
+   * **4 bytes**: import index
    * **4 bytes**: function index
 
 ###### breq (0x7):

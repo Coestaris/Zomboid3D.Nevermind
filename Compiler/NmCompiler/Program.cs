@@ -271,7 +271,7 @@ namespace NevermindCompiler
 
                 if (options.PrintTime)
                 {
-                    Console.WriteLine("\n\nElapsed Time (Total: {0}): ",
+                    Console.WriteLine("Elapsed Time (Total: {0}): ",
                         ToPrettyFormat(program.GetElapsedTime(ElapsedTimeType.Total)));
                     var i = 0;
                     foreach (var type in (ElapsedTimeType[]) Enum.GetValues(typeof(ElapsedTimeType)))
@@ -285,7 +285,7 @@ namespace NevermindCompiler
 
                 if (options.PrintByteCode)
                 {
-                    Console.WriteLine("\n\nASM Program:\n");
+                    Console.WriteLine("ASM Program:\n");
                     Console.WriteLine(program.Program.ToSource());
                 }
                 try
@@ -299,7 +299,7 @@ namespace NevermindCompiler
                 }
 
                 program.Program.SaveToFile(options.OutputFileName);
-                Console.WriteLine("\nFile saved!");
+                Console.WriteLine("File saved!");
             }
         }
     }
