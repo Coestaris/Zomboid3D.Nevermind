@@ -375,7 +375,7 @@ namespace Nevermind.ByteCode
 
         public void SaveToFile(string fileName)
         {
-            using (var f = new FileStream(fileName, FileMode.OpenOrCreate, FileAccess.Write))
+            using (var f = new FileStream(fileName, FileMode.Create, FileAccess.Write))
             {
                 var buffer = ToBinary();
                 f.Write(buffer, 0, buffer.Length);

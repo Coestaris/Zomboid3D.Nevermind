@@ -6,7 +6,7 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes
     {
         public Token ModuleName;
 
-        public ModuleLexeme(List<Token> tokens) : base(tokens, LexemeType.Import, false)
+        public ModuleLexeme(List<Token> tokens) : base(tokens, LexemeType.Module, false)
         {
             ModuleName = tokens[1];
         }

@@ -232,13 +232,14 @@ namespace NevermindCompiler
                 }
             }
 
-
+            NmProgram.InitCompiler();
             var program = new NmProgram(source, metadata)
             {
                 SaveDebugInfo = options.UseDebugChunk,
                 Verbose = options.Verbose,
                 DisableOptimization = options.DisableOptimization,
-                IncludeDirectories = includeList
+                IncludeDirectories = includeList,
+                MeasureTime = options.PrintTime
             };
 
             if (options.LogFileName != null)

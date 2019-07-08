@@ -13,7 +13,7 @@ namespace Nevermind.Compiler.Semantics
 {
     internal static class StructureParser
     {
-        public static CompileError Parse(NmProgram program)
+        public static CompileError Parse(NmProgram program, bool prototypesOnly)
         {
             CompileError error;
             var moduleLexeme = (ModuleLexeme)program.Lexemes.Find(p => p.Type == LexemeType.Module);
@@ -49,8 +49,11 @@ namespace Nevermind.Compiler.Semantics
                     func.Index = functionIndex++;
                     program.Functions.Add(func);
 
-                    if ((error = program.Functions.Last().ResolveLexemes()) != null)
-                        return error;
+                    if (!prototypesOnly)
+                    {
+                        if ((error = program.Functions.Last().ResolveLexemes()) != null)
+                            return error;
+                    }
 
                     if (lexeme.Modifier == FunctionModifier.Initialization)
                     {
@@ -95,14 +98,12 @@ namespace Nevermind.Compiler.Semantics
                     foreach (var directory in program.IncludeDirectories)
                         files.AddRange(Directory.GetFiles(directory, "*.nm"));
 
-                    Console.WriteLine(string.Join("\n", files));
-
                     var matchedFile = files.Find(p => new FileInfo(p).Name == importName + ".nm");
                     if(matchedFile == null)
                         return new CompileError(CompileErrorType.UnknownModuleName, lex.Tokens?[0]);
 
                     Import import;
-                    if((error = Import.CreateImport(importName, matchedFile, out import)) != null)
+                    if((error = Import.CreateImport(importName, matchedFile, out import, program)) != null)
                         return error;
 
                     program.Imports.Add(import);

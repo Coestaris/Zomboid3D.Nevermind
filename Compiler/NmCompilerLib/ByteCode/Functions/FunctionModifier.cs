@@ -1,6 +1,6 @@
 namespace Nevermind.ByteCode.Functions
 {
-    public enum FunctionModifier
+    internal enum FunctionModifier
     {
         None,
 

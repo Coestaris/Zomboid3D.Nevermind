@@ -1,0 +1,13 @@
+module io;
+
+initialization function init()
+{
+}
+
+finalization function fin()
+{
+}
+
+public function io_sample()
+{
+}

@@ -80,7 +80,7 @@ namespace Nevermind.Compiler.LexemeParsing
                 root.ChildLexemes.RemoveAt(ind);
         }
 
-        private static void ResolveLexemeTypes(BlockLexeme root, out CompileError error)
+        private static void ResolveLexemeTypes(BlockLexeme root, out CompileError error, bool prototypesOnly)
         {
             error = null;
             for(var i = 0; i < root.ChildLexemes.Count; i++)
@@ -89,7 +89,7 @@ namespace Nevermind.Compiler.LexemeParsing
 
                 if (lexeme.Type == LexemeType.Block)
                 {
-                    ResolveLexemeTypes((BlockLexeme)lexeme, out error);
+                    ResolveLexemeTypes((BlockLexeme)lexeme, out error, prototypesOnly);
                     if(error != null) return;
                 }
                 else if(lexeme.Type == LexemeType.Unknown)
@@ -99,27 +99,34 @@ namespace Nevermind.Compiler.LexemeParsing
                     {
                         try
                         {
-                            root.ChildLexemes[i] = matchedLexeme.CreateLexeme(lexeme.Tokens);
+                            root.ChildLexemes[i] = matchedLexeme.CreateLexeme(lexeme.Tokens, prototypesOnly);
                             //if (root.ChildLexemes.Last().Type == LexemeType.Var)
                             //((VarLexeme) root.ChildLexemes.Last()).Index = i;
 
-                            if (root.ChildLexemes[i].Type == LexemeType.Else)
+                            if(!prototypesOnly)
                             {
-                                if (i == 0 ||
-                                    (root.ChildLexemes[i - 1].Type != LexemeType.If) &&
-                                    (root.ChildLexemes[i - 1].Type == LexemeType.Block && root.ChildLexemes[i - 2].Type != LexemeType.If))
+                                if (root.ChildLexemes[i].Type == LexemeType.Else)
                                 {
-                                    error = new CompileError(CompileErrorType.ElseWithoutCondition, lexeme.Tokens[0]);
-                                    return;
-                                }
+                                    if (i == 0 ||
+                                        (root.ChildLexemes[i - 1].Type != LexemeType.If) &&
+                                        (root.ChildLexemes[i - 1].Type == LexemeType.Block &&
+                                         root.ChildLexemes[i - 2].Type != LexemeType.If))
+                                    {
+                                        error = new CompileError(CompileErrorType.ElseWithoutCondition,
+                                            lexeme.Tokens[0]);
+                                        return;
+                                    }
 
-                                if(root.ChildLexemes[i - 1].Type == LexemeType.If)
-                                {
-                                    (root.ChildLexemes[i - 1] as IfLexeme).ElseLexeme = (ElseLexeme)root.ChildLexemes[i];
-                                }
-                                else
-                                {
-                                    (root.ChildLexemes[i - 2] as IfLexeme).ElseLexeme = (ElseLexeme)root.ChildLexemes[i];
+                                    if (root.ChildLexemes[i - 1].Type == LexemeType.If)
+                                    {
+                                        (root.ChildLexemes[i - 1] as IfLexeme).ElseLexeme =
+                                            (ElseLexeme) root.ChildLexemes[i];
+                                    }
+                                    else
+                                    {
+                                        (root.ChildLexemes[i - 2] as IfLexeme).ElseLexeme =
+                                            (ElseLexeme) root.ChildLexemes[i];
+                                    }
                                 }
                             }
                         }
@@ -150,7 +157,7 @@ namespace Nevermind.Compiler.LexemeParsing
             }
         }
 
-        private static void LinkBlocksToLexemes(BlockLexeme root, out CompileError error)
+        private static void LinkBlocksToLexemes(BlockLexeme root, out CompileError error, bool prototypesOnly)
         {
             var toDelete = new List<int>();
             int index = 0;
@@ -158,19 +165,26 @@ namespace Nevermind.Compiler.LexemeParsing
 
             foreach (var lexeme in root.ChildLexemes)
             {
-                if (lexeme.Type == LexemeType.Block)
+                if(lexeme == null)
+                    toDelete.Add(index);
+                else
                 {
-                    var bl = (BlockLexeme)lexeme;
-                    var prev = index > 0 ? root.ChildLexemes[index - 1] : null;
-                    if (prev != null && prev.RequireBlock)
+                    if (lexeme.Type == LexemeType.Block)
                     {
-                        toDelete.Add(index);
-                        ((ComplexLexeme)prev).Block = bl;
+                        var bl = (BlockLexeme) lexeme;
+                        var prev = index > 0 ? root.ChildLexemes[index - 1] : null;
+                        if (prev != null && prev.RequireBlock)
+                        {
+                            toDelete.Add(index);
+                            ((ComplexLexeme) prev).Block = bl;
+                        }
+
+                        LinkBlocksToLexemes((BlockLexeme) lexeme, out error, prototypesOnly);
+                        if (error != null)
+                            return;
                     }
-                    LinkBlocksToLexemes((BlockLexeme) lexeme, out error);
-                    if (error != null)
-                        return;
                 }
+
                 index++;
             }
 
@@ -180,7 +194,7 @@ namespace Nevermind.Compiler.LexemeParsing
 
             foreach (var lexeme in root.ChildLexemes)
             {
-                if (lexeme.RequireBlock && ((ComplexLexeme)lexeme).Block == null)
+                if (!prototypesOnly && lexeme.RequireBlock && ((ComplexLexeme)lexeme).Block == null)
                     error = new CompileError(CompileErrorType.LexemeWithoutRequiredBlock, lexeme.Tokens?[0]);
             }
         }
@@ -190,7 +204,7 @@ namespace Nevermind.Compiler.LexemeParsing
             root.Print(level);
         }
 
-        public static List<Lexeme> Lexemize(List<Token> tokens, out CompileError error, bool verose)
+        public static List<Lexeme> Lexemize(List<Token> tokens, out CompileError error, bool verbose, bool prototypesOnly)
         {
             error = null;
 
@@ -205,15 +219,15 @@ namespace Nevermind.Compiler.LexemeParsing
                 return null;
             }
 
-            ResolveLexemeTypes(root, out error);
+            ResolveLexemeTypes(root, out error, prototypesOnly);
             if (error != null)
                 return null;
 
-            LinkBlocksToLexemes(root, out error);
+            LinkBlocksToLexemes(root, out error, prototypesOnly);
             if (error != null)
                 return null;
 
-            if(verose)
+            if(verbose)
                 PrintLexemeTree(root, 0);
 
             return root.ChildLexemes;

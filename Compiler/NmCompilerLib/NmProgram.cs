@@ -19,40 +19,50 @@ namespace Nevermind
         internal bool IsModule;
         internal Module Module;
 
-        public NmMetadata Metadata;
-        public bool SaveDebugInfo;
-        public bool Verbose;
-        public bool DisableOptimization;
-        public List<string> IncludeDirectories;
+        public NmMetadata Metadata { get; }
+        public bool SaveDebugInfo { get; set; }
+        public bool Verbose { get; set; }
+        public bool DisableOptimization { get; set; }
+        public List<string> IncludeDirectories { get; set; }
+        public ByteCode.ByteCode Program { get; set; }
+        public bool MeasureTime { get; set; }
 
-        internal List<Import> Imports;
-        internal List<Variable> ProgramLocals;
+        internal bool PrototypesOnly { get; set; }
 
-        public ByteCode.ByteCode Program;
         internal List<Lexeme> Lexemes;
-        internal List<Constant> Constants;
-
-        internal List<Function> Functions;
         internal Function EntrypointFunction;
+        internal readonly List<Import> Imports;
+        internal readonly List<Variable> ProgramLocals;
+        internal readonly List<Constant> Constants;
+        internal readonly List<Function> Functions;
+        internal readonly List<ByteCode.Types.Type> UsedTypes;
+        internal readonly  List<NamedType> AvailableTypes;
 
-        internal List<ByteCode.Types.Type> UsedTypes;
-        internal List<NamedType> AvailableTypes;
-
-        private Dictionary<ElapsedTimeType, TimeSpan> _time = new Dictionary<ElapsedTimeType, TimeSpan>();
+        private readonly Dictionary<ElapsedTimeType, TimeSpan> _time = new Dictionary<ElapsedTimeType, TimeSpan>();
         private DateTime _start;
+
+        public static void InitCompiler()
+        {
+            Tokenizer.InitTokenizer();
+        }
 
         private void StartMeasureTime()
         {
-            _start = DateTime.Now;
+            if(MeasureTime)
+                _start = DateTime.Now;
         }
 
         private void EndMeasureTime(ElapsedTimeType type)
         {
-            _time[type] = TimeSpan.FromMilliseconds((DateTime.Now - _start).TotalMilliseconds);
+            if(MeasureTime)
+                _time[type] = TimeSpan.FromMilliseconds((DateTime.Now - _start).TotalMilliseconds);
         }
 
         public TimeSpan GetElapsedTime(ElapsedTimeType type)
         {
+            if(!MeasureTime)
+                return TimeSpan.Zero;
+
             if(type == ElapsedTimeType.Total)
             {
                 return TimeSpan.FromMilliseconds(_time.Values.ToList().Sum(p => p.TotalMilliseconds));
@@ -60,9 +70,7 @@ namespace Nevermind
             else
             {
                 TimeSpan result;
-                if (!_time.TryGetValue(type, out result))
-                    return TimeSpan.Zero;
-                else return result;
+                return !_time.TryGetValue(type, out result) ? TimeSpan.Zero : result;
             }
         }
 
@@ -86,8 +94,6 @@ namespace Nevermind
 
         public CompileError Parse()
         {
-            Tokenizer.InitTokenizer();
-
             CompileError error;
             StartMeasureTime();
             var source = Source.GetSource(out error);
@@ -112,13 +118,13 @@ namespace Nevermind
             }
 
             StartMeasureTime();
-            Lexemes = Lexemizer.Lexemize(tokens, out error, Verbose);
+            Lexemes = Lexemizer.Lexemize(tokens, out error, Verbose, PrototypesOnly);
             EndMeasureTime(ElapsedTimeType.Lexemizing);
             if (error != null)
                 return error;
 
             StartMeasureTime();
-            if ((error = StructureParser.Parse(this)) != null)
+            if ((error = StructureParser.Parse(this, PrototypesOnly)) != null)
                 return error;
             EndMeasureTime(ElapsedTimeType.StructureParsing);
 

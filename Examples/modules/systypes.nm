@@ -1,0 +1,13 @@
+module systypes;
+
+initialization function init()
+{
+}
+
+finalization function init()
+{
+}
+
+public function sys_sample()
+{
+}

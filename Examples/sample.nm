@@ -2,7 +2,7 @@
  * Simple program example
  */
 
-import systypes;
+//import systypes;
 import io;
 
 entrypoint function integer main()

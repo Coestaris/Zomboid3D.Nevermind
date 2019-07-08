@@ -46,6 +46,7 @@ namespace Nevermind.Compiler
         OutOfBoundsConstant,
         ExpressionIsNotVariable,
         WrongUsageOfVoidFunc,
-        UnknownModuleName
+        UnknownModuleName,
+        InnerCompileException
     }
 }
