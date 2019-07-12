@@ -9,6 +9,7 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes
         public Token TypeName;
         public ExpressionLexeme Expression;
 
+        public bool DeclarationOnly;
         public int Index;
 
         public VarLexeme(List<Token> tokens) : base(tokens, LexemeType.Var, false)
@@ -16,7 +17,14 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes
             VarName = tokens[1];
             TypeName = tokens[3];
 
-            Expression = new ExpressionLexeme(tokens.Skip(5).Take(tokens.Count - 5).ToList());
+            if (tokens.Count != 4)
+            {
+                Expression = new ExpressionLexeme(tokens.Skip(5).Take(tokens.Count - 5).ToList());
+            }
+            else
+            {
+                DeclarationOnly = true;
+            }
         }
 
         public override void Print(int level)

@@ -59,6 +59,17 @@ namespace Nevermind.Compiler.LexemeParsing
                     new LexemePatternToken(TokenType.Identifier   )
                 }),
 
+            //Variable without definition
+            new LexemeInfo(
+                LexemeType.Var,
+                new List<LexemePatternToken>
+                {
+                    new LexemePatternToken(TokenType.VarKeyword         ),
+                    new LexemePatternToken(TokenType.Identifier         ),
+                    new LexemePatternToken(TokenType.Colon              ),
+                    new LexemePatternToken(TokenType.Identifier         ),
+                }),
+            //Variable with definition
             new LexemeInfo(
                 LexemeType.Var,
                 new List<LexemePatternToken>

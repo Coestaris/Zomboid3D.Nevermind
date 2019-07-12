@@ -20,6 +20,7 @@ namespace Nevermind.ByteCode
 
         public List<NumeratedType> UsedTypes;
         public List<NumeratedConstant> UsedConstants;
+        public List<Variable> UsedGlobals;
 
         public List<FunctionInstructions> EmbeddedFunctions;
 
@@ -33,6 +34,11 @@ namespace Nevermind.ByteCode
 
             program.UsedTypes.AddRange(UsedConstants.Select(p => p.Constant.ToProgramType()));
             UsedTypes = program.UsedTypes.Distinct().Select(p => new NumeratedType(typeIndex++, p)).ToList();
+
+            var varCounter = 0;
+            UsedGlobals = new List<Variable>();
+            UsedGlobals.AddRange(program.ProgramGlobals);
+            UsedGlobals.ForEach(p => p.Index = varCounter++);
 
             EmbeddedFunctions = new List<FunctionInstructions>();
         }
@@ -155,34 +161,65 @@ namespace Nevermind.ByteCode
             return UsedConstants.FindIndex(p => p.Constant.Equals(c));
         }
 
+        public Variable GetGlobalVariable(string name)
+        {
+            return UsedGlobals.Find(p => p.Name == name);
+        }
+
         public string ToSource()
         {
             var sb = new StringBuilder();
-            sb.AppendFormat(".type_count: {0}\n", UsedTypes.Count);
-            sb.AppendLine("//Index : type : [base]");
+            sb.AppendFormat("Type count: {0}\n", UsedTypes.Count);
+            sb.AppendLine("╔═╤═════════╤══════════╤═════════╗");
+            sb.AppendLine("║#│  Index  │   Type   │   Base  ║");
+            sb.AppendLine("╟─┼─────────┼──────────┼─────────╢");
             var counter = 0;
             foreach (var type in UsedTypes)
-                sb.AppendFormat("{0}. {1} = {2}:{3}\n", counter++, type.Index, type.Type.ID, type.Type.GetBase());
+                sb.AppendFormat("║{0}│ {1, 3}     │ {2, 8} │   {3, 3}   ║\n", counter++, type.Index, type.Type.ID, type.Type.GetBase());
+            sb.AppendLine("╚═╧═════════╧══════════╧═════════╝");
+
 
             counter = 0;
-            sb.AppendFormat("\n.const_count: {0}\n", UsedTypes.Count);
-            sb.AppendLine("//index = (type index : [len]) value");
+            sb.AppendFormat("\nConstants count: {0}\n", UsedConstants.Count);
+
+            sb.AppendLine("╔═╤═════════╤═════════╤═════╤══════════════════╗");
+            sb.AppendLine("║#│  Index  │ TypeInd │ Len │       Value      ║");
+            sb.AppendLine("╟─┼─────────┼─────────┼─────┼──────────────────╢");
             foreach (var constant in UsedConstants)
             {
                 var t = constant.Constant.ToProgramType();
+                var len = 1;
+
                 if (constant.Constant.Type == ConstantType.String)
                 {
-                    sb.AppendFormat("{0}. ^{1} = (t : {2}:{3}) {4}\n", counter++, constant.Index, GetTypeIndex(t),
-                        constant.Constant.SValue.Count, constant.Constant.ToStringValue());
+                    len = constant.Constant.SValue.Count;
                 }
-                else
-                {
-                    sb.AppendFormat("{0}. ^{1} = (t : {2}) {3}\n", counter++, constant.Index, GetTypeIndex(t),
-                        constant.Constant.ToStringValue());
-                }
+
+                sb.AppendFormat("║{0}│  {1,3}    │  {2,3}    │ {3,3} │ {4,14}   ║\n", counter++, constant.Index, GetTypeIndex(t),
+                    len, constant.Constant.ToStringValue());
+            }
+            sb.AppendLine("╚═╧═════════╧═════════╧═════╧══════════════════╝");
+
+            counter = 0;
+            if (UsedGlobals.Count != 0)
+            {
+                sb.AppendFormat("\nGlobals count: {0}\n", UsedGlobals.Count);
+                sb.AppendLine("╔═╤═════════╤══════════╤══════════════╗");
+                sb.AppendLine("║#│  Index  │   Type   │   InitValue  ║");
+                sb.AppendLine("╟─┼─────────┼──────────┼──────────────╢");
+                foreach (var global in UsedGlobals)
+                    sb.AppendFormat("║{0}│ {1, 3}     │ {2, 8} │      {3, 3}     ║\n", counter++, global.Index, global.Type.ID,
+                        global.ConstIndex);
+                sb.AppendLine("╚═╧═════════╧══════════╧══════════════╝");
             }
 
             return sb.ToString();
+        }
+
+        public Chunk GetGlobalsChunk()
+        {
+            var ch = new Chunk(ChunkType.GLOBALS);
+            return ch;
         }
 
         public Chunk GetHeaderChunk()

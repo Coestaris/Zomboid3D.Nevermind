@@ -28,24 +28,24 @@ namespace Nevermind
         internal Chunk GetChunk()
         {
             var ch = new Chunk(ChunkType.METADATA);
-            ch.Data.Add((byte)CompilationDate.Second);
-            ch.Data.Add((byte)CompilationDate.Minute);
-            ch.Data.Add((byte)CompilationDate.Hour);
-            ch.Data.Add((byte)CompilationDate.Day);
-            ch.Data.Add((byte)CompilationDate.Month);
-            ch.Data.AddRange(Chunk.Int16ToBytes(CompilationDate.Year));
+            ch.Add((byte)CompilationDate.Second);
+            ch.Add((byte)CompilationDate.Minute);
+            ch.Add((byte)CompilationDate.Hour);
+            ch.Add((byte)CompilationDate.Day);
+            ch.Add((byte)CompilationDate.Month);
+            ch.Add((UInt16)CompilationDate.Year);
 
-            ch.Data.AddRange(Chunk.Int16ToBytes(BinaryName.Length));
-            ch.Data.AddRange(BinaryName.Select(p => (byte)p));
+            ch.Add((UInt16)BinaryName.Length);
+            ch.Add(BinaryName.Select(p => (byte)p));
 
-            ch.Data.AddRange(Chunk.Int16ToBytes(BinaryDescription.Length));
-            ch.Data.AddRange(BinaryDescription.Select(p => (byte)p));
+            ch.Add((UInt16)BinaryDescription.Length);
+            ch.Add(BinaryDescription.Select(p => (byte)p));
 
-            ch.Data.AddRange(Chunk.Int16ToBytes(BinaryAuthor.Length));
-            ch.Data.AddRange(BinaryAuthor.Select(p => (byte)p));
+            ch.Add((UInt16)BinaryAuthor.Length);
+            ch.Add(BinaryAuthor.Select(p => (byte)p));
 
-            ch.Data.AddRange(Chunk.Int16ToBytes(MinorVersion));
-            ch.Data.AddRange(Chunk.Int16ToBytes(MajorVersion));
+            ch.Add((UInt16)MinorVersion);
+            ch.Add((UInt16)MajorVersion);
 
             return ch;
         }

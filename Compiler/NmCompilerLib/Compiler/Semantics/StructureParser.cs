@@ -82,12 +82,12 @@ namespace Nevermind.Compiler.Semantics
                     if (!IdentifierFormat.Match(lexeme.VarName.StringValue))
                         return new CompileError(CompileErrorType.WrongIdentifierFormat, lexeme.VarName);
 
-                    if(program.ProgramLocals.Find(p => p.Name == lexeme.VarName.StringValue) != null)
+                    if(program.ProgramGlobals.Find(p => p.Name == lexeme.VarName.StringValue) != null)
                         return new CompileError(CompileErrorType.VariableRedeclaration, lexeme.VarName);
 
                     Type t;
                     if ((error = Type.GetType(program, lexeme.TypeName, out t)) != null) return error;
-                    program.ProgramLocals.Add(new Variable(t, lexeme.VarName.StringValue, -1, lexeme.VarName, -1, VariableType.Variable));
+                    program.ProgramGlobals.Add(new Variable(t, lexeme.VarName.StringValue, -1, lexeme.VarName, -1, VariableType.Variable));
 
                 }
                 else if(lex.Type == LexemeType.Import)

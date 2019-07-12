@@ -39,6 +39,11 @@
   * **2 bytes**: Binary Minor verion
   * **2 bytes**: Binary Major verion
 
+###### "GL" - Global variables (unique)
+  * **4 bytes**: Globals count
+  * **n * 4 bytes**: Globals types
+  * **n * 4 bytes**: Globals initial values - constant index (-1 if not set)
+
 ###### "TY" - Type Chunk (unique, required)
   * **4 bytes**: Type count
   <br>Type format:
@@ -57,6 +62,7 @@
   * **4 bytes**  : Instructions count
   * **4 bytes**  : Locals count
   * **n * 4 bytes**: Local types
+  * **n * 4 bytes**: Local initial values - constant index (-1 if not set)
   * **4 bytes**  : Reg count
   * **m * 4 bytes**: Reg types
   <br>Instruction format:

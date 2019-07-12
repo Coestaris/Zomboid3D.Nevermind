@@ -284,7 +284,7 @@ namespace Nevermind.ByteCode
                 var labelIndex = 0;
                 var instructionSet = new FunctionInstructions(function);
 
-                var localVarIndex = 0;
+                var localVarIndex = Program.ProgramGlobals.Count;
 
                 var locals = function.LocalVariables.Select(p => new NumeratedVariable(localVarIndex++, p)).ToList();
 

@@ -8,5 +8,6 @@ namespace Nevermind.ByteCode.NMB
         CONST,
         FUNC,
         DEBUG,
+        GLOBALS,
     }
 }

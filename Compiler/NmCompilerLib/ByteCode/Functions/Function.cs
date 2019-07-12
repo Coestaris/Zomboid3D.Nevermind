@@ -20,8 +20,8 @@ namespace Nevermind.ByteCode.Functions
         public int Scope;
         public NmProgram Program;
         public List<Variable> LocalVariables;
-        public int ModuleIndex = -1;
 
+        public int ModuleIndex = -1;
         public int Index;
 
         public Function(NmProgram program, string name, FunctionModifier modifier,
@@ -42,8 +42,11 @@ namespace Nevermind.ByteCode.Functions
         {
             LocalVariables = new List<Variable>();
             CompileError error = null;
-            int index = 0;
+            int index = Program.ProgramGlobals.Count;
             ResolveLocals(RawLexeme, out error, ref index);
+            if (error != null)
+                return error;
+
             ResolveReturns(ReturnType != null, RawLexeme, out error);
             return error;
         }
@@ -114,7 +117,7 @@ namespace Nevermind.ByteCode.Functions
                         }
                     }
 
-                    if(Program.ProgramLocals.Find(p => p.Name == varLexeme.VarName.StringValue) != null)
+                    if(Program.ProgramGlobals.Find(p => p.Name == varLexeme.VarName.StringValue) != null)
                     {
                         error = new CompileError(CompileErrorType.VariableRedeclaration, varLexeme.VarName);
                         return;

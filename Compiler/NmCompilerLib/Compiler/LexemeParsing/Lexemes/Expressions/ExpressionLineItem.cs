@@ -125,6 +125,10 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
             {
                 if (token.Constant != null)
                     operand = token.Constant.ToVariable(byteCode.Program);
+                else if ((operand = byteCode.Header.GetGlobalVariable(token.StringValue)) != null)
+                {
+                    return operand;
+                }
                 else
                     throw new CompileException(CompileErrorType.UndefinedReference, token);
             }

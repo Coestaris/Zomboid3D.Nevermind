@@ -1,4 +1,5 @@
-﻿using Nevermind.ByteCode.Functions;
+﻿using System;
+using Nevermind.ByteCode.Functions;
 using System.Collections.Generic;
 using Nevermind.ByteCode.NMB;
 
@@ -21,21 +22,21 @@ namespace Nevermind.ByteCode.InternalClasses
         public Chunk GetChunk()
         {
             var ch = new Chunk(ChunkType.FUNC);
-            ch.Data.AddRange(Chunk.Int32ToBytes(Function.Index));
-            ch.Data.AddRange(Chunk.Int32ToBytes(Instructions.Count));
+            ch.Add(Function.Index);
+            ch.Add(Instructions.Count);
 
-            ch.Data.AddRange(Chunk.Int32ToBytes(Locals.Count));
+            ch.Add(Locals.Count);
             foreach (var local in Locals)
-                ch.Data.AddRange(Chunk.Int32ToBytes(Function.Program.ByteCode.Header.GetTypeIndex(local.Type)));
+                ch.Add(Function.Program.ByteCode.Header.GetTypeIndex(local.Type));
 
-            ch.Data.AddRange(Chunk.Int32ToBytes(Registers.Count));
+            ch.Add(Registers.Count);
             foreach (var register in Registers)
-                ch.Data.AddRange(Chunk.Int32ToBytes(Function.Program.ByteCode.Header.GetTypeIndex(register.Type)));
+                ch.Add(Function.Program.ByteCode.Header.GetTypeIndex(register.Type));
 
             foreach (var instruction in Instructions)
             {
-                ch.Data.AddRange(Chunk.UInt16ToBytes(instruction.GetInstructionCode()));
-                ch.Data.AddRange(instruction.Serialize());
+                ch.Add(instruction.GetInstructionCode());
+                ch.Add(instruction.Serialize());
             }
 
             return ch;

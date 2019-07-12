@@ -23,7 +23,7 @@ namespace Nevermind.ByteCode
 
         private static void FixRegistersIndexes(ByteCode byteCode, FunctionInstructions function)
         {
-            var index = function.Locals.Count;
+            var index = function.Locals.Count + byteCode.Header.UsedGlobals.Count;
             foreach (var register in function.Registers)
             {
                 foreach (var instruction in function.Instructions)

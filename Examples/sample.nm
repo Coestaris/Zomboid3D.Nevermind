@@ -3,11 +3,15 @@
  */
 
 //import systypes;
-import io;
+//import io;
+
+var a : integer;
+var b : integer;
 
 entrypoint function integer main()
 {
-    var a : integer = 4u;
+    var c : integer = 55;
+    c = a * 3 - 1 + b;
 
-    a = inc(a);
+    var l : real = 4;
 }

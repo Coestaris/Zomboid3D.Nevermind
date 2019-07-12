@@ -33,7 +33,7 @@ namespace Nevermind
         internal List<Lexeme> Lexemes;
         internal Function EntrypointFunction;
         internal readonly List<Import> Imports;
-        internal readonly List<Variable> ProgramLocals;
+        internal readonly List<Variable> ProgramGlobals;
         internal readonly List<Constant> Constants;
         internal readonly List<Function> Functions;
         internal readonly List<ByteCode.Types.Type> UsedTypes;
@@ -82,7 +82,7 @@ namespace Nevermind
 
             Source = source;
 
-            ProgramLocals = new List<Variable>();
+            ProgramGlobals = new List<Variable>();
             Constants = new List<Constant>();
             Functions = new List<Function>();
 

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using Nevermind.ByteCode.Functions;
 
@@ -7,19 +8,19 @@ namespace Nevermind.ByteCode.NMB
 {
     internal class Chunk
     {
+        private List<byte> _data;
+        public readonly ChunkType Type;
+
         public Chunk(ChunkType type)
         {
-            Data = new List<byte>();
+            _data = new List<byte>();
             Type = type;
         }
-
-        public List<byte> Data;
-        public readonly ChunkType Type;
 
         public byte[] ToBytes()
         {
             var destOffset = 0;
-            var data = Data.ToArray();
+            var data = _data.ToArray();
             var buffer = new byte[10 + data.Length];
             Buffer.BlockCopy(Int32ToBytes(data.Length), 0, buffer, destOffset, 4);
             destOffset += 4;
@@ -34,14 +35,45 @@ namespace Nevermind.ByteCode.NMB
             return buffer;
         }
 
+        public void Add(IEnumerable<byte> enumerable)
+        {
+            _data.AddRange(enumerable);
+        }
+
+        public void Add(byte b)
+        {
+            _data.Add(b);
+        }
+
+        public void Add(Int32 i)
+        {
+            _data.AddRange(Int32ToBytes(i));
+        }
+
+        public void Add(UInt32 i)
+        {
+            _data.AddRange(UInt32ToBytes(i));
+        }
+
+        public void Add(Int16 i)
+        {
+            _data.AddRange(Int16ToBytes(i));
+        }
+
+        public void Add(UInt16 i)
+        {
+            _data.AddRange(UInt16ToBytes(i));
+        }
+
         private static readonly Dictionary<ChunkType, string> Types = new Dictionary<ChunkType, string>
         {
-            {ChunkType.HEAD, "HE"},
+            {ChunkType.HEAD,     "HE"},
             {ChunkType.METADATA, "ME"},
-            {ChunkType.TYPE, "TY"},
-            {ChunkType.CONST, "CO"},
-            {ChunkType.FUNC, "FU"},
-            {ChunkType.DEBUG, "DE"}
+            {ChunkType.TYPE,     "TY"},
+            {ChunkType.CONST,    "CO"},
+            {ChunkType.FUNC,     "FU"},
+            {ChunkType.DEBUG,    "DE"},
+            {ChunkType.GLOBALS,  "GL"}
         };
 
         private UInt16 TypeToInt()
