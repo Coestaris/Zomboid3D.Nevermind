@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.IO;
+using System.Text;
 using Nevermind.Compiler.Formats;
 using Nevermind.Compiler.Formats.Constants;
 
@@ -25,19 +27,19 @@ namespace Nevermind.Compiler
         };
 
         public const TokenType MathOperatorTokenType =
-            TokenType.PlusSign      | TokenType.MinusSign       | TokenType.MultiplySign   | TokenType.DivideSign  |
-            TokenType.EqualSign     | TokenType.GreaterSign     | TokenType.LessThanSign   | TokenType.Tilda       |
-            TokenType.AmpersandSign | TokenType.OrSign          | TokenType.CircumflexSign | TokenType.PercentSign |
-            TokenType.QuestingSign  | TokenType.ExclamationMark | TokenType.ComaSign;
+            TokenType.PlusSign | TokenType.MinusSign | TokenType.MultiplySign | TokenType.DivideSign |
+            TokenType.EqualSign | TokenType.GreaterSign | TokenType.LessThanSign | TokenType.Tilda |
+            TokenType.AmpersandSign | TokenType.OrSign | TokenType.CircumflexSign | TokenType.PercentSign |
+            TokenType.QuestingSign | TokenType.ExclamationMark | TokenType.ComaSign;
 
         public const TokenType MathExpressionTokenType =
-            MathOperatorTokenType   | TokenType.BracketClosed | TokenType.BracketOpen   | TokenType.Identifier  |
-            TokenType.Number        | TokenType.FloatNumber   | TokenType.StringToken   | TokenType.ComplexToken;
+            MathOperatorTokenType | TokenType.BracketClosed | TokenType.BracketOpen | TokenType.Identifier |
+            TokenType.Number | TokenType.FloatNumber | TokenType.StringToken | TokenType.ComplexToken;
 
         public const TokenType AnyTokenType =
-            MathExpressionTokenType    | TokenType.ImportKeyword | TokenType.VarKeyword    | TokenType.IfKeyword  |
-            TokenType.FunctionKeyword  | TokenType.Quote         | TokenType.Semicolon     | TokenType.Colon      |
-            TokenType.BraceOpened      | TokenType.BraceClosed   | TokenType.ComplexToken;
+            MathExpressionTokenType | TokenType.ImportKeyword | TokenType.VarKeyword | TokenType.IfKeyword |
+            TokenType.FunctionKeyword | TokenType.Quote | TokenType.Semicolon | TokenType.Colon |
+            TokenType.BraceOpened | TokenType.BraceClosed | TokenType.ComplexToken;
 
         public Token(string fileName) : this("", fileName, -1, -1, null)
         {
@@ -46,44 +48,45 @@ namespace Nevermind.Compiler
 
         private Dictionary<string, TokenType> _TokenDict = new Dictionary<string, TokenType>()
         {
-            { "=" , TokenType.EqualSign },
-            { "(", TokenType.BracketOpen },
-            { ")", TokenType.BracketClosed },
-            { "*", TokenType.MultiplySign },
-            { "+", TokenType.PlusSign },
-            { ";", TokenType.Semicolon },
-            { ":", TokenType.Colon },
-            { "{", TokenType.BraceOpened },
-            { "}", TokenType.BraceClosed },
-            { "if", TokenType.IfKeyword },
-            { "var", TokenType.VarKeyword },
-            { "function", TokenType.FunctionKeyword },
-            { "import", TokenType.ImportKeyword },
-            { "\"", TokenType.Quote },
-            { "module", TokenType.ModuleKeyword },
-            { "library", TokenType.LibraryKeyword},
-            { "public", TokenType.PublicKeyword },
-            { "private", TokenType.PrivateKeyword },
-            { "entrypoint", TokenType.EntrypointKeyword },
-            { "initialization", TokenType.InitializationKeyword },
-            { "finalization", TokenType.FinalizationKeyword },
-            { "-", TokenType.MinusSign },
-            { "/", TokenType.DivideSign },
-            { ">", TokenType.GreaterSign },
-            { "<", TokenType.LessThanSign },
-            { "~", TokenType.Tilda },
-            { "&", TokenType.AmpersandSign },
-            { "|", TokenType.OrSign },
-            { "^", TokenType.CircumflexSign },
-            { "%", TokenType.PercentSign },
-            { "?", TokenType.QuestingSign },
-            { "!", TokenType.ExclamationMark },
-            { "return", TokenType.ReturnKeyword },
-            { "else", TokenType.ElseKeyword },
-            { ",", TokenType.ComaSign },
+            {"=", TokenType.EqualSign},
+            {"(", TokenType.BracketOpen},
+            {")", TokenType.BracketClosed},
+            {"*", TokenType.MultiplySign},
+            {"+", TokenType.PlusSign},
+            {";", TokenType.Semicolon},
+            {":", TokenType.Colon},
+            {"{", TokenType.BraceOpened},
+            {"}", TokenType.BraceClosed},
+            {"if", TokenType.IfKeyword},
+            {"var", TokenType.VarKeyword},
+            {"function", TokenType.FunctionKeyword},
+            {"import", TokenType.ImportKeyword},
+            {"\"", TokenType.Quote},
+            {"module", TokenType.ModuleKeyword},
+            {"library", TokenType.LibraryKeyword},
+            {"public", TokenType.PublicKeyword},
+            {"private", TokenType.PrivateKeyword},
+            {"entrypoint", TokenType.EntrypointKeyword},
+            {"initialization", TokenType.InitializationKeyword},
+            {"finalization", TokenType.FinalizationKeyword},
+            {"-", TokenType.MinusSign},
+            {"/", TokenType.DivideSign},
+            {">", TokenType.GreaterSign},
+            {"<", TokenType.LessThanSign},
+            {"~", TokenType.Tilda},
+            {"&", TokenType.AmpersandSign},
+            {"|", TokenType.OrSign},
+            {"^", TokenType.CircumflexSign},
+            {"%", TokenType.PercentSign},
+            {"?", TokenType.QuestingSign},
+            {"!", TokenType.ExclamationMark},
+            {"return", TokenType.ReturnKeyword},
+            {"else", TokenType.ElseKeyword},
+            {",", TokenType.ComaSign},
         };
 
-        public Token(string str, string fileName, int lineIndex, int lineOffset, NmProgram program, bool isString = false)
+        public Token(string str, string fileName, int lineIndex, int lineOffset, NmProgram program,
+            bool isString = false)
         {
             FileName = fileName;
             LineIndex = lineIndex;
@@ -107,7 +110,7 @@ namespace Nevermind.Compiler
                         {
                             Constant = constantFormat.Parse(this, program);
 
-                            if(!constantFormat.VerifyBounds(Constant))
+                            if (!constantFormat.VerifyBounds(Constant))
                                 throw new CompileException(CompileErrorType.OutOfBoundsConstant, this);
 
                             Type = Constant.ToTokenType();
@@ -138,7 +141,8 @@ namespace Nevermind.Compiler
 
         public override string ToString()
         {
-            if (Type == TokenType.Number || Type == TokenType.FloatNumber || Type == TokenType.Identifier || Type == TokenType.StringToken)
+            if (Type == TokenType.Number || Type == TokenType.FloatNumber || Type == TokenType.Identifier ||
+                Type == TokenType.StringToken)
                 return $"\"{FileName}\" in {LineIndex}:{LineOffset}: Type: {Type}. Value: \"{StringValue}\"";
 
             return $"\"{FileName}\" in {LineIndex}:{LineOffset}: Type: {Type}";
@@ -146,8 +150,32 @@ namespace Nevermind.Compiler
 
         public string ToSource()
         {
-            return Type.ToSource(Type == TokenType.Number || Type == TokenType.FloatNumber || Type == TokenType.StringToken
-                ? Constant.ToStringValue() : StringValue);
+            return Type.ToSource(
+                Type == TokenType.Number || Type == TokenType.FloatNumber || Type == TokenType.StringToken
+                    ? Constant.ToStringValue()
+                    : StringValue);
+        }
+
+        public string ToErrorValue()
+        {
+            var sb = new StringBuilder();
+
+            if(FileName != null)
+                sb.AppendFormat(" at \"{0}\"", new FileInfo(FileName).FullName);
+
+            if (LineIndex != -1 && LineIndex != -1)
+            {
+                sb.AppendFormat(" in {0}:{1}", LineIndex, LineOffset);
+            }
+            else
+            {
+                if (LineIndex != -1)
+                    sb.AppendFormat(" at char index {0}", LineOffset);
+                if (LineIndex != -1)
+                    sb.AppendFormat(" at line {0}", LineIndex);
+            }
+
+            return sb.ToString();
         }
     }
 }

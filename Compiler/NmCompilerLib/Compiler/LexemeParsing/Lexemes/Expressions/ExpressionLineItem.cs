@@ -164,20 +164,20 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
                         if(operand1 == null)
                         {
                             if (funcToCall.Parameters.Count != 0)
-                                throw new CompileException(CompileErrorType.WrongParameterCount, item.FunctionCall);
+                                throw new CompileException(CompileErrorType.WrongParameterCount, item.FunctionCall, funcToCall.Token);
 
                             instructions.Add(new InstructionCall(funcToCall, func, byteCode, -1));
                         }
                         else if(operand1.VariableType != VariableType.Tuple)
                         {
                             if(funcToCall.Parameters.Count != 1)
-                                throw new CompileException(CompileErrorType.WrongParameterCount, item.FunctionCall);
+                                throw new CompileException(CompileErrorType.WrongParameterCount, item.FunctionCall, funcToCall.Token);
 
                             if (funcToCall.Parameters[0].Type != operand1.Type)
                             {
                                 //not equals, but can we cast?
                                 if(!Type.CanCastAssignment(funcToCall.Parameters[0].Type, operand1.Type))
-                                    throw new CompileException(CompileErrorType.IncompatibleTypes, item.FunctionCall);
+                                    throw new CompileException(CompileErrorType.IncompatibleTypes, item.FunctionCall, funcToCall.Token);
 
                                 //casting
                                 var varCast = new Variable(funcToCall.Parameters[0].Type, $"_castedReg{localVarIndex}",
@@ -192,7 +192,7 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
                         else
                         {
                             if (funcToCall.Parameters.Count != operand1.Tuple.Count)
-                                throw new CompileException(CompileErrorType.WrongParameterCount, item.FunctionCall);
+                                throw new CompileException(CompileErrorType.WrongParameterCount, item.FunctionCall, funcToCall.Token);
 
                             for(int i = 0; i < operand1.Tuple.Count; i++)
                                 if (funcToCall.Parameters[i].Type != operand1.Tuple[i].Type)
@@ -201,7 +201,7 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
 
                                     //not equals, but can we cast?
                                     if(!Type.CanCastAssignment(funcToCall.Parameters[i].Type, operand1.Tuple[i].Type))
-                                        throw new CompileException(CompileErrorType.IncompatibleTypes, item.FunctionCall);
+                                        throw new CompileException(CompileErrorType.IncompatibleTypes, item.FunctionCall, funcToCall.Token);
 
                                     //casting
                                     var varCast = new Variable(funcToCall.Parameters[i].Type,
@@ -235,7 +235,7 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
                         }
                         else if(currentIndex != list.Count - 1)
                         {
-                            throw new CompileException(CompileErrorType.WrongUsageOfVoidFunc, item.NearToken);
+                            throw new CompileException(CompileErrorType.WrongUsageOfVoidFunc, item.NearToken, funcToCall.Token);
                         }
                     }
 

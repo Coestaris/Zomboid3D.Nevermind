@@ -49,8 +49,8 @@ namespace Nevermind.Compiler
         UnknownModuleName,
         InnerCompileException,
         NotModuleImport,
-        ImportFunctionShouldBePublic,
+        PrivateExportFunction,
         ModuleFunctionCall,
-        RecoursiveImport
+        RecursiveImport
     }
 }

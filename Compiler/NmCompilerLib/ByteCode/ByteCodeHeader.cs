@@ -45,7 +45,7 @@ namespace Nevermind.ByteCode
             {
                 if(native.Modifier == FunctionModifier.Finalization ||
                    native.Modifier == FunctionModifier.Initialization)
-                    throw new CompileException(CompileErrorType.ModuleFunctionCall, nearToken);
+                    throw new CompileException(CompileErrorType.ModuleFunctionCall, nearToken, native.Token);
 
                 return native;
             }
@@ -59,11 +59,11 @@ namespace Nevermind.ByteCode
                 if (func != null)
                 {
                     if(func.Function.Modifier != FunctionModifier.Public)
-                        throw new CompileException(CompileErrorType.ImportFunctionShouldBePublic, nearToken);
+                        throw new CompileException(CompileErrorType.PrivateExportFunction, nearToken, func.Function.Token);
 
                     if(func.Function.Modifier == FunctionModifier.Finalization ||
                        func.Function.Modifier == FunctionModifier.Initialization)
-                        throw new CompileException(CompileErrorType.ModuleFunctionCall, nearToken);
+                        throw new CompileException(CompileErrorType.ModuleFunctionCall, nearToken, func.Function.Token);
 
                     if (import.LinkedModule.IsLibrary)
                     {
@@ -137,7 +137,7 @@ namespace Nevermind.ByteCode
 
                     if(newFunction.Function.Modifier == FunctionModifier.Finalization ||
                        newFunction.Function.Modifier == FunctionModifier.Initialization)
-                        throw new CompileException(CompileErrorType.ModuleFunctionCall, nearToken);
+                        throw new CompileException(CompileErrorType.ModuleFunctionCall, nearToken, newFunction.Function.Token);
 
                     EmbedFunction(newFunction, nearToken);
                     call.DestFunc = newFunction.Function;

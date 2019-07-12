@@ -248,11 +248,13 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes
                 {
                     if (token.CalculatedIndex != -1)
                     {
-                        result.Add(new ExpressionLineItem(null, token.CalculatedIndex, resultIndex, token.UnaryFunction));
+                        result.Add(new ExpressionLineItem(null, token.CalculatedIndex, resultIndex, token.UnaryFunction));                        result.Last().NearToken = token.UnaryFunction;
+                        result.Last().NearToken = token.UnaryFunction;
                     }
                     else
                     {
                         result.Add(new ExpressionLineItem(null, token, resultIndex, token.UnaryFunction));
+                        result.Last().NearToken = token.UnaryFunction;
                     }
                     token.CalculatedIndex = resultIndex++;
                 }
@@ -266,10 +268,12 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes
                     if (token.CalculatedIndex != -1)
                     {
                         result.Add(new ExpressionLineItem(token.UnaryOperators[0], token.CalculatedIndex, resultIndex, null));
+                        result.Last().NearToken = token.CodeToken;
                     }
                     else
                     {
                         result.Add(new ExpressionLineItem(token.UnaryOperators[0], token, resultIndex, null));
+                        result.Last().NearToken = token.CodeToken;
                     }
                     token.CalculatedIndex = resultIndex++;
                 }

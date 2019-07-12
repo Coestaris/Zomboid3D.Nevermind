@@ -43,7 +43,7 @@ namespace Nevermind.Compiler.Semantics
 
 
             if(HasModuleInStack(name, program))
-                return new CompileError(CompileErrorType.RecoursiveImport, token);
+                return new CompileError(CompileErrorType.RecursiveImport, token);
 
             import = new Import
             {

@@ -9,5 +9,5 @@ entrypoint function integer main()
 {
     var a : integer = 4u;
 
-    io_sample();
+    a = inc(a);
 }

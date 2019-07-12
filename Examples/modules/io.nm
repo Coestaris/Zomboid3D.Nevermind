@@ -10,14 +10,7 @@ finalization function fin()
 {
 }
 
-private function real io_inner(param : real)
+private function real inc(param : real)
 {
-    sys_sample();
-    sys_sample();
-    return param * 2;
-}
-
-public function io_sample()
-{
-   var a : double = io_inner(5uo);
+    return param + 1;
 }

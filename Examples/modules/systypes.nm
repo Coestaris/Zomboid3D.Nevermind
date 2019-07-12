@@ -1,7 +1,5 @@
 module systypes;
 
-import io;
-
 initialization function init()
 {
 }
