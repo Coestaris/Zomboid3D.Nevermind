@@ -7,18 +7,20 @@ import io;
 
 function integer func1(a : integer)
 {
+    //implicit casting in return statement
     return 3s;
 }
 
-/*
+
 function double func2(f : double, b : uint)
 {
     return f + b;
-}  */
+}  
 
 entrypoint function integer main()
 {
-    var b : uint = 0u;
+    //implicit casting in var statement
+    var b : uint = 0o;
     b = 1o + 2s;
 
     //implicit casting to int
@@ -36,4 +38,7 @@ entrypoint function integer main()
     //implicit casting in function calls
     func1(2us);
     func2(0.5f, 11uo);
+
+    //implicit casting in unary functions
+    f = -4;
 }
