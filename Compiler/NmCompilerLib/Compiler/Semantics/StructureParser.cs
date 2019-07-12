@@ -103,10 +103,13 @@ namespace Nevermind.Compiler.Semantics
                         return new CompileError(CompileErrorType.UnknownModuleName, lex.Tokens?[0]);
 
                     Import import;
-                    if((error = Import.CreateImport(importName, matchedFile, out import, program)) != null)
+                    if((error = Import.CreateImport(out import, importName, matchedFile, program, lex.Tokens[0])) != null)
                         return error;
 
                     program.Imports.Add(import);
+
+                    if ((error = import.Parse(program, lex.Tokens[0])) != null)
+                        return error;
                 }
                 else if (lex.Type == LexemeType.Module)
                 {

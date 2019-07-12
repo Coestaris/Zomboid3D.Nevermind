@@ -1,5 +1,7 @@
 module io;
 
+import systypes;
+
 initialization function init()
 {
 }
@@ -10,6 +12,8 @@ finalization function fin()
 
 private function real io_inner(param : real)
 {
+    sys_sample();
+    sys_sample();
     return param * 2;
 }
 

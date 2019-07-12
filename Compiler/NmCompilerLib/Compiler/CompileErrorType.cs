@@ -50,6 +50,7 @@ namespace Nevermind.Compiler
         InnerCompileException,
         NotModuleImport,
         ImportFunctionShouldBePublic,
-        ModuleFunctionCall
+        ModuleFunctionCall,
+        RecoursiveImport
     }
 }

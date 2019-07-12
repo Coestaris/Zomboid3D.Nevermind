@@ -28,6 +28,7 @@ namespace Nevermind
         public bool MeasureTime { get; set; }
 
         internal bool PrototypesOnly { get; set; }
+        internal NmProgram ParentProgram { get; set; }
 
         internal List<Lexeme> Lexemes;
         internal Function EntrypointFunction;
@@ -112,7 +113,7 @@ namespace Nevermind
 
                 EndMeasureTime(ElapsedTimeType.Tokenizing);
             }
-            catch (ParseException ex)
+            catch (CompileException ex)
             {
                 return ex.ToError();
             }
@@ -147,7 +148,7 @@ namespace Nevermind
                     EndMeasureTime(ElapsedTimeType.Optimizing);
                 }
             }
-            catch (ParseException ex)
+            catch (CompileException ex)
             {
                 return ex.ToError();
             }

@@ -81,7 +81,7 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes
                     case 0:
                     {
                         if(token.Type != TokenType.Identifier)
-                            throw new ParseException(CompileErrorType.UnexpectedToken, token);
+                            throw new CompileException(CompileErrorType.UnexpectedToken, token);
                         parameterName = token;
                         state = 1;
                         break;
@@ -90,7 +90,7 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes
                     case 1:
                     {
                         if(token.Type != TokenType.Colon)
-                            throw new ParseException(CompileErrorType.UnexpectedToken, token);
+                            throw new CompileException(CompileErrorType.UnexpectedToken, token);
                         state = 2;
                         break;
                     }
@@ -98,7 +98,7 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes
                     case 2:
                     {
                         if(token.Type != TokenType.Identifier)
-                            throw new ParseException(CompileErrorType.UnexpectedToken, token);
+                            throw new CompileException(CompileErrorType.UnexpectedToken, token);
                         parameterType = token;
                         Parameters.Add(new LexemeFunctionParameter(parameterType, parameterName));
                         state = 3;
@@ -108,7 +108,7 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes
                     case 3:
                     {
                         if(token.Type != TokenType.ComaSign)
-                            throw new ParseException(CompileErrorType.UnexpectedToken, token);
+                            throw new CompileException(CompileErrorType.UnexpectedToken, token);
                         state = 0;
                         break;
                     }

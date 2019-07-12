@@ -115,18 +115,6 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
             return sb.ToString();
         }
 
-        public static List<ExpressionLineItem> OptimizeList(List<ExpressionLineItem> list)
-        {
-            //todo!;
-            return list; 
-        }
-
-        public static int RequiredRegistersCount(List<ExpressionLineItem> list)
-        {
-            //todo!
-            return list.Count;
-        }
-
         public static Variable GetVariable(List<NumeratedVariable> locals, ByteCode.ByteCode byteCode, Token token)
         {
             if (token == null)
@@ -138,7 +126,7 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
                 if (token.Constant != null)
                     operand = token.Constant.ToVariable(byteCode.Program);
                 else
-                    throw new ParseException(CompileErrorType.UndefinedReference, token);
+                    throw new CompileException(CompileErrorType.UndefinedReference, token);
             }
 
             return operand;
@@ -171,25 +159,25 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
                             .GetFunction(item.FunctionCall.StringValue, item.NearToken);
 
                         if(funcToCall == null)
-                            throw new ParseException(CompileErrorType.UndefinedReference, item.FunctionCall);
+                            throw new CompileException(CompileErrorType.UndefinedReference, item.FunctionCall);
 
                         if(operand1 == null)
                         {
                             if (funcToCall.Parameters.Count != 0)
-                                throw new ParseException(CompileErrorType.WrongParameterCount, item.FunctionCall);
+                                throw new CompileException(CompileErrorType.WrongParameterCount, item.FunctionCall);
 
                             instructions.Add(new InstructionCall(funcToCall, func, byteCode, -1));
                         }
                         else if(operand1.VariableType != VariableType.Tuple)
                         {
                             if(funcToCall.Parameters.Count != 1)
-                                throw new ParseException(CompileErrorType.WrongParameterCount, item.FunctionCall);
+                                throw new CompileException(CompileErrorType.WrongParameterCount, item.FunctionCall);
 
                             if (funcToCall.Parameters[0].Type != operand1.Type)
                             {
                                 //not equals, but can we cast?
                                 if(!Type.CanCastAssignment(funcToCall.Parameters[0].Type, operand1.Type))
-                                    throw new ParseException(CompileErrorType.IncompatibleTypes, item.FunctionCall);
+                                    throw new CompileException(CompileErrorType.IncompatibleTypes, item.FunctionCall);
 
                                 //casting
                                 var varCast = new Variable(funcToCall.Parameters[0].Type, $"_castedReg{localVarIndex}",
@@ -204,7 +192,7 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
                         else
                         {
                             if (funcToCall.Parameters.Count != operand1.Tuple.Count)
-                                throw new ParseException(CompileErrorType.WrongParameterCount, item.FunctionCall);
+                                throw new CompileException(CompileErrorType.WrongParameterCount, item.FunctionCall);
 
                             for(int i = 0; i < operand1.Tuple.Count; i++)
                                 if (funcToCall.Parameters[i].Type != operand1.Tuple[i].Type)
@@ -213,7 +201,7 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
 
                                     //not equals, but can we cast?
                                     if(!Type.CanCastAssignment(funcToCall.Parameters[i].Type, operand1.Tuple[i].Type))
-                                        throw new ParseException(CompileErrorType.IncompatibleTypes, item.FunctionCall);
+                                        throw new CompileException(CompileErrorType.IncompatibleTypes, item.FunctionCall);
 
                                     //casting
                                     var varCast = new Variable(funcToCall.Parameters[i].Type,
@@ -247,7 +235,7 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
                         }
                         else if(currentIndex != list.Count - 1)
                         {
-                            throw new ParseException(CompileErrorType.WrongUsageOfVoidFunc, item.NearToken);
+                            throw new CompileException(CompileErrorType.WrongUsageOfVoidFunc, item.NearToken);
                         }
                     }
 
@@ -258,7 +246,7 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
                 if (item.FunctionCall == null)
                 {
                     if (result.Error != null)
-                        throw new ParseException(result.Error.ErrorType, item.NearToken);
+                        throw new CompileException(result.Error.ErrorType, item.NearToken);
                     
                     if (result.UsedCasts != null && result.UsedCasts.Count != 0)
                     {

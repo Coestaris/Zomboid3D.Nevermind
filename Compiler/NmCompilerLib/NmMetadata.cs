@@ -33,19 +33,19 @@ namespace Nevermind
             ch.Data.Add((byte)CompilationDate.Hour);
             ch.Data.Add((byte)CompilationDate.Day);
             ch.Data.Add((byte)CompilationDate.Month);
-            ch.Data.AddRange( Chunk.Int16ToBytes(CompilationDate.Year));
+            ch.Data.AddRange(Chunk.Int16ToBytes(CompilationDate.Year));
 
-            ch.Data.AddRange( Chunk.Int16ToBytes(BinaryName.Length));
-            ch.Data.AddRange( BinaryName.Select(p => (byte)p));
+            ch.Data.AddRange(Chunk.Int16ToBytes(BinaryName.Length));
+            ch.Data.AddRange(BinaryName.Select(p => (byte)p));
 
-            ch.Data.AddRange( Chunk.Int16ToBytes(BinaryDescription.Length));
-            ch.Data.AddRange( BinaryDescription.Select(p => (byte)p));
+            ch.Data.AddRange(Chunk.Int16ToBytes(BinaryDescription.Length));
+            ch.Data.AddRange(BinaryDescription.Select(p => (byte)p));
 
-            ch.Data.AddRange( Chunk.Int16ToBytes(BinaryAuthor.Length));
-            ch.Data.AddRange( BinaryAuthor.Select(p => (byte)p));
+            ch.Data.AddRange(Chunk.Int16ToBytes(BinaryAuthor.Length));
+            ch.Data.AddRange(BinaryAuthor.Select(p => (byte)p));
 
-            ch.Data.AddRange( Chunk.Int16ToBytes(MinorVersion));
-            ch.Data.AddRange( Chunk.Int16ToBytes(MajorVersion));
+            ch.Data.AddRange(Chunk.Int16ToBytes(MinorVersion));
+            ch.Data.AddRange(Chunk.Int16ToBytes(MajorVersion));
 
             return ch;
         }

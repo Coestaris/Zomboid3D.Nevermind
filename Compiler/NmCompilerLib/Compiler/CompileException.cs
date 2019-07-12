@@ -2,18 +2,18 @@ using System;
 
 namespace Nevermind.Compiler
 {
-    internal class ParseException : Exception
+    internal class CompileException : Exception
     {
         private readonly Token _token;
         private readonly CompileErrorType _errorType;
 
-        public ParseException(CompileError error)
+        public CompileException(CompileError error)
         {
             _token = error.Token;
             _errorType = error.ErrorType;
         }
 
-        public ParseException(CompileErrorType errorType, Token token)
+        public CompileException(CompileErrorType errorType, Token token)
         {
             _token = token;
             _errorType = errorType;

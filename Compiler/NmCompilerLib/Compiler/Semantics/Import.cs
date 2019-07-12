@@ -13,58 +13,87 @@ namespace Nevermind.Compiler.Semantics
 
         public Module LinkedModule;
 
-        public static CompileError CreateImport(string name, string fileName, out Import import, NmProgram program)
+        public static bool HasModuleInStack(string name, NmProgram parent)
         {
+            while (true)
+            {
+                if (parent.Imports.Find(p => p.Name == name) != null)
+                    return true;
+                parent = parent.ParentProgram;
+
+                if (parent == null)
+                    return false;
+            }
+        }
+
+        public static CompileError CreateImport(out Import import, string name, string fileName, NmProgram program,
+            Token token)
+        {
+            //todo: library modules
+            /*
             var compilerBinaryName = new FileInfo(fileName).Directory.FullName + Path.DirectorySeparatorChar +
                                      new FileInfo(fileName).Name + "b";
-            import = null;
-
             if (File.Exists(compilerBinaryName))
             {
                 //load needed data from binary
             }
+            */
 
-            var source = NmSource.FromFile(fileName);
-            var newProgram = new NmProgram(source)
-            {
-                Verbose = program.Verbose,
-                MeasureTime = false,
-                IncludeDirectories = program.IncludeDirectories
-            };
+            import = null;
 
-            //todo: pass token for error index
-            if(program.Verbose)
-                Console.WriteLine("Compiling {0}", fileName);
-            CompileError error;
-            if ((error = newProgram.Parse()) != null)
-            {
-                Console.WriteLine(error);
-                return new CompileError(CompileErrorType.InnerCompileException);
-            }
 
-            if ((error = newProgram.Expand()) != null)
-            {
-                Console.WriteLine(error);
-                return new CompileError(CompileErrorType.InnerCompileException);
-            }
-
-            if(!newProgram.IsModule)
-                return new CompileError(CompileErrorType.NotModuleImport);
-
-            if (newProgram.Module.IsLibrary)
-            {
-                newProgram.ByteCode.SaveToFile(compilerBinaryName);
-                if (program.Verbose)
-                    Console.WriteLine("File saved {0}", compilerBinaryName);
-            }
+            if(HasModuleInStack(name, program))
+                return new CompileError(CompileErrorType.RecoursiveImport, token);
 
             import = new Import
             {
                 Name = name,
                 Library = true,
                 FileName = fileName,
-                LinkedModule = newProgram.Module
             };
+
+            return null;
+        }
+
+        internal CompileError Parse(NmProgram program, Token token)
+        {
+            var source = NmSource.FromFile(FileName);
+            var newProgram = new NmProgram(source)
+            {
+                Verbose = program.Verbose,
+                MeasureTime = false,
+                IncludeDirectories = program.IncludeDirectories,
+                ParentProgram = program
+            };
+
+            if(program.Verbose)
+                Console.WriteLine("Compiling {0}", FileName);
+
+            CompileError error;
+            if ((error = newProgram.Parse()) != null)
+            {
+                Console.WriteLine(error);
+                return new CompileError(CompileErrorType.InnerCompileException, token);
+            }
+
+            if ((error = newProgram.Expand()) != null)
+            {
+                Console.WriteLine(error);
+                return new CompileError(CompileErrorType.InnerCompileException, token);
+            }
+
+            if(!newProgram.IsModule)
+                return new CompileError(CompileErrorType.NotModuleImport, token);
+
+            //todo: library modules
+            /*if (newProgram.Module.IsLibrary)
+            {
+                newProgram.ByteCode.SaveToFile(compilerBinaryName);
+                if (program.Verbose)
+                    Console.WriteLine("File saved {0}", compilerBinaryName);
+            }*/
+
+            LinkedModule = newProgram.Module;
 
             return null;
         }

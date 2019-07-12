@@ -130,16 +130,16 @@ namespace Nevermind.Compiler.LexemeParsing
                                 }
                             }
                         }
-                        catch(ParseException e)
+                        catch(CompileException e)
                         {
                             error = e.ToError();
                             return;
                         }
                         catch (Exception e)
                         {
-                            if (e.InnerException?.GetType() == typeof(ParseException))
+                            if (e.InnerException?.GetType() == typeof(CompileException))
                             {
-                                error = ((ParseException)e.InnerException).ToError();
+                                error = ((CompileException)e.InnerException).ToError();
                             }
                             else
                             {

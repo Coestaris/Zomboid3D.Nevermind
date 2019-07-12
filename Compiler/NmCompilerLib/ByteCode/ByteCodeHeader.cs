@@ -45,7 +45,7 @@ namespace Nevermind.ByteCode
             {
                 if(native.Modifier == FunctionModifier.Finalization ||
                    native.Modifier == FunctionModifier.Initialization)
-                    throw new ParseException(CompileErrorType.ModuleFunctionCall, nearToken);
+                    throw new CompileException(CompileErrorType.ModuleFunctionCall, nearToken);
 
                 return native;
             }
@@ -59,11 +59,11 @@ namespace Nevermind.ByteCode
                 if (func != null)
                 {
                     if(func.Function.Modifier != FunctionModifier.Public)
-                        throw new ParseException(CompileErrorType.ImportFunctionShouldBePublic, nearToken);
+                        throw new CompileException(CompileErrorType.ImportFunctionShouldBePublic, nearToken);
 
                     if(func.Function.Modifier == FunctionModifier.Finalization ||
                        func.Function.Modifier == FunctionModifier.Initialization)
-                        throw new ParseException(CompileErrorType.ModuleFunctionCall, nearToken);
+                        throw new CompileException(CompileErrorType.ModuleFunctionCall, nearToken);
 
                     if (import.LinkedModule.IsLibrary)
                     {
@@ -121,7 +121,8 @@ namespace Nevermind.ByteCode
 
                 if (instruction.Type == InstructionType.Call)
                 {
-                    var func = (instruction as InstructionCall).DestFunc;
+                    var call = instruction as InstructionCall;
+                    var func = call.DestFunc;
                     var newFunction = function.Function.Program.ByteCode.Instructions.Find(p => p.Function == func);
 
                     //recursive call
@@ -131,11 +132,15 @@ namespace Nevermind.ByteCode
                     if(newFunction == null)
                         throw new ArgumentNullException(nameof(newFunction));
 
+                    if(EmbeddedFunctions.Any(p => p.Function == func))
+                        continue; //already embedded
+
                     if(newFunction.Function.Modifier == FunctionModifier.Finalization ||
                        newFunction.Function.Modifier == FunctionModifier.Initialization)
-                        throw new ParseException(CompileErrorType.ModuleFunctionCall, nearToken);
+                        throw new CompileException(CompileErrorType.ModuleFunctionCall, nearToken);
 
                     EmbedFunction(newFunction, nearToken);
+                    call.DestFunc = newFunction.Function;
                 }
             }
         }

@@ -49,7 +49,7 @@ namespace Nevermind.ByteCode
                     {
                         var unaryRes = token.UnaryOperators[0].UnaryFunc(new OperatorOperands(function, this, labelIndexCopy++, src));
                         if (unaryRes.Error != null)
-                            throw new ParseException(unaryRes.Error.ErrorType, token.CodeToken);
+                            throw new CompileException(unaryRes.Error.ErrorType, token.CodeToken);
 
                         instructionsSet.Instructions.Add(unaryRes.Instruction);
 
@@ -60,7 +60,7 @@ namespace Nevermind.ByteCode
                             {
                                 //but can we cast?
                                 if(!Type.CanCastAssignment(storeResultTo.Type, unaryRes.ResultType))
-                                    throw new ParseException(CompileErrorType.IncompatibleTypes, lexeme.Tokens[0]);
+                                    throw new CompileException(CompileErrorType.IncompatibleTypes, lexeme.Tokens[0]);
 
                                 var castedVar = new Variable(unaryRes.ResultType, "__unaryReg", function.Scope,
                                     null, localVarIndex++, VariableType.Variable);
@@ -90,7 +90,7 @@ namespace Nevermind.ByteCode
                             {
                                 //Not equal, cast is needed.
                                 if (!Type.CanCastAssignment(storeResultTo.Type, src.Type))
-                                    throw new ParseException(CompileErrorType.IncompatibleTypes, lexeme.Tokens[0]);
+                                    throw new CompileException(CompileErrorType.IncompatibleTypes, lexeme.Tokens[0]);
 
                                 instructionsSet.Instructions.Add(new InstructionCast(storeResultTo, src, function, this, labelIndexCopy++));
                                 resultVar = storeResultTo;
@@ -109,7 +109,7 @@ namespace Nevermind.ByteCode
                         }
                     }
                 }
-                else throw new ParseException(CompileErrorType.WrongOperandList, lexeme.Tokens[0]);
+                else throw new CompileException(CompileErrorType.WrongOperandList, lexeme.Tokens[0]);
             }
             else
             {
@@ -144,14 +144,14 @@ namespace Nevermind.ByteCode
                 if (storeResultTo != null)
                 {
                     if (!(instructionsSet.Instructions.Last() is ArithmeticInstruction))
-                        throw new ParseException(CompileErrorType.ExpressionIsNotVariable, lexeme.Tokens[1]);
+                        throw new CompileException(CompileErrorType.ExpressionIsNotVariable, lexeme.Tokens[1]);
 
                     var lastInstruction = (ArithmeticInstruction) instructionsSet.Instructions.Last();
                     if (lastInstruction.Result.Type != storeResultTo.Type)
                     {
                         //but can we cast?
                         if (!Type.CanCastAssignment(storeResultTo.Type, lastInstruction.Result.Type))
-                            throw new ParseException(CompileErrorType.IncompatibleTypes, lexeme.Tokens[0]);
+                            throw new CompileException(CompileErrorType.IncompatibleTypes, lexeme.Tokens[0]);
 
                         instructionsSet.Instructions.Add(new InstructionCast(storeResultTo, lastInstruction.Result, function, this,
                             labelIndexCopy++));
@@ -211,7 +211,7 @@ namespace Nevermind.ByteCode
                                 registers, instructionsSet, locals, null);
 
                             if(variable == null)
-                                throw new ParseException(CompileErrorType.ExpressionIsNotVariable, lexeme.Tokens[1]);
+                                throw new CompileException(CompileErrorType.ExpressionIsNotVariable, lexeme.Tokens[1]);
 
                             instructionsSet.Instructions.Add(new InstructionBrEq(variable, -1, function, this, labelIndex++));
                             var eq = instructionsSet.Instructions.Last() as InstructionBrEq;
@@ -258,7 +258,7 @@ namespace Nevermind.ByteCode
                             {
                                 //but can we cast?
                                 if(!Type.CanCastAssignment(function.ReturnType, variable.Type))
-                                    throw new ParseException(CompileErrorType.IncompatibleTypes, lexeme.Tokens[1]);
+                                    throw new CompileException(CompileErrorType.IncompatibleTypes, lexeme.Tokens[1]);
 
                                 //casting
                                 var castedVar = new Variable(function.ReturnType, "__castedReg", function.Scope,

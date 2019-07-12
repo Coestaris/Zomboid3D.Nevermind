@@ -108,7 +108,7 @@ namespace Nevermind.Compiler
                             Constant = constantFormat.Parse(this, program);
 
                             if(!constantFormat.VerifyBounds(Constant))
-                                throw new ParseException(CompileErrorType.OutOfBoundsConstant, this);
+                                throw new CompileException(CompileErrorType.OutOfBoundsConstant, this);
 
                             Type = Constant.ToTokenType();
                             found = true;
@@ -119,7 +119,7 @@ namespace Nevermind.Compiler
                     if (!found)
                     {
                         if (IdentifierFormat.Match(StringValue)) Type = TokenType.Identifier;
-                        else throw new ParseException(CompileErrorType.WrongIdentifierFormat, this);
+                        else throw new CompileException(CompileErrorType.WrongIdentifierFormat, this);
                     }
                 }
             }
@@ -128,7 +128,7 @@ namespace Nevermind.Compiler
                 var chars = new List<int>();
                 CompileErrorType error;
                 if ((error = StringFormat.CheckEscapeSymbols(StringValue, out chars)) != 0)
-                    throw new ParseException(error, this);
+                    throw new CompileException(error, this);
 
                 Constant = new Constant(this, program, chars);
 

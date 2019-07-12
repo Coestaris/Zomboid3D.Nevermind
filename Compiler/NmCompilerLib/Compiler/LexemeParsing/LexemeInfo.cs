@@ -42,7 +42,7 @@ namespace Nevermind.Compiler.LexemeParsing
                     case LexemeType.Block:
                     case LexemeType.Unknown:
                     default:
-                        throw new ParseException(CompileErrorType.UnexpectedLexeme, tokens[0]);
+                        throw new CompileException(CompileErrorType.UnexpectedLexeme, tokens[0]);
                 }
             }
             else
@@ -70,7 +70,7 @@ namespace Nevermind.Compiler.LexemeParsing
                     case LexemeType.Block:
                     case LexemeType.Unknown:
                     default:
-                        throw new ParseException(CompileErrorType.UnexpectedLexeme, tokens[0]);
+                        throw new CompileException(CompileErrorType.UnexpectedLexeme, tokens[0]);
                 }
             }
         }
