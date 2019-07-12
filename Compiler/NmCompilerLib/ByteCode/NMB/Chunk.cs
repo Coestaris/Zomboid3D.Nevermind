@@ -17,7 +17,7 @@ namespace Nevermind.ByteCode.NMB
             Type = type;
         }
 
-        public byte[] ToBytes()
+        public byte[] Serialize()
         {
             var destOffset = 0;
             var data = _data.ToArray();

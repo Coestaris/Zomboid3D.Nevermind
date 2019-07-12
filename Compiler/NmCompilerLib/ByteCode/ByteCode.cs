@@ -346,32 +346,33 @@ namespace Nevermind.ByteCode
             return sb.ToString();
         }
 
-        public byte[] ToBinary()
+        public byte[] Serialize()
         {
-            var buffer = new List<byte>();
+            var chunks = new List<Chunk>();
+            chunks.Add(Header.GetHeaderChunk());
+            chunks.Add(Header.GetTypesChunk());
+            chunks.Add(Header.GetConstChunk());
 
-            buffer.AddRange(Codes.NMBSignature);
-            var count = (ushort)(
-                (Program.Metadata != null ? 1 : 0) + //Metadata chunk
-                (Program.SaveDebugInfo    ? 1 : 0) + //Debug chunk
-                3 +                                  //Header, Type, Const chunks
-                Instructions.Count);                 //Function chunks
-
-            buffer.AddRange(Chunk.UInt16ToBytes(count));
-            buffer.AddRange(Header.GetHeaderChunk().ToBytes());
-            buffer.AddRange(Header.GetTypesChunk().ToBytes());
-            buffer.AddRange(Header.GetConstChunk().ToBytes());
+            if(Program.ProgramGlobals.Count != 0)
+                chunks.Add(Header.GetGlobalsChunk());
 
             if(Program.Metadata != null)
-                buffer.AddRange(Program.Metadata.GetChunk().ToBytes());
+                chunks.Add(Program.Metadata.GetChunk());
 
             foreach (var instruction in Instructions)
             {
-                buffer.AddRange(instruction.GetChunk().ToBytes());
+                chunks.Add(instruction.GetChunk());
             }
 
             if(Program.SaveDebugInfo)
-                buffer.AddRange(Header.GetDebugChunk().ToBytes());
+                chunks.Add(Header.GetDebugChunk());
+
+
+            var buffer = new List<byte>();
+            buffer.AddRange(Codes.NMBSignature);
+            buffer.AddRange(Chunk.UInt16ToBytes((ushort)chunks.Count));
+            foreach (var chunk in chunks)
+                buffer.AddRange(chunk.Serialize());
 
             return buffer.ToArray();
         }
@@ -380,7 +381,7 @@ namespace Nevermind.ByteCode
         {
             using (var f = new FileStream(fileName, FileMode.Create, FileAccess.Write))
             {
-                var buffer = ToBinary();
+                var buffer = Serialize();
                 f.Write(buffer, 0, buffer.Length);
             }
         }

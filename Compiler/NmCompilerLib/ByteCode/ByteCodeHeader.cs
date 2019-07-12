@@ -219,40 +219,48 @@ namespace Nevermind.ByteCode
         public Chunk GetGlobalsChunk()
         {
             var ch = new Chunk(ChunkType.GLOBALS);
+            ch.Add(UsedGlobals.Count);
+
+            foreach (var global in UsedGlobals)
+                ch.Add(GetTypeIndex(global.Type));
+
+            foreach (var global in UsedGlobals)
+                ch.Add(global.ConstIndex);
+
             return ch;
         }
 
         public Chunk GetHeaderChunk()
         {
             var ch = new Chunk(ChunkType.HEAD);
-            ch.Data.AddRange(Chunk.UInt16ToBytes(Codes.CurrentNMVersion));
+            ch.Add(Codes.CurrentNMVersion);
 
             if(Program.Source.FileName == null)
-                ch.Data.AddRange(new byte[16]);
+                ch.Add(new byte[16]);
             else
             {
                 using (var md5 = MD5.Create())
                 {
                     using (var stream = File.OpenRead(Program.Source.FileName))
                     {
-                        ch.Data.AddRange(md5.ComputeHash(stream));
+                        ch.Add(md5.ComputeHash(stream));
                     }
                 }
             }
 
-            ch.Data.AddRange(Chunk.Int32ToBytes(Program.Imports.Count));
-            ch.Data.AddRange(Chunk.Int32ToBytes(Program.ByteCode.Instructions.Count));
+            ch.Add(Program.Imports.Count);
+            ch.Add(Program.ByteCode.Instructions.Count);
 
             if(Program.EntrypointFunction == null)
-                ch.Data.AddRange(Chunk.Int32ToBytes(-1));
+                ch.Add(-1);
             else
-                ch.Data.AddRange(Chunk.Int32ToBytes(Program.EntrypointFunction.Index));
+                ch.Add(Program.EntrypointFunction.Index);
 
             foreach (var import in Program.Imports)
             {
-                ch.Data.Add(import.Library ? (byte)1 : (byte)0);
-                ch.Data.AddRange(Chunk.Int32ToBytes(import.Name.Length));
-                ch.Data.AddRange(import.Name.Select(p => (byte)p));
+                ch.Add(import.Library ? (byte)1 : (byte)0);
+                ch.Add(import.Name.Length);
+                ch.Add(import.Name.Select(p => (byte)p));
             }
 
             return ch;
@@ -264,26 +272,26 @@ namespace Nevermind.ByteCode
             if (Program.Source.FileName != null)
             {
                 var name = new FileInfo(Program.Source.FileName).FullName;
-                ch.Data.AddRange(Chunk.Int32ToBytes(name.Length));
-                ch.Data.AddRange(name.Select(p => (byte) p));
+                ch.Add(name.Length);
+                ch.Add(name.Select(p => (byte) p));
             }
             else
             {
-                ch.Data.AddRange(Chunk.Int32ToBytes(0));
+                ch.Add(0);
             }
 
             foreach (var func in Program.Functions)
             {
-                ch.Data.AddRange(Chunk.Int32ToBytes(func.Name.Length));
-                ch.Data.AddRange(func.Name.Select(p => (byte)p));
-                ch.Data.AddRange(Chunk.Int32ToBytes(func.Token.LineIndex));
-                ch.Data.AddRange(Chunk.Int32ToBytes(func.Token.LineOffset));
+                ch.Add(func.Name.Length);
+                ch.Add(func.Name.Select(p => (byte)p));
+                ch.Add(func.Token.LineIndex);
+                ch.Add(func.Token.LineOffset);
                 foreach (var variable in func.LocalVariables)
                 {
-                    ch.Data.AddRange(Chunk.Int32ToBytes(variable.Name.Length));
-                    ch.Data.AddRange(variable.Name.Select(p => (byte)p));
-                    ch.Data.AddRange(Chunk.Int32ToBytes(variable.Token.LineIndex));
-                    ch.Data.AddRange(Chunk.Int32ToBytes(variable.Token.LineOffset));
+                    ch.Add(variable.Name.Length);
+                    ch.Add(variable.Name.Select(p => (byte)p));
+                    ch.Add(variable.Token.LineIndex);
+                    ch.Add(variable.Token.LineOffset);
                 }
             }
             return ch;
@@ -292,11 +300,11 @@ namespace Nevermind.ByteCode
         public Chunk GetTypesChunk()
         {
             var ch = new Chunk(ChunkType.TYPE);
-            ch.Data.AddRange(Chunk.Int32ToBytes(UsedTypes.Count));
+            ch.Add(UsedTypes.Count);
             foreach (var type in UsedTypes)
             {
-                ch.Data.AddRange(Chunk.Int16ToBytes(Codes.TypeIdDict[type.Type.ID]));
-                ch.Data.Add((byte)type.Type.GetBase());
+                ch.Add(Codes.TypeIdDict[type.Type.ID]);
+                ch.Add((byte)type.Type.GetBase());
             }
             return ch;
         }
@@ -304,14 +312,14 @@ namespace Nevermind.ByteCode
         public Chunk GetConstChunk()
         {
             var ch = new Chunk(ChunkType.CONST);
-            ch.Data.AddRange(Chunk.Int32ToBytes(UsedConstants.Count));
+            ch.Add(UsedConstants.Count);
             foreach (var constant in UsedConstants)
             {
-                ch.Data.AddRange(Chunk.Int32ToBytes(GetTypeIndex(constant.Constant.ToProgramType())));
-                ch.Data.AddRange(constant.Constant.Type == ConstantType.String
-                    ? Chunk.Int32ToBytes(constant.Constant.SValue.Count)
-                    : Chunk.Int32ToBytes(1));
-                ch.Data.AddRange(constant.Constant.Serialize());
+                ch.Add(GetTypeIndex(constant.Constant.ToProgramType()));
+                ch.Add(constant.Constant.Type == ConstantType.String
+                    ? constant.Constant.SValue.Count : 1);
+
+                ch.Add(constant.Constant.Serialize());
             }
             return ch;
         }
