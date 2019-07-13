@@ -3,7 +3,7 @@
  */
 
 //import systypes;
-//import io;
+import io;
 
 var a : integer;
 var b : integer;

@@ -18,7 +18,7 @@ namespace Nevermind.ByteCode.Functions
     {
         public readonly int Scope;
         public readonly Type Type;
-        public readonly string Name;
+        public string Name;
         public int Index;
 
         public readonly Token Token;

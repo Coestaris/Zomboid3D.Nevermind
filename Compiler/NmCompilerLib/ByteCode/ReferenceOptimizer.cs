@@ -23,7 +23,7 @@ namespace Nevermind.ByteCode
 
         private static void FixRegistersIndexes(ByteCode byteCode, FunctionInstructions function)
         {
-            var index = function.Locals.Count + byteCode.Header.UsedGlobals.Count;
+            var index = function.Locals.Count + byteCode.Program.ProgramGlobals.Count;
             foreach (var register in function.Registers)
             {
                 foreach (var instruction in function.Instructions)
@@ -53,7 +53,8 @@ namespace Nevermind.ByteCode
                     if(usedVariables.Count == 0)
                         continue;
 
-                    var usedRegisters = usedVariables.FindAll(p => p.Index >= function.Locals.Count);
+                    var usedRegisters = usedVariables.FindAll(p => p.Index >= function.Locals.Count
+                                                                   + function.Function.Program.ProgramGlobals.Count);
 
                     //uses at least one register
                     if(usedRegisters.Count == 0)

@@ -141,7 +141,8 @@ namespace Nevermind
                 ByteCode.Proceed();
                 EndMeasureTime(ElapsedTimeType.Expanding);
 
-                if (!DisableOptimization)
+                //Optimizing only main files
+                if (!DisableOptimization && EntrypointFunction != null)
                 {
                     StartMeasureTime();
                     ByteCode.Optimize();

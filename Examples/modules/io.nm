@@ -1,13 +1,15 @@
 module io;
-
 import systypes;
 
 initialization function init()
 {
 }
 
+var global : integer;
+
 finalization function fin()
 {
+    var v : integer = 4 * 1 + 99o + global;
 }
 
 private function real inc(param : real)

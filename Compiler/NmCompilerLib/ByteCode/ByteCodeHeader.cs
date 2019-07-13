@@ -20,7 +20,6 @@ namespace Nevermind.ByteCode
 
         public List<NumeratedType> UsedTypes;
         public List<NumeratedConstant> UsedConstants;
-        public List<Variable> UsedGlobals;
 
         public List<FunctionInstructions> EmbeddedFunctions;
 
@@ -36,9 +35,7 @@ namespace Nevermind.ByteCode
             UsedTypes = program.UsedTypes.Distinct().Select(p => new NumeratedType(typeIndex++, p)).ToList();
 
             var varCounter = 0;
-            UsedGlobals = new List<Variable>();
-            UsedGlobals.AddRange(program.ProgramGlobals);
-            UsedGlobals.ForEach(p => p.Index = varCounter++);
+            program.ProgramGlobals.ForEach(p => p.Index = varCounter++);
 
             EmbeddedFunctions = new List<FunctionInstructions>();
         }
@@ -90,10 +87,11 @@ namespace Nevermind.ByteCode
             return null;
         }
 
-        private void EmbedFunction(FunctionInstructions function, Token nearToken)
+        public void EmbedFunction(FunctionInstructions function, Token nearToken)
         {
             EmbeddedFunctions.Add(function);
-            function.Function.Index = Program.Functions.Count + EmbeddedFunctions.Count;
+            function.Function.Index = Program.Functions.Count + EmbeddedFunctions.Count - 1;
+            function.Function.Name = $"_{function.Function.Program.Module.Name}_{function.Function.Name}";
 
             //merging types from locals
             foreach (var local in function.Locals)
@@ -122,6 +120,19 @@ namespace Nevermind.ByteCode
                         }
 
                         local.ConstIndex = index;
+                    }
+                    else
+                    {
+                        //is global
+                        if (instruction.Function.Program.ProgramGlobals.Contains(local))
+                        {
+                            local.Index = Program.ProgramGlobals.IndexOf(local);
+                        }
+                        else
+                        {
+                            local.Index =
+                                local.Index - function.Function.Program.ProgramGlobals.Count + Program.ProgramGlobals.Count;
+                        }
                     }
                 }
 
@@ -163,7 +174,7 @@ namespace Nevermind.ByteCode
 
         public Variable GetGlobalVariable(string name)
         {
-            return UsedGlobals.Find(p => p.Name == name);
+            return Program.ProgramGlobals.Find(p => p.Name == name);
         }
 
         public string ToSource()
@@ -201,13 +212,13 @@ namespace Nevermind.ByteCode
             sb.AppendLine("╚═╧═════════╧═════════╧═════╧══════════════════╝");
 
             counter = 0;
-            if (UsedGlobals.Count != 0)
+            if (Program.ProgramGlobals.Count != 0)
             {
-                sb.AppendFormat("\nGlobals count: {0}\n", UsedGlobals.Count);
+                sb.AppendFormat("\nGlobals count: {0}\n", Program.ProgramGlobals.Count);
                 sb.AppendLine("╔═╤═════════╤══════════╤══════════════╗");
                 sb.AppendLine("║#│  Index  │   Type   │   InitValue  ║");
                 sb.AppendLine("╟─┼─────────┼──────────┼──────────────╢");
-                foreach (var global in UsedGlobals)
+                foreach (var global in Program.ProgramGlobals)
                     sb.AppendFormat("║{0}│ {1, 3}     │ {2, 8} │      {3, 3}     ║\n", counter++, global.Index, global.Type.ID,
                         global.ConstIndex);
                 sb.AppendLine("╚═╧═════════╧══════════╧══════════════╝");
@@ -219,12 +230,12 @@ namespace Nevermind.ByteCode
         public Chunk GetGlobalsChunk()
         {
             var ch = new Chunk(ChunkType.GLOBALS);
-            ch.Add(UsedGlobals.Count);
+            ch.Add(Program.ProgramGlobals.Count);
 
-            foreach (var global in UsedGlobals)
+            foreach (var global in Program.ProgramGlobals)
                 ch.Add(GetTypeIndex(global.Type));
 
-            foreach (var global in UsedGlobals)
+            foreach (var global in Program.ProgramGlobals)
                 ch.Add(global.ConstIndex);
 
             return ch;

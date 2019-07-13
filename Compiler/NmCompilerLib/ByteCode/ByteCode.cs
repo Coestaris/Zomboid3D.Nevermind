@@ -193,7 +193,9 @@ namespace Nevermind.ByteCode
                         {
                             //Calculate expression
                             var expression = ((VarLexeme)lexeme).Expression;
-                            var storeResult = locals.Find(p => p.Index == ((VarLexeme)lexeme).Index).Variable;
+                            Console.WriteLine(((VarLexeme)lexeme).Index);
+                            var storeResult = locals.Find(p => p.Index ==
+                                                ((VarLexeme)lexeme).Index + Program.ProgramGlobals.Count).Variable;
 
                             Variable variable;
                             ExpressionToList(expression, lexeme, function, out variable, ref labelIndex, ref localVarIndex, ref regCount,
@@ -276,13 +278,68 @@ namespace Nevermind.ByteCode
             }
         }
 
+        private static List<FunctionInstructions> GetModuleFunctions(NmProgram program, bool init)
+        {
+            var result = new List<FunctionInstructions>();
+            foreach (var import in program.Imports)
+                result.AddRange(GetModuleFunctions(import.LinkedModule.Program, init));
+
+            if (program.IsModule)
+            {
+                if (init)
+                    result.Add(program.ByteCode.Instructions.Find(p =>
+                        p.Function == program.Module.InitializationFunc));
+                else
+                    result.Add(program.ByteCode.Instructions.Find(p =>
+                        p.Function == program.Module.FinalizationFunc));
+            }
+
+            return result;
+        }
+
+        private static List<Variable> GetModuleGlobals(NmProgram program)
+        {
+            var result = new List<Variable>();
+            foreach (var import in program.Imports)
+                result.AddRange(GetModuleGlobals(import.LinkedModule.Program));
+
+            if (program.IsModule)
+            {
+               result.AddRange(program.ProgramGlobals);
+               program.ProgramGlobals.ForEach(p => p.Name = $"__{program.Module.Name}_{p.Name}");
+            }
+
+            return result;
+        }
+
         public void Proceed()
         {
+            //embed all module init and fin functions
+            List<FunctionInstructions> inits = null;
+            List<FunctionInstructions> fins  = null;
+            if (Program.EntrypointFunction != null)
+            {
+                //embed module globals
+                Program.ProgramGlobals.AddRange(GetModuleGlobals(Program));
+
+                inits = GetModuleFunctions(Program, true);
+                fins = GetModuleFunctions(Program, false);
+                foreach (var function in inits)
+                    Header.EmbedFunction(function, function.Function.Token);
+                foreach (var function in fins)
+                    Header.EmbedFunction(function, function.Function.Token);
+            }
+
             Instructions = new List<FunctionInstructions>();
             foreach (var function in Program.Functions)
             {
                 var labelIndex = 0;
                 var instructionSet = new FunctionInstructions(function);
+
+                if (function.Modifier == FunctionModifier.Entrypoint)
+                    foreach (var initFunction in inits)
+                        instructionSet.Instructions.Add(
+                            new InstructionCall(initFunction.Function, function, this, labelIndex));
 
                 var localVarIndex = Program.ProgramGlobals.Count;
 
@@ -290,8 +347,8 @@ namespace Nevermind.ByteCode
 
                 if (function.Parameters.Count != 0)
                 {
-                    var parametrers = function.Parameters.Select(p => new Variable(p.Type, p.Name, function.Scope, p.CodeToken, localVarIndex++, VariableType.Variable));
-                    locals.AddRange(parametrers.Select(p => new NumeratedVariable(p.Index, p)));
+                    var parameters = function.Parameters.Select(p => new Variable(p.Type, p.Name, function.Scope, p.CodeToken, localVarIndex++, VariableType.Variable));
+                    locals.AddRange(parameters.Select(p => new NumeratedVariable(p.Index, p)));
                 }
                 
                 foreach (var local in locals)
@@ -312,6 +369,11 @@ namespace Nevermind.ByteCode
                 GetInstructionList(function.RawLexeme, function, ref localVarIndex, ref regCount, ref labelIndex,
                     registers, instructionSet, locals);
 
+                if (function.Modifier == FunctionModifier.Entrypoint)
+                    foreach (var initFunction in fins)
+                        instructionSet.Instructions.Add(
+                            new InstructionCall(initFunction.Function, function, this, labelIndex));
+
                 instructionSet.Instructions.Add(new InstructionRet(function, this, labelIndex++));
 
                 instructionSet.Registers = registers;
@@ -331,13 +393,19 @@ namespace Nevermind.ByteCode
             foreach (var instruction in Instructions)
             {
                 sb.AppendFormat("\nFunction: {0} ({1})\n", instruction.Function.Name, instruction.Function.Index);
-                sb.AppendFormat("Has {0} locals \n", instruction.Locals.Count);
-                foreach (var local in instruction.Locals)
-                    sb.AppendFormat("  {0}. Type: {1}\n", local.Index, Header.GetTypeIndex(local.Type));
+                if (instruction.Locals.Count != 0)
+                {
+                    sb.AppendFormat("Has {0} locals \n", instruction.Locals.Count);
+                    foreach (var local in instruction.Locals)
+                        sb.AppendFormat("  {0}. Type: {1}\n", local.Index, Header.GetTypeIndex(local.Type));
+                }
 
-                sb.AppendFormat("Has {0} registers\n", instruction.Registers.Count);
-                foreach (var register in instruction.Registers)
-                    sb.AppendFormat("  {0}. Type: {1}\n", register.Index, Header.GetTypeIndex(register.Type));
+                if (instruction.Registers.Count != 0)
+                {
+                    sb.AppendFormat("Has {0} registers\n", instruction.Registers.Count);
+                    foreach (var register in instruction.Registers)
+                        sb.AppendFormat("  {0}. Type: {1}\n", register.Index, Header.GetTypeIndex(register.Type));
+                }
 
                 sb.AppendLine("ASM: ");
                 sb.AppendLine(string.Join("\n", instruction.Instructions.Select(p => p.ToSource()).ToList()));

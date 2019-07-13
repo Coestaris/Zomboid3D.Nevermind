@@ -9,8 +9,8 @@ namespace Nevermind.ByteCode.Functions
 {
     internal class Function
     {
-        public readonly string Name;
         public readonly BlockLexeme RawLexeme;
+        public string Name;
         public FunctionModifier Modifier;
         public Token Token;
 
@@ -42,7 +42,10 @@ namespace Nevermind.ByteCode.Functions
         {
             LocalVariables = new List<Variable>();
             CompileError error = null;
-            int index = Program.ProgramGlobals.Count;
+
+            //int index = Program.ProgramGlobals.Count;
+            int index = 0; //hm....
+
             ResolveLocals(RawLexeme, out error, ref index);
             if (error != null)
                 return error;
