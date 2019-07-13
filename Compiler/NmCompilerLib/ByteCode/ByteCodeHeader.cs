@@ -124,6 +124,7 @@ namespace Nevermind.ByteCode
                     else
                     {
                         //is global
+                        if (local.IndexFixed) continue;
                         if (instruction.Function.Program.ProgramGlobals.Contains(local))
                         {
                             local.Index = Program.ProgramGlobals.IndexOf(local);
@@ -133,6 +134,8 @@ namespace Nevermind.ByteCode
                             local.Index =
                                 local.Index - function.Function.Program.ProgramGlobals.Count + Program.ProgramGlobals.Count;
                         }
+
+                        local.IndexFixed = true;
                     }
                 }
 

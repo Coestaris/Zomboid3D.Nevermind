@@ -54,7 +54,7 @@ namespace Nevermind.ByteCode
                         continue;
 
                     var usedRegisters = usedVariables.FindAll(p => p.Index >= function.Locals.Count
-                                                                   + function.Function.Program.ProgramGlobals.Count);
+                                                                   + byteCode.Program.ProgramGlobals.Count);
 
                     //uses at least one register
                     if(usedRegisters.Count == 0)

@@ -28,6 +28,8 @@ namespace Nevermind.ByteCode.Functions
         public int ConstIndex = -1;
         public List<Variable> Tuple;
 
+        public bool IndexFixed;
+
         public Variable(Type type, string name, int scope, Token token, int index, VariableType variableType, int constIndex = -1)
         {
             Type = type;
