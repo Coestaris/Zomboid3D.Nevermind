@@ -51,6 +51,8 @@ typedef struct _nmEnvironment
     time_t execStartTime;
     time_t execEndTime;
 
+    void** globals;
+
 } nmEnvironment_t;
 
 void setDefaultValue(void* var, nmType_t* type);

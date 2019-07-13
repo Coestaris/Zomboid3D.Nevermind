@@ -3,15 +3,17 @@
  */
 
 //import systypes;
-import io;
+//import io;
 
 var a : integer;
 var b : integer;
 
 entrypoint function integer main()
 {
-    var c : integer = 55;
-    c = a * 3 - 1 + b;
+    a = 5;
 
-    var l : real = 4;
+    var c : integer = 55;
+    c = a * 3 - 1;
+
+  //  var l : real = 4;
 }

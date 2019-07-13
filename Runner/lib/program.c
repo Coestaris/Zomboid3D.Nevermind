@@ -147,6 +147,11 @@ void nmProgramPrint(nmProgram_t* program, FILE* f)
     if(program->sourceFilename)
         fprintf(f, "Source FileName: %s\n", program->sourceFilename);
 
+    fprintf(f, "Source hash: ");
+    for(size_t i = 0; i < sizeof(program->sourceHash); i++)
+        fprintf(f, "%X ", program->sourceHash[i]);
+    fputc('\n', f);
+
     fprintf(f, "Metadata: ");
     if(program->metadata == NULL)
         fprintf(f, "none");

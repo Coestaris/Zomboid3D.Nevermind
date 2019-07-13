@@ -143,6 +143,14 @@ int getFuncIndexByType(nmType_t* type)
     return -1;
 }
 
+nmType_t* getTypeByIndex(nmCallableFunction_t* func, nmProgram_t* program, uint64_t index)
+{
+    if(index < program->globalsCount)
+        return program->usedTypes[program->globalsTypes[index]];
+    else
+        return func->localTypes[index - program->globalsCount];
+}
+
 instructionFunction_t getInstructionFunction(nmCallableFunction_t* func, nmProgram_t* program, nmInstruction_t* instr)
 {
     nmInstructionData_t* data = instr->dataPtr;
@@ -159,7 +167,7 @@ instructionFunction_t getInstructionFunction(nmCallableFunction_t* func, nmProgr
         {
             //var
             uint64_t variableIndex = instr->parameters[1];
-            return data->function[getFuncIndexByType(func->localTypes[variableIndex])];
+            return data->function[getFuncIndexByType(getTypeByIndex(func, program, variableIndex))];
         }
         else
         {
@@ -172,11 +180,14 @@ instructionFunction_t getInstructionFunction(nmCallableFunction_t* func, nmProgr
     //cast
     if(data->index == 0x8)
     {
-        uint64_t index1 = getFuncIndexByType(func->localTypes[instr->parameters[0]]);
+        uint64_t index1 = data->function[getFuncIndexByType(getTypeByIndex(func, program, instr->parameters[0]))];
         uint64_t index2;
         uint64_t flag = instr->parameters[1];
-        if(!flag) //var
-            index2 = getFuncIndexByType(func->localTypes[instr->parameters[2]]);
+        if(!flag)
+        {
+            //var
+            index2 = data->function[getFuncIndexByType(getTypeByIndex(func, program, instr->parameters[2]))];
+        }
         else //const
             index2 = getFuncIndexByType(program->constants[instr->parameters[2]]->typePtr);
 
@@ -184,7 +195,7 @@ instructionFunction_t getInstructionFunction(nmCallableFunction_t* func, nmProgr
     }
 
     uint64_t variableIndex = instr->parameters[0];
-    return data->function[getFuncIndexByType(func->localTypes[variableIndex])];
+    return data->function[getFuncIndexByType(getTypeByIndex(func, program, variableIndex))];
 }
 
 void nmEnvDump(nmEnvironment_t* env, FILE* f)
@@ -266,6 +277,10 @@ nmEnvironment_t* nmEnvCreate(nmProgram_t* program)
     env->variableStack = createStack();
     env->callableFunctions = malloc(sizeof(nmCallableFunction_t*) * program->funcCount);
 
+    env->globals = malloc(sizeof(void*) * program->globalsCount);
+    for(size_t i = 0; i < program->globalsCount; i++)
+        env->globals[i] = malloc(sizeof(program->globalsTypes[i]));
+
     for(size_t i = 0; i < program->funcCount; i++)
     {
         void** locals = malloc(sizeof(void*) * (program->functions[i]->localsCount + program->functions[i]->regCount));
@@ -324,16 +339,20 @@ nmEnvironment_t* nmEnvCreate(nmProgram_t* program)
                     }
                     case varIndex:
                     {
+                        //could be local or global
+                        uint64_t index = program->functions[i]->instructions[instrIndex]->parameters[parameterIndex];
                         env->callableFunctions[i]->callableInstructions[instrIndex]->parameters[counter++] =
-                                locals[program->functions[i]->instructions[instrIndex]->parameters[parameterIndex]];
+                                index < program->globalsCount ? env->globals[index] : locals[index - program->globalsCount];
                         break;
                     }
                     case varConstIndex:
                     {
                         if(varConstFlagValue == 0)
                         {
+                            //could be local or global
+                            uint64_t index = program->functions[i]->instructions[instrIndex]->parameters[parameterIndex];
                             env->callableFunctions[i]->callableInstructions[instrIndex]->parameters[counter++] =
-                                    locals[program->functions[i]->instructions[instrIndex]->parameters[parameterIndex]];
+                                    index < program->globalsCount ? env->globals[index] : locals[index - program->globalsCount];
                         }
                         else
                         {
