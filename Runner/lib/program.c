@@ -198,6 +198,31 @@ void nmProgramPrint(nmProgram_t* program, FILE* f)
                 nmTypeSignatureToStr(program->usedTypes[i]->typeSignature),
                 program->usedTypes[i]->typeBase * 8);
     }
+
+    fprintf(f, "Globals (%i): ", program->globalsCount);
+    if(program->sourceFilename)
+    {
+        fputc('\n', f);
+        for (size_t i = 0; i < program->globalsCount; i++)
+        {
+            fprintf(f, "  - \"%s\" at %i:%i of type %i%s\n",
+                    program->globalsNames[i],
+                    program->globalsSourceLineIndices[i],
+                    program->globalsSourceCharIndices[i],
+                    program->globalsTypes[i],
+                    i == program->functions[i]->localsCount - 1 ? "\n" : ", ");
+        }
+    }
+    else
+    {
+        for (size_t i = 0; i < program->globalsCount; i++)
+        {
+            fprintf(f, "%i%s",
+                    program->globalsTypes[i],
+                    i == program->functions[i]->localsCount - 1 ? "\n" : ", ");
+        }
+    }
+
     fprintf(f, "Functions (%i): \n", program->funcCount);
     for(size_t i = 0; i < program->funcCount; i++)
     {

@@ -82,7 +82,8 @@ typedef struct _nmConstant
 typedef struct _nmProgram
 {
     uint16_t nmVersion;
-    
+    uint8_t sourceHash[16];
+
     uint32_t funcCount;
     nmFunction_t** functions;
 
@@ -98,6 +99,14 @@ typedef struct _nmProgram
 
     uint32_t constantCount;
     nmConstant_t** constants;
+
+    uint32_t globalsCount;
+    uint32_t* globalsTypes;
+
+    //Debug info
+    char** globalsNames;
+    uint32_t* globalsSourceLineIndices;
+    uint32_t* globalsSourceCharIndices;
 
     //Debug info
     char* sourceFilename;

@@ -1,0 +1,26 @@
+module systypes;
+
+initialization function init()
+{
+}
+
+finalization function fin()
+{
+}
+
+[syscall: print, s]
+public function prints(s : string) { syscall; }
+
+[syscall: println, s]
+public function prints(s : string) { syscall; }
+
+[syscall: sqrt, r]
+public function real sqrt(r : real) { syscall; }
+
+[syscall: pow, a, b]
+public function real pow(a : real, b : real) { syscall; }
+
+public function real sqrtn(a : real, n : real)
+{
+   return pow(a, 1 / n);
+}

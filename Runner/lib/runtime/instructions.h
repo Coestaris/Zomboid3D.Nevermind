@@ -114,7 +114,7 @@ static nmInstructionData_t instructionsData[totalInstructionsCount] =
         { "pop",        0x3,  { varIndex, 0, 0, 0, 0 },                         enumerateFunc(instruction_pop)   }, // pop
         { "ldi",        0x4,  { varIndex, varConstFlag, varConstIndex, 0, 0 },  enumerateFunc(instruction_ldi)   }, // ldi
         { "jmp",        0x5,  { jumpIndex, 0, 0, 0, 0 },                        enumerateFunc(instruction_jmp)   }, // jmp
-        { "call",       0x6,  { functionIndex, 0, 0, 0, 0 },                    enumerateFunc(instruction_call)  }, // call
+        { "call",       0x6,  { functionIndex, functionIndex, 0, 0, 0 },        enumerateFunc(instruction_call)  }, // call
         { "breq",       0x7,  { varConstFlag, varConstIndex, jumpIndex, 0, 0 }, enumerateFunc(instruction_breq)  }, // breq,
         { "cast",       0x8,  { varIndex, varConstFlag, varConstIndex, 0, 0 },  {}                               }, // breq
 

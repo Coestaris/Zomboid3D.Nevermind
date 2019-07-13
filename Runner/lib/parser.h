@@ -30,8 +30,9 @@ uint8_t chunkhandler_types(nmProgram_t*, FILE*);
 uint8_t chunkhandler_constants(nmProgram_t*, FILE*);
 uint8_t chunkhandler_functions(nmProgram_t*, FILE*);
 uint8_t chunkhandler_debug(nmProgram_t*, FILE*);
+uint8_t chunkhandler_globals(nmProgram_t*, FILE*);
 
-#define chunkHanldersCount 6
+#define chunkHanldersCount 7
 static const chunkHanlder_t chunkHanlders[chunkHanldersCount] = 
 {
     { chunkhandler_header,    { 'H', 'E' }, 1, 1 },
@@ -40,6 +41,7 @@ static const chunkHanlder_t chunkHanlders[chunkHanldersCount] =
     { chunkhandler_constants, { 'C', 'O' }, 1, 1 },
     { chunkhandler_functions, { 'F', 'U' }, 1, 0 },
     { chunkhandler_debug,     { 'D', 'E' }, 1, 0 },
+    { chunkhandler_globals,   { 'G', 'L' }, 0, 1 },
 };
 
 uint16_t getChunkType(const  uint8_t array[2]);

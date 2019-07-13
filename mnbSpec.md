@@ -72,6 +72,11 @@
 ###### "DE" - Debug information (unique)
   * **4 bytes**: Source filename length (if compiled from text = 0)
   * **n bytes**: Source filename
+  <br>Globals info:
+     * **4 bytes**: Global name length
+     * **n bytes**: Global name
+     * **4 bytes**: Global definition line index
+     * **4 bytes**: Global definition char index
   <br>For every function in chunk order:
   * **4 bytes**: Function name length
   * **n bytes**: Function name

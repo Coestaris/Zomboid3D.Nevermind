@@ -99,7 +99,7 @@ nmProgram_t* nmParserLoad(FILE* file)
             return NULL;
         }
 
-        printf("[%li\\%i]: Found chunk %c%c\n", i + 1, chunkCount, type & 0xFF, (type >> 8) & 0xFF);
+        printf("[%li/%i]: Found chunk %c%c\n", i + 1, chunkCount, type & 0xFF, (type >> 8) & 0xFF);
 
 
         FILE* memStream = fmemopen(dataBuffer, len, "r");  
@@ -160,12 +160,15 @@ nmProgram_t* nmParserFromFile(const char* filename)
 uint8_t chunkhandler_header(nmProgram_t* program, FILE* file)
 {
     readValue(program->nmVersion);
+
+    if(fread(program->sourceHash, sizeof(uint8_t) * 16, 1, file) != 1) return 0;
+
     readValue(program->importCount);
     readValue(program->funcCount);
     readValue(program->entryPointFuncIndex);
 
-    program->imports = malloc(sizeof(nmImport_t) * program->importCount);
-    program->functions = malloc(sizeof(nmFunction_t) * program->funcCount);
+    program->imports = malloc(sizeof(nmImport_t*) * program->importCount);
+    program->functions = malloc(sizeof(nmFunction_t*) * program->funcCount);
 
     for(size_t i = 0; i < program->importCount; i++)
     {
@@ -295,6 +298,17 @@ uint8_t chunkhandler_functions(nmProgram_t* program, FILE* file)
 uint8_t chunkhandler_debug(nmProgram_t* program, FILE* file)
 {
     readStr(program->sourceFilename, uint32_t);
+
+    program->globalsNames = malloc(sizeof(char*) * program->globalsCount);
+    program->globalsSourceLineIndices = malloc(sizeof(uint32_t) * program->globalsCount);
+    program->globalsSourceCharIndices = malloc(sizeof(uint32_t) * program->globalsCount);
+    for(size_t i = 0; i < program->globalsCount; i++)
+    {
+        readStr  (program->globalsNames[i], uint32_t);
+        readValue(program->globalsSourceLineIndices[i]);
+        readValue(program->globalsSourceCharIndices[i]);
+    }
+
     for(size_t i = 0; i < program->funcCount; i++)
     {
         readStr(program->functions[i]->name, uint32_t);
@@ -312,4 +326,14 @@ uint8_t chunkhandler_debug(nmProgram_t* program, FILE* file)
         }
     }
     return 1;
+}
+
+uint8_t chunkhandler_globals(nmProgram_t* program, FILE* file)
+{
+    readValue(program->globalsCount);
+    program->globalsTypes = malloc(sizeof(uint32_t) * program->globalsCount);
+    for(size_t i = 0; i < program->globalsCount; i++)
+    {
+        readValue(program->globalsTypes[i]);
+    }
 }

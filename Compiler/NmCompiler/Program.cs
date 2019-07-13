@@ -101,7 +101,7 @@ namespace NevermindCompiler
         {
             try
             {
-                var obj = JObject.Parse(File.ReadAllText(filename).ToLower());
+                var obj = JObject.Parse(File.ReadAllText(filename));
 
                 JToken name, descr, author, vers;
 

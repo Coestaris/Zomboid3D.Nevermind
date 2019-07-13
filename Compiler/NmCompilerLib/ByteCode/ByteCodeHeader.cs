@@ -218,13 +218,13 @@ namespace Nevermind.ByteCode
             if (Program.ProgramGlobals.Count != 0)
             {
                 sb.AppendFormat("\nGlobals count: {0}\n", Program.ProgramGlobals.Count);
-                sb.AppendLine("╔═╤═════════╤══════════╤══════════════╗");
-                sb.AppendLine("║#│  Index  │   Type   │   InitValue  ║");
-                sb.AppendLine("╟─┼─────────┼──────────┼──────────────╢");
+                sb.AppendLine("╔═╤═══════╤═════════════════╤══════╤══════════════╗");
+                sb.AppendLine("║#│ Index │       Name      │ Type │   InitValue  ║");
+                sb.AppendLine("╟─┼───────┼─────────────────┼──────┼──────────────╢");
                 foreach (var global in Program.ProgramGlobals)
-                    sb.AppendFormat("║{0}│ {1, 3}     │ {2, 8} │      {3, 3}     ║\n", counter++, global.Index, global.Type.ID,
-                        global.ConstIndex);
-                sb.AppendLine("╚═╧═════════╧══════════╧══════════════╝");
+                    sb.AppendFormat("║{0}│ {1, 3}   │ {2, 15} │ {3, 3}  │     {4, 3}      ║\n", counter++, global.Index,
+                        global.Name, GetTypeIndex(global.Type), global.ConstIndex);
+                sb.AppendLine("╚═╧═══════╧═════════════════╧══════╧══════════════╝");
             }
 
             return sb.ToString();
@@ -273,8 +273,17 @@ namespace Nevermind.ByteCode
             foreach (var import in Program.Imports)
             {
                 ch.Add(import.Library ? (byte)1 : (byte)0);
-                ch.Add(import.Name.Length);
-                ch.Add(import.Name.Select(p => (byte)p));
+                if (import.Library)
+                {
+                    ch.Add(import.Name.Length);
+                    ch.Add(import.Name.Select(p => (byte)p));
+                }
+                else
+                {
+                    ch.Add(import.FileName.Length);
+                    ch.Add(import.FileName.Select(p => (byte)p));
+                }
+
             }
 
             return ch;
@@ -292,6 +301,14 @@ namespace Nevermind.ByteCode
             else
             {
                 ch.Add(0);
+            }
+
+            foreach (var variable in Program.ProgramGlobals)
+            {
+                ch.Add(variable.Name.Length);
+                ch.Add(variable.Name.Select(p => (byte)p));
+                ch.Add(variable.Token.LineIndex);
+                ch.Add(variable.Token.LineOffset);
             }
 
             foreach (var func in Program.Functions)

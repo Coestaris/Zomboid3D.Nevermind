@@ -48,7 +48,6 @@ namespace Nevermind.Compiler.Semantics
             import = new Import
             {
                 Name = name,
-                Library = true,
                 FileName = fileName,
             };
 
@@ -85,6 +84,7 @@ namespace Nevermind.Compiler.Semantics
             if(!newProgram.IsModule)
                 return new CompileError(CompileErrorType.NotModuleImport, token);
 
+            Library = newProgram.Module.IsLibrary;
             //todo: library modules
             /*if (newProgram.Module.IsLibrary)
             {
