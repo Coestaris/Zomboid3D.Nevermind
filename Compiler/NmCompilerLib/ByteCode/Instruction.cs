@@ -38,7 +38,7 @@ namespace Nevermind.ByteCode
             if (variables == null) return result;
 
             if (index == -1)
-                return variables.Where(p => p.VariableType == VariableType.Variable).ToList();
+                return variables.Where(p => p.VariableType == VariableType.Variable || p.VariableType == VariableType.ArrayItem).ToList();
 
             if (index == -2)
             {
@@ -47,7 +47,8 @@ namespace Nevermind.ByteCode
             else
             {
                 return variables
-                    .Where(variable => variable.Index == index && variable.VariableType == VariableType.Variable)
+                    .Where(variable => variable.Index == index && variable.VariableType == VariableType.Variable ||
+                                       variable.VariableType == VariableType.ArrayItem)
                     .ToList();
             }
         }

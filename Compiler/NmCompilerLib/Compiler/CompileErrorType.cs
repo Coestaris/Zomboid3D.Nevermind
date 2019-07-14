@@ -51,6 +51,8 @@ namespace Nevermind.Compiler
         NotModuleImport,
         PrivateExportFunction,
         ModuleFunctionCall,
-        RecursiveImport
+        RecursiveImport,
+        ExpectedArrayType,
+        ExpectedIntegerIndex
     }
 }

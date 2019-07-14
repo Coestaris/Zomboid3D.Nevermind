@@ -258,11 +258,27 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
                     }
                     else if(item.Indexer != null)
                     {
+                        var array = GetVariable(locals, byteCode, item.Indexer);
 
+                        if(array.Type.ID != TypeID.Array)
+                            throw new CompileException(CompileErrorType.ExpectedArrayType, item.NearToken);
+
+                        var resultVar = new Variable((array.Type as ArrayType).ElementType, $"__reg{localVarIndex}", func.Scope,
+                            null, localVarIndex++, VariableType.ArrayItem);
+
+                        resultVar.Array = array;
+                        resultVar.ArrayItem = operand1;
+
+                        if(operand1.Type.ID != TypeID.Integer && operand1.Type.ID != TypeID.UInteger)
+                            throw new CompileException(CompileErrorType.ExpectedIntegerIndex, item.NearToken);
+
+                        registers.Add(resultVar);
+
+                        instructions.Add(new InstructionVget(resultVar, array, operand1, func, byteCode, -1));
                     }
                 }
 
-                if (item.FunctionCall == null)
+                if (item.FunctionCall == null && item.Indexer == null)
                 {
                     if (result.Error != null)
                         throw new CompileException(result.Error.ErrorType, item.NearToken);

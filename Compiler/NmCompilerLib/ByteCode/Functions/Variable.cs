@@ -12,6 +12,7 @@ namespace Nevermind.ByteCode.Functions
         Variable,
         LinkToConst,
         Tuple,
+        ArrayItem
     }
 
     internal class Variable
@@ -29,6 +30,9 @@ namespace Nevermind.ByteCode.Functions
         public List<Variable> Tuple;
 
         public bool IndexFixed;
+
+        public Variable Array;
+        public Variable ArrayItem;
 
         public Variable(Type type, string name, int scope, Token token, int index, VariableType variableType, int constIndex = -1)
         {
@@ -52,6 +56,8 @@ namespace Nevermind.ByteCode.Functions
                 return Index.ToString();
             else if (VariableType == VariableType.LinkToConst)
                 return $"^{ConstIndex}";
+            else if (VariableType == VariableType.ArrayItem)
+                return $"{Index} ({Array.ToSourceValue()}[{ArrayItem.ToSourceValue()}])";
             else
                 return $"tuple({string.Join(", ", Tuple.Select(p => p.ToSourceValue()))})";
         }
@@ -64,7 +70,7 @@ namespace Nevermind.ByteCode.Functions
         public IEnumerable<byte> Serialize()
         {
             var a = new List<byte>();
-            if(VariableType == VariableType.Variable)
+            if(VariableType == VariableType.Variable || VariableType == VariableType.ArrayItem)
             {
                 a.Add(0);
                 a.AddRange(Chunk.Int32ToBytes(Index));

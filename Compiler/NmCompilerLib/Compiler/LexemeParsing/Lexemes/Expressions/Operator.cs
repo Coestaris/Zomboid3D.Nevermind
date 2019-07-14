@@ -77,10 +77,10 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
             //if(!operands.A.Type.Equals(operands.B.Type))
             //return new OperatorResult(new CompileError(CompileErrorType.IncompatibleTypes, operands.A.Token));
 
-            if(operands.LineItem.Operand1 == null)
-                return new OperatorResult(new CompileError(CompileErrorType.WrongAssignmentOperation, operands.A.Token));
+            //if(operands.LineItem.Operand1 == null)
+            //    return new OperatorResult(new CompileError(CompileErrorType.WrongAssignmentOperation, operands.A.Token));
 
-            if (operands.A.VariableType != VariableType.Variable)
+            if (operands.A.VariableType != VariableType.Variable && operands.A.VariableType != VariableType.ArrayItem)
                 return new OperatorResult(new CompileError(CompileErrorType.WrongAssignmentOperation, operands.A.Token));
 
             if (!Type.CanCastAssignment(operands.A.Type, operands.B.Type))

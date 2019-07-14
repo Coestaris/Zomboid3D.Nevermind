@@ -44,6 +44,7 @@
     <Compile Include="ByteCode\Instructions\InstructionPush.cs" />
     <Compile Include="ByteCode\Instructions\InstructionPop.cs" />
     <Compile Include="ByteCode\Instructions\InstructionVget.cs" />
+    <Compile Include="ByteCode\Instructions\InstructionVset.cs" />
     <Compile Include="ByteCode\InstructionType.cs" />
     <Compile Include="ByteCode\InternalClasses\FunctionInstructions.cs" />
     <Compile Include="ByteCode\InternalClasses\NumberedVariable.cs" />

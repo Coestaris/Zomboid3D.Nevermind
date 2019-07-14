@@ -30,7 +30,9 @@ namespace Nevermind.ByteCode.NMB
                 { InstructionType.Jmp,  0x5 },
                 { InstructionType.Call, 0x6 },
                 { InstructionType.BrEq, 0x7 },
-                { InstructionType.Cast, 0x8 }
+                { InstructionType.Cast, 0x8 },
+                { InstructionType.Vget, 0x9 },
+                { InstructionType.Vset, 0xA }
             };
 
         public static readonly Dictionary<BinaryArithmeticInstructionType, UInt16> ABInstructionDict =

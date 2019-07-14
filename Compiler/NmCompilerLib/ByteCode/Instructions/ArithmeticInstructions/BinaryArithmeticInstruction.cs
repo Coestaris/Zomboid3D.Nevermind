@@ -18,7 +18,8 @@ namespace Nevermind.ByteCode.Instructions.ArithmeticInstructions
         public override int ParameterCount => 3;
 
         public override string SourceValue() =>
-              ToSourceValue(Result?.Index ?? -1,
+              ToSourceValue(
+                  Result?.ToSourceValue() ?? "-1",
                   Operand1.ToSourceValue(),
                   Operand2.ToSourceValue());
 
