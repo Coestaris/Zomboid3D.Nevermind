@@ -6,7 +6,7 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes
     internal class VarLexeme : Lexeme
     {
         public Token VarName;
-        public Token TypeName;
+        public List<Token> TypeTokens;
         public ExpressionLexeme Expression;
 
         public bool DeclarationOnly;
@@ -15,14 +15,16 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes
         public VarLexeme(List<Token> tokens) : base(tokens, LexemeType.Var, false)
         {
             VarName = tokens[1];
-            TypeName = tokens[3];
+            var index = tokens.FindIndex(p => p.Type == TokenType.EqualSign);
 
-            if (tokens.Count != 4)
+            if (index != -1)
             {
-                Expression = new ExpressionLexeme(tokens.Skip(5).Take(tokens.Count - 5).ToList());
+                TypeTokens = tokens.Skip(3).Take(index - 3).ToList();
+                Expression = new ExpressionLexeme(tokens.Skip(index + 1).ToList());
             }
             else
             {
+                TypeTokens = tokens.Skip(3).ToList();
                 DeclarationOnly = true;
             }
         }

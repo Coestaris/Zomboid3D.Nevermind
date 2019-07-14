@@ -2,18 +2,14 @@
  * Simple program example
  */
 
-//import systypes;
-//import io;
-
-var a : integer;
-var b : integer;
+//import arrays;
 
 entrypoint function integer main()
 {
-    a = 5;
+    var a : integer[];
 
-    var c : integer = 55;
-    c = a * 3 - 1;
-
-  //  var l : real = 4;
+    //a[0] = 5;
+    //a[0 + 1] = 5;
+    //a[1] = 4 * 51;
+    //a[2] = a[0] * 2 - 59;
 }

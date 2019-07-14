@@ -40,7 +40,7 @@ namespace Nevermind.Compiler
         {
             if (_tokenSplitCharacters != null) return;
 
-            _tokenSplitCharacters = new List<char> { '\n', ' ',  ';', '"', '}', '{', '(', ')', ':' };
+            _tokenSplitCharacters = new List<char> { '\n', ' ',  ';', '"', '}', '{', '(', ')', ':', '[', ']' };
             _tokenSplitCharacters.AddRange(Token.MathOperatorTokenType.GetFlags().Select(p => p.ToSource()[0]));
         }
 

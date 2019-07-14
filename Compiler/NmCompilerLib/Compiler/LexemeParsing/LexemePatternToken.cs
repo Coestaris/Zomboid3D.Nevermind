@@ -1,4 +1,7 @@
 using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.InteropServices;
+using Nevermind.Compiler.LexemeParsing.Lexemes;
 
 namespace Nevermind.Compiler.LexemeParsing
 {
@@ -34,7 +37,8 @@ namespace Nevermind.Compiler.LexemeParsing
                 {
                     if (!pattern[patternCounter].Greedy)
                     {
-                        if (patternCounter != pattern.Count - 1)
+                        //last or last required
+                        if (patternCounter != pattern.Count - 1 && pattern.Skip(patternCounter).All(p => p.Required))
                         {
                             TokenType tokenToSeek = pattern[patternCounter + 1].Type;
                             while (
@@ -100,7 +104,18 @@ namespace Nevermind.Compiler.LexemeParsing
                 }
             }
 
-            return (tokenCounter == tokens.Count && patternCounter == pattern.Count - 1);
+            var lastNotRequiredTokens = 0;
+            for (int i = pattern.Count - 1; i >= 0; i--)
+            {
+                if (!pattern[i].Required)
+                    lastNotRequiredTokens++;
+                else
+                    break;
+            }
+
+
+            return (tokenCounter == tokens.Count && patternCounter == pattern.Count - 1 ||
+                    tokenCounter == tokens.Count && patternCounter == pattern.Count - lastNotRequiredTokens);
         }
     }
 }

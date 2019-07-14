@@ -25,7 +25,7 @@ namespace Nevermind.Compiler
             var sb = new StringBuilder();
             sb.AppendFormat("Error: {0}", ErrorType);
 
-            sb.Append(Token.ToErrorValue());
+            sb.Append(Token?.ToErrorValue());
 
             if (DeclarationToken != null)
                 sb.AppendFormat(" declared{0}", DeclarationToken.ToErrorValue());

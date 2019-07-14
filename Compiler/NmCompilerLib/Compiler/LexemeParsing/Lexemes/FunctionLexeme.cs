@@ -7,10 +7,10 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes
 {
     internal class LexemeFunctionParameter
     {
-        public Token Type;
+        public List<Token> Type;
         public Token Name;
 
-        public LexemeFunctionParameter(Token type, Token name)
+        public LexemeFunctionParameter(List<Token> type, Token name)
         {
             Type = type;
             Name = name;
@@ -20,7 +20,7 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes
     internal class FunctionLexeme : ComplexLexeme
     {
         public Token Name;
-        public Token ReturnType;
+        public List<Token> ReturnType;
 
         public List<LexemeFunctionParameter> Parameters;
 
@@ -59,7 +59,7 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes
             {
                 //Has type and Name
                 Name = tokens[index + 1];
-                ReturnType = tokens[index].StringValue == "void" ? null : tokens[index];
+                //ReturnType = tokens[index].StringValue == "void" ? null : tokens[index];
                 index += 2;
             }
             else
@@ -100,7 +100,7 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes
                         if(token.Type != TokenType.Identifier)
                             throw new CompileException(CompileErrorType.UnexpectedToken, token);
                         parameterType = token;
-                        Parameters.Add(new LexemeFunctionParameter(parameterType, parameterName));
+                        //arameters.Add(new LexemeFunctionParameter(parameterType, parameterName));
                         state = 3;
                         break;
                     }

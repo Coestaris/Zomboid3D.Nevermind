@@ -9,13 +9,15 @@ namespace Nevermind.ByteCode.Types
     {
         public TypeID ID;
 
-        public static CompileError GetType(NmProgram program, Token name, out Type type)
+        public static CompileError GetType(NmProgram program, List<Token> name, out Type type)
         {
-            type = program.AvailableTypes.Find(p => p.Name == name.StringValue)?.Type;
+            /*type = program.AvailableTypes.Find(p => p.Name == name.StringValue)?.Type;
 
             if (type != null) program.UsedTypes.Add(type);
 
-            return type == null ? new CompileError(CompileErrorType.UnknownTypeName, name) : null;
+            return type == null ? new CompileError(CompileErrorType.UnknownTypeName, name) : null;*/
+            type = null;
+            return new CompileError(CompileErrorType.UnknownTypeName, null) ;
         }
 
         public virtual int GetBase() { return -1; }

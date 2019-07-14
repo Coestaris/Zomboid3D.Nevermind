@@ -127,7 +127,7 @@ namespace Nevermind.ByteCode.Functions
                     }
 
                     Type t;
-                    if ((error = Type.GetType(Program, varLexeme.TypeName, out t)) != null) { return; }
+                    if ((error = Type.GetType(Program, varLexeme.TypeTokens, out t)) != null) { return; }
                     LocalVariables.Add(new Variable(t, varLexeme.VarName.StringValue, parent.Scope, varLexeme.VarName, index++, VariableType.Variable));
                     varLexeme.Index = index - 1;
                 }

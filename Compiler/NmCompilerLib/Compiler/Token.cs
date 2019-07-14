@@ -57,6 +57,8 @@ namespace Nevermind.Compiler
             {":", TokenType.Colon},
             {"{", TokenType.BraceOpened},
             {"}", TokenType.BraceClosed},
+            {"[", TokenType.SquareBracketOpen},
+            {"]", TokenType.SquareBracketClosed},
             {"if", TokenType.IfKeyword},
             {"var", TokenType.VarKeyword},
             {"function", TokenType.FunctionKeyword},

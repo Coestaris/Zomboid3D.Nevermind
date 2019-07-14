@@ -332,7 +332,7 @@ namespace Nevermind.ByteCode
         {
             var ch = new Chunk(ChunkType.TYPE);
             ch.Add(UsedTypes.Count);
-            foreach (var type in UsedTypes)i f  fuOO asdasdasdsaddddddddddddqwedeqwedsa
+            foreach (var type in UsedTypes)
             {
                 ch.Add(Codes.TypeIdDict[type.Type.ID]);
                 ch.Add((byte)type.Type.GetBase());
