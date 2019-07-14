@@ -37,7 +37,6 @@ namespace Nevermind
         internal readonly List<Constant> Constants;
         internal readonly List<Function> Functions;
         internal readonly List<ByteCode.Types.Type> UsedTypes;
-        internal readonly  List<NamedType> AvailableTypes;
 
         private readonly Dictionary<ElapsedTimeType, TimeSpan> _time = new Dictionary<ElapsedTimeType, TimeSpan>();
         private DateTime _start;
@@ -87,7 +86,6 @@ namespace Nevermind
             Functions = new List<Function>();
 
             UsedTypes = new List<ByteCode.Types.Type>();
-            AvailableTypes = BuiltInTypes.Get();
             Imports = new List<Import>();
 
             Metadata = metadata;

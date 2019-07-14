@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Nevermind.Compiler;
 
 namespace Nevermind.ByteCode.Types
@@ -9,35 +10,53 @@ namespace Nevermind.ByteCode.Types
     {
         public TypeID ID;
 
-        public static CompileError GetType(NmProgram program, List<Token> name, out Type type)
-        {
-            /*type = program.AvailableTypes.Find(p => p.Name == name.StringValue)?.Type;
-
-            if (type != null) program.UsedTypes.Add(type);
-
-            return type == null ? new CompileError(CompileErrorType.UnknownTypeName, name) : null;*/
-            type = null;
-            return new CompileError(CompileErrorType.UnknownTypeName, null) ;
-        }
-
         public virtual int GetBase() { return -1; }
 
         public abstract List<byte> Serialize(object value);
+
+        public abstract bool Compare(Type type);
+
+        public abstract bool HasLength { get; }
+
+        public static CompileError GetType(NmProgram program, List<Token> tokens, out Type type)
+        {
+            type = null;
+
+            if (tokens[tokens.Count - 1].Type == TokenType.SquareBracketClosed &&
+                tokens[tokens.Count - 2].Type == TokenType.SquareBracketOpen)
+            {
+                Type innerType;
+                CompileError error;
+                if ((error = GetType(program, tokens.Take(tokens.Count - 2).ToList(), out innerType)) != null)
+                    return error;
+
+                type = new ArrayType(innerType);
+
+                program.UsedTypes.Add(type);
+                return null;
+            }
+            else
+            {
+                type = BuiltInTypes.Get().Find(p => p.Name == tokens[0].StringValue)?.Type;
+
+                if (type != null) program.UsedTypes.Add(type);
+
+                return type == null ? new CompileError(CompileErrorType.UnknownTypeName, tokens[0]) : null;
+            }
+        }
 
         public override bool Equals(object obj)
         {
             if (!(obj is Type)) return false;
 
             var type = (Type)obj;
-            return ID == type.ID && GetBase() == type.GetBase();
+            return ID == type.ID && Compare(type);
         }
 
         public override int GetHashCode()
         {
             return (int)ID * 100 + GetBase();
         }
-
-        public abstract bool HasLength { get; }
 
         public static bool operator ==(Type a, Type b)
         {
@@ -105,7 +124,7 @@ namespace Nevermind.ByteCode.Types
             }
         }
 
-        public static Type GetNumericType(bool signed, int typeBase)
+        private static Type GetNumericType(bool signed, int typeBase)
         {
             if(signed)
                 switch (typeBase)

@@ -10,8 +10,10 @@ namespace Nevermind.ByteCode
         Call,
         BrEq,
         Cast,
+        Vget,
+        Vset,
 
         _Unary,
-        _Binary
+        _Binary,
     }
 }

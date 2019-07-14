@@ -20,15 +20,19 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes
             Operator lastUnaryOperator = null;
             Token lastBracketClosed = null;
             Token lastFunctionCallToken = null;
+            Token lastIndexerToken = null;
 
             while(iterator.GetNext() != null)
             {
-                if (iterator.Current.Type == TokenType.BracketOpen)
+                if (iterator.Current.Type == TokenType.BracketOpen || iterator.Current.Type == TokenType.SquareBracketOpen)
                 {
                     var oldParent = lastParent;
                     lastParent = new ExpressionToken(null);
                     if (lastFunctionCallToken != null)
                         lastParent.UnaryFunction = lastFunctionCallToken;
+
+                    if (lastIndexerToken != null)
+                        lastParent.Indexer = lastIndexerToken;
 
                     lastParent.LOperator = lastOperator;
                     if (lastUnaryOperator != null)
@@ -44,13 +48,14 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes
                     first = true;
                     level++;
                 }
-                else if (iterator.Current.Type == TokenType.BracketClosed)
+                else if (iterator.Current.Type == TokenType.BracketClosed || iterator.Current.Type == TokenType.SquareBracketClosed)
                 {
                     if (lastParent.SubTokens.Count == 1 && lastParent.SubTokens[0].UnaryFunction == null)
                     {
                         lastParent.Parent.SubTokens.Remove(lastParent);
                         lastParent.Parent.SubTokens.Add(lastParent.SubTokens[0]);
                         lastParent.SubTokens[0].UnaryFunction = lastParent.UnaryFunction;
+                        lastParent.SubTokens[0].Indexer = lastParent.Indexer;
                         lastParent.SubTokens[0].UnaryOperators.AddRange(lastParent.UnaryOperators);
                         lastParent.SubTokens[0].LOperator = lastParent.LOperator;
                         lastParent.SubTokens[0].ROperator = lastParent.ROperator;
@@ -183,7 +188,8 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes
                             iterator.Current.Type == TokenType.Identifier)
                         {
                             if (iterator.Current.Type == TokenType.Number || iterator.Current.Type == TokenType.FloatNumber || iterator.Current.Type == TokenType.StringToken ||
-                               (iterator.Current.Type == TokenType.Identifier && iterator.Index != tokens.Count - 1 && tokens[iterator.Index + 1].Type != TokenType.BracketOpen) |
+                               (iterator.Current.Type == TokenType.Identifier && iterator.Index != tokens.Count - 1 &&
+                                tokens[iterator.Index + 1].Type != TokenType.BracketOpen && tokens[iterator.Index + 1].Type != TokenType.SquareBracketOpen) ||
                                (iterator.Current.Type == TokenType.Identifier && iterator.Index == tokens.Count - 1))
                             {
                                 if(!first && lastOperator == null && lastUnaryOperator == null)
@@ -202,8 +208,14 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes
                             if (iterator.Current.Type == TokenType.Identifier && iterator.Index != tokens.Count - 1 &&
                                 tokens[iterator.Index + 1].Type == TokenType.BracketOpen)
                                 lastFunctionCallToken = iterator.Current;
+                            else if (iterator.Current.Type == TokenType.Identifier && iterator.Index != tokens.Count - 1 &&
+                                tokens[iterator.Index + 1].Type == TokenType.SquareBracketOpen)
+                                lastIndexerToken = iterator.Current;
                             else
+                            {
                                 lastFunctionCallToken = null;
+                                lastIndexerToken = null;
+                            }
                         }
                         else
                         {
@@ -241,6 +253,25 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes
                     result.AddRange(ToList(ref resultIndex, token));
             }
 
+            //proceed indexers
+            foreach (var token in root.SubTokens)
+            {
+                if (token.Indexer != null)
+                {
+                    if (token.CalculatedIndex != -1)
+                    {
+                        result.Add(new ExpressionLineItem(null, token.CalculatedIndex, resultIndex, null, token.Indexer));
+                        result.Last().NearToken = token.UnaryFunction;
+                    }
+                    else
+                    {
+                        result.Add(new ExpressionLineItem(null, token, resultIndex, null, token.Indexer));
+                        result.Last().NearToken = token.UnaryFunction;
+                    }
+                    token.CalculatedIndex = resultIndex++;
+                }
+            }
+
             //function calls
             foreach (var token in root.SubTokens)
             {
@@ -248,12 +279,14 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes
                 {
                     if (token.CalculatedIndex != -1)
                     {
-                        result.Add(new ExpressionLineItem(null, token.CalculatedIndex, resultIndex, token.UnaryFunction));                        result.Last().NearToken = token.UnaryFunction;
+                        result.Add(new ExpressionLineItem(null,
+                            token.CalculatedIndex, resultIndex, token.UnaryFunction, null));
                         result.Last().NearToken = token.UnaryFunction;
                     }
                     else
                     {
-                        result.Add(new ExpressionLineItem(null, token, resultIndex, token.UnaryFunction));
+                        result.Add(new ExpressionLineItem(null,
+                            token, resultIndex, token.UnaryFunction, null));
                         result.Last().NearToken = token.UnaryFunction;
                     }
                     token.CalculatedIndex = resultIndex++;
@@ -267,12 +300,14 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes
                 {
                     if (token.CalculatedIndex != -1)
                     {
-                        result.Add(new ExpressionLineItem(token.UnaryOperators[0], token.CalculatedIndex, resultIndex, null));
+                        result.Add(new ExpressionLineItem(token.UnaryOperators[0],
+                            token.CalculatedIndex, resultIndex, null, null));
                         result.Last().NearToken = token.CodeToken;
                     }
                     else
                     {
-                        result.Add(new ExpressionLineItem(token.UnaryOperators[0], token, resultIndex, null));
+                        result.Add(new ExpressionLineItem(token.UnaryOperators[0],
+                            token, resultIndex, null, null));
                         result.Last().NearToken = token.CodeToken;
                     }
                     token.CalculatedIndex = resultIndex++;

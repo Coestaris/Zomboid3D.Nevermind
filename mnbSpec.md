@@ -117,18 +117,31 @@
 
 ###### cast (0x8):
    * **4 bytes**: dest variable index
-   * **1 bytes**: var type
+   * **1 byte** : var type
+   * **4 bytes**: src variable
+
+###### vget (0x9)
+   * **4 bytes**: dest variable index
+   * **4 bytes**: vector variable index
+   * **1 byte** : index var type
+   * **4 bytes**: index variable
+
+###### vset (0xA)
+   * **4 bytes**: vector variable index
+   * **1 byte** : index var type
+   * **4 bytes**: index variable
+   * **1 byte** : src var type
    * **4 bytes**: src variable
 
 ###### Any ab instruction (0x64 - 0x7E):
    * **4 bytes**: result index
-   * **1 byte**: operand1 type
+   * **1 byte** : operand1 type
    * **4 bytes**: operand1
-   * **1 byte**: operand2 type
+   * **1 byte** : operand2 type
    * **4 bytes**: operand2
 
 ###### Any au instruction(0x100 - 0x102):
    * **4 bytes**: result index
-   * **1 byte**: operand type
+   * **1 byte** : operand type
    * **4 bytes**: operand
 

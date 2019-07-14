@@ -13,6 +13,7 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
 
         public List<Operator> UnaryOperators;
         public Token UnaryFunction;
+        public Token Indexer;
 
         public int CalculatedIndex = -1;
 

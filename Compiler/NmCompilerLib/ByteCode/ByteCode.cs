@@ -193,6 +193,11 @@ namespace Nevermind.ByteCode
                         {
                             //Calculate expression
                             var expression = ((VarLexeme)lexeme).Expression;
+
+                            //declaration only
+                            if (expression == null)
+                                continue;
+
                             var storeResult = locals.Find(p => p.Index ==
                                                 ((VarLexeme)lexeme).Index + Program.ProgramGlobals.Count).Variable;
 

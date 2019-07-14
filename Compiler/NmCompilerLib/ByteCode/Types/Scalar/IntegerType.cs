@@ -16,6 +16,12 @@ namespace Nevermind.ByteCode.Types.Scalar
             TypeBase = typeBase;
         }
 
+        public override bool Compare(Type type)
+        {
+            var t = type as IntegerType;
+            return t.TypeBase == TypeBase && t.Signed == Signed;
+        }
+
         public long TrimValue(long l)
         {
             return l & ((2L << (TypeBase - 1 - (Signed ? 1 : 0))) - 1);

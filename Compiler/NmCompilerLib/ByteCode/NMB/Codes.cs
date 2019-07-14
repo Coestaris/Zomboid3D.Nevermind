@@ -16,7 +16,8 @@ namespace Nevermind.ByteCode.NMB
             { TypeID.Integer,  0x1 },
             { TypeID.UInteger, 0x2 },
             { TypeID.Float,    0x3 },
-            { TypeID.String,   0x4 }
+            { TypeID.String,   0x4 },
+            { TypeID.Array,    0x5 }
         };
 
         public static readonly Dictionary<InstructionType, UInt16> InstructionDict =

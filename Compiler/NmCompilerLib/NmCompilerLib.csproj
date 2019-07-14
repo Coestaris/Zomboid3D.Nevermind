@@ -43,6 +43,7 @@
     <Compile Include="ByteCode\Instructions\InstructionCast.cs" />
     <Compile Include="ByteCode\Instructions\InstructionPush.cs" />
     <Compile Include="ByteCode\Instructions\InstructionPop.cs" />
+    <Compile Include="ByteCode\Instructions\InstructionVget.cs" />
     <Compile Include="ByteCode\InstructionType.cs" />
     <Compile Include="ByteCode\InternalClasses\FunctionInstructions.cs" />
     <Compile Include="ByteCode\InternalClasses\NumberedVariable.cs" />
@@ -54,6 +55,7 @@
     <Compile Include="ByteCode\NMB\CRC32.cs" />
     <Compile Include="ByteCode\NumeratedConstant.cs" />
     <Compile Include="ByteCode\ReferenceOptimizer.cs" />
+    <Compile Include="ByteCode\Types\ArrayType.cs" />
     <Compile Include="ByteCode\Types\BuiltInTypes.cs" />
     <Compile Include="ByteCode\ByteCode.cs" />
     <Compile Include="ByteCode\ByteCodeHeader.cs" />

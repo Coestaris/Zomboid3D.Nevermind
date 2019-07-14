@@ -27,19 +27,20 @@ namespace Nevermind.Compiler
         };
 
         public const TokenType MathOperatorTokenType =
-            TokenType.PlusSign | TokenType.MinusSign | TokenType.MultiplySign | TokenType.DivideSign |
-            TokenType.EqualSign | TokenType.GreaterSign | TokenType.LessThanSign | TokenType.Tilda |
-            TokenType.AmpersandSign | TokenType.OrSign | TokenType.CircumflexSign | TokenType.PercentSign |
-            TokenType.QuestingSign | TokenType.ExclamationMark | TokenType.ComaSign;
+            TokenType.PlusSign      | TokenType.MinusSign       | TokenType.MultiplySign   | TokenType.DivideSign  |
+            TokenType.EqualSign     | TokenType.GreaterSign     | TokenType.LessThanSign   | TokenType.Tilda       |
+            TokenType.AmpersandSign | TokenType.OrSign          | TokenType.CircumflexSign | TokenType.PercentSign |
+            TokenType.QuestingSign  | TokenType.ExclamationMark | TokenType.ComaSign;
 
         public const TokenType MathExpressionTokenType =
-            MathOperatorTokenType | TokenType.BracketClosed | TokenType.BracketOpen | TokenType.Identifier |
-            TokenType.Number | TokenType.FloatNumber | TokenType.StringToken | TokenType.ComplexToken;
+            MathOperatorTokenType         | TokenType.BracketClosed     | TokenType.BracketOpen | TokenType.Identifier   |
+            TokenType.Number              | TokenType.FloatNumber       | TokenType.StringToken | TokenType.ComplexToken |
+            TokenType.SquareBracketClosed | TokenType.SquareBracketOpen;
 
         public const TokenType AnyTokenType =
-            MathExpressionTokenType | TokenType.ImportKeyword | TokenType.VarKeyword | TokenType.IfKeyword |
-            TokenType.FunctionKeyword | TokenType.Quote | TokenType.Semicolon | TokenType.Colon |
-            TokenType.BraceOpened | TokenType.BraceClosed | TokenType.ComplexToken;
+            MathExpressionTokenType   | TokenType.ImportKeyword | TokenType.VarKeyword   | TokenType.IfKeyword |
+            TokenType.FunctionKeyword | TokenType.Quote         | TokenType.Semicolon    | TokenType.Colon |
+            TokenType.BraceOpened     | TokenType.BraceClosed   | TokenType.ComplexToken;
 
         public Token(string fileName) : this("", fileName, -1, -1, null)
         {

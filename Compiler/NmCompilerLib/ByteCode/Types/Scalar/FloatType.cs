@@ -15,6 +15,12 @@ namespace Nevermind.ByteCode.Types.Scalar
             TypeBase = typeBase;
         }
 
+        public override bool Compare(Type type)
+        {
+            var t = type as FloatType;
+            return t.TypeBase == TypeBase;
+        }
+
         public override int GetBase()
         {
             return TypeBase;

@@ -13,6 +13,11 @@ namespace Nevermind.ByteCode.Types.Scalar
             CharType = charType;
         }
 
+        public override bool Compare(Type type)
+        {
+            return (type as StringType).CharType == CharType;
+        }
+
         public override int GetBase()
         {
             return CharType.GetBase();

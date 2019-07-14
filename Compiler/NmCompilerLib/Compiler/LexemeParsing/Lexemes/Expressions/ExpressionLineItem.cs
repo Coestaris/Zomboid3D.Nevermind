@@ -25,8 +25,11 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
         public bool ParentHasFunction;
 
         public bool IsUnary;
-        public Token FunctionCall;
+
         public Operator UnaryOperator;
+        public Token FunctionCall;
+        public Token Indexer;
+
         internal Token NearToken;
 
         private ExpressionLineItem(Operator @operator, int resultRegisterIndex)
@@ -65,23 +68,25 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
             Operand2 = operand2;
         }
 
-        public ExpressionLineItem(Operator unaryOperator, ExpressionToken operand, int resultRegisterIndex, Token functionCall)
+        public ExpressionLineItem(Operator unaryOperator, ExpressionToken operand, int resultRegisterIndex, Token functionCall, Token indexer)
         {
             Operand1 = operand;
 
             UnaryOperator = unaryOperator;
             ResultRegisterIndex = resultRegisterIndex;
             FunctionCall = functionCall;
+            Indexer = indexer;
             IsUnary = true;
         }
 
-        public ExpressionLineItem(Operator unaryOperator, int operand, int resultRegisterIndex, Token functionCall)
+        public ExpressionLineItem(Operator unaryOperator, int operand, int resultRegisterIndex, Token functionCall, Token indexer)
         {
             RegOperand1 = operand;
 
             UnaryOperator = unaryOperator;
             ResultRegisterIndex = resultRegisterIndex;
             FunctionCall = functionCall;
+            Indexer = indexer;
             IsUnary = true;
         }
 
@@ -103,6 +108,8 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
             {
                 if (FunctionCall != null)
                     sb.AppendFormat(" {0}(", FunctionCall.StringValue);
+                else if(Indexer != null)
+                    sb.AppendFormat(" {0}[", Indexer.StringValue);
                 else
                     sb.AppendFormat(" {0} ", UnaryOperator);
 
@@ -111,6 +118,9 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
 
                 if (FunctionCall != null)
                     sb.Append(")");
+
+                if (Indexer != null)
+                    sb.Append("]");
             }
             return sb.ToString();
         }
@@ -242,9 +252,14 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
                             throw new CompileException(CompileErrorType.WrongUsageOfVoidFunc, item.NearToken, funcToCall.Token);
                         }
                     }
-
-                    if (item.UnaryOperator != null)
+                    else if (item.UnaryOperator != null)
+                    {
                         result = item.UnaryOperator.UnaryFunc(new OperatorOperands(func, byteCode, -1, operand1));
+                    }
+                    else if(item.Indexer != null)
+                    {
+
+                    }
                 }
 
                 if (item.FunctionCall == null)
