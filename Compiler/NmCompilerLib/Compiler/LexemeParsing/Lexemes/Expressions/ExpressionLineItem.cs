@@ -263,18 +263,49 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
                         if(array.Type.ID != TypeID.Array)
                             throw new CompileException(CompileErrorType.ExpectedArrayType, item.NearToken);
 
-                        var resultVar = new Variable((array.Type as ArrayType).ElementType, $"__reg{localVarIndex}", func.Scope,
-                            null, localVarIndex++, VariableType.ArrayItem);
+                        var resultType = array.Type;
+                        var arrayDim = 0;
 
-                        resultVar.Array = array;
-                        resultVar.ArrayItem = operand1;
+                        while (resultType.ID == TypeID.Array)
+                        {
+                            resultType = (resultType as ArrayType).ElementType;
+                            arrayDim++;
+                        }
 
-                        if(operand1.Type.ID != TypeID.Integer && operand1.Type.ID != TypeID.UInteger)
-                            throw new CompileException(CompileErrorType.ExpectedIntegerIndex, item.NearToken);
+                        var indexes = new List<Variable>();
+
+                        if (operand1.VariableType == VariableType.Tuple)
+                        {
+                            if(operand1.Tuple.Count != arrayDim)
+                                throw new CompileException(CompileErrorType.WrongIndicesCount, item.NearToken);
+
+                            foreach (var variable in operand1.Tuple)
+                                if(variable.Type.ID != TypeID.Integer && variable.Type.ID != TypeID.UInteger)
+                                    throw new CompileException(CompileErrorType.ExpectedIntegerIndex, item.NearToken);
+
+                            indexes.AddRange(operand1.Tuple);
+                        }
+                        else
+                        {
+                            if(arrayDim != 1)
+                                throw new CompileException(CompileErrorType.WrongIndicesCount, item.NearToken);
+
+                            if(operand1.Type.ID != TypeID.Integer && operand1.Type.ID != TypeID.UInteger)
+                                throw new CompileException(CompileErrorType.ExpectedIntegerIndex, item.NearToken);
+
+                            indexes.Add(operand1);
+                        }
+
+                        var resultVar = new Variable(resultType, $"__reg{localVarIndex}", func.Scope,
+                            null, localVarIndex++, VariableType.ArrayItem)
+                        {
+                            Array = array,
+                            ArrayItem = indexes
+                        };
 
                         registers.Add(resultVar);
 
-                        instructions.Add(new InstructionVget(resultVar, array, operand1, func, byteCode, -1));
+                        instructions.Add(new InstructionVget(resultVar, array, indexes, func, byteCode, -1));
                     }
                 }
 

@@ -54,13 +54,22 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes
             if (Modifier != FunctionModifier.None) index = 1;
 
             index++; //Function keyword;
+            ReturnType = new List<Token>();
 
             if (tokens[index + 1].Type == TokenType.Identifier)
             {
                 //Has type and Name
                 Name = tokens[index + 1];
-                //ReturnType = tokens[index].StringValue == "void" ? null : tokens[index];
+                ReturnType.Add(tokens[index].StringValue == "void" ? null : tokens[index]);
+
                 index += 2;
+
+                while (tokens[index].Type == TokenType.SquareBracketClosed ||
+                       tokens[index].Type == TokenType.SquareBracketOpen)
+                {
+                    ReturnType.Add(tokens[index]);
+                    index++;
+                }
             }
             else
             {
@@ -70,45 +79,61 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes
 
             index++; //bracket
             Token parameterName = null;
-            Token parameterType = null;
+            var parameterType = new List<Token>();
+
             Parameters = new List<LexemeFunctionParameter>();
             var state = 0;
 
-            foreach (var token in tokens.Skip(index).Take(tokens.Count - 1 - index))
+            var tokenIterator = new TokenIterator<Token>(tokens.Skip(index).Take(tokens.Count - 1 - index).ToList());
+            while(tokenIterator.GetNext() != null)
             {
                 switch (state)
                 {
                     case 0:
                     {
-                        if(token.Type != TokenType.Identifier)
-                            throw new CompileException(CompileErrorType.UnexpectedToken, token);
-                        parameterName = token;
+                        if(tokenIterator.Current.Type != TokenType.Identifier)
+                            throw new CompileException(CompileErrorType.UnexpectedToken, tokenIterator.Current);
+
+                        parameterName = tokenIterator.Current;
                         state = 1;
                         break;
                     }
 
                     case 1:
                     {
-                        if(token.Type != TokenType.Colon)
-                            throw new CompileException(CompileErrorType.UnexpectedToken, token);
+                        if(tokenIterator.Current.Type != TokenType.Colon)
+                            throw new CompileException(CompileErrorType.UnexpectedToken, tokenIterator.Current);
+
                         state = 2;
                         break;
                     }
 
                     case 2:
                     {
-                        if(token.Type != TokenType.Identifier)
-                            throw new CompileException(CompileErrorType.UnexpectedToken, token);
-                        parameterType = token;
-                        //arameters.Add(new LexemeFunctionParameter(parameterType, parameterName));
+                        if(tokenIterator.Current.Type != TokenType.Identifier)
+                            throw new CompileException(CompileErrorType.UnexpectedToken, tokenIterator.Current);
+
+                        parameterType.Add(tokenIterator.Current);
+
+                        tokenIterator.GetNext();
+                        while (tokenIterator.Current.Type == TokenType.SquareBracketOpen ||
+                               tokenIterator.Current.Type == TokenType.SquareBracketClosed)
+                        {
+                            parameterType.Add(tokenIterator.Current);
+
+                            if (tokenIterator.GetNext() == null)
+                                break;
+                        }
+
+                        Parameters.Add(new LexemeFunctionParameter(parameterType, parameterName));
                         state = 3;
                         break;
                     }
 
                     case 3:
                     {
-                        if(token.Type != TokenType.ComaSign)
-                            throw new CompileException(CompileErrorType.UnexpectedToken, token);
+                        if(tokenIterator.Current.Type != TokenType.ComaSign)
+                            throw new CompileException(CompileErrorType.UnexpectedToken, tokenIterator.Current);
                         state = 0;
                         break;
                     }

@@ -47,7 +47,7 @@ namespace Nevermind.ByteCode
             else
             {
                 return variables
-                    .Where(variable => variable.Index == index && variable.VariableType == VariableType.Variable ||
+                    .Where(variable => variable.Index == index && variable.VariableType == VariableType.Variable &&
                                        variable.VariableType == VariableType.ArrayItem)
                     .ToList();
             }

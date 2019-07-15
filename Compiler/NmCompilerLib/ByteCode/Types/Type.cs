@@ -79,7 +79,8 @@ namespace Nevermind.ByteCode.Types
 
         public static bool CanCastAssignment(Type dest, Type src)
         {
-            if (dest.ID == TypeID.String || src.ID == TypeID.String)
+            if (dest.ID == TypeID.String || src.ID == TypeID.String ||
+                dest.ID == TypeID.Array || src.ID == TypeID.Array)
                 return false;
 
             return dest.GetBase() >= src.GetBase() && (dest.ID != TypeID.Integer && dest.ID != TypeID.UInteger || src.ID != TypeID.Float);
@@ -87,6 +88,9 @@ namespace Nevermind.ByteCode.Types
 
         public static Type CastTypes(Type a, Type b, Type preferredType = null)
         {
+            if (a.ID == TypeID.Array || b.ID == TypeID.Array)
+                return null;
+
             //Types the same
             if (a.ID == b.ID && a.GetBase() == b.GetBase())
                 return a;
@@ -106,7 +110,7 @@ namespace Nevermind.ByteCode.Types
             }
             else
             {
-                //We cant cast string to anything else
+                //We cant cast string and array to anything else
                 if (a.ID == TypeID.String || b.ID == TypeID.String)
                     return null;
 

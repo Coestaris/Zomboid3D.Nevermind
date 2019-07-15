@@ -1,0 +1,28 @@
+/*
+ * Simple program example
+ */
+
+//import arrays;
+     /*
+funcntion assignmentTest()
+{
+    var a : real[][];
+    var b : real[];
+    var c : real;
+
+    b = a[1];
+    c = b[2 + 2];
+
+    c = 2;
+    b[0] = 1;
+    a[4,6] = 6;
+}
+         */
+entrypoint function integer main()
+{
+    var a : real[][];
+    var r : real;
+
+    //r = a[4, 5] + 1;
+    a[1, 2] = 77;
+}

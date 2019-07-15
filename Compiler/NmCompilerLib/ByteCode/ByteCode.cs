@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using Nevermind.ByteCode.NMB;
 using Type = Nevermind.ByteCode.Types.Type;
@@ -28,15 +29,144 @@ namespace Nevermind.ByteCode
             Header = new ByteCodeHeader(program);
         }
 
-        internal void ExpressionToList(
+        private void ExpressionToList(
             ExpressionLexeme expression, Lexeme lexeme, Function function, out Variable resultVar,
             ref int labelIndex, ref int localVarIndex, ref int regCount, List<Variable> outRegisters,
             FunctionInstructions instructionsSet, List<NumeratedVariable> locals, Variable storeResultTo)
-
         {
+            ExpressionToList_GetList(expression, lexeme, function, out resultVar, ref labelIndex,
+                ref localVarIndex, ref regCount, outRegisters, instructionsSet, locals, storeResultTo);
+
+            ExpressionToList_FixIndexerAssignment(expression, lexeme, function, ref labelIndex,
+                ref localVarIndex, ref regCount, outRegisters, instructionsSet, locals, storeResultTo);
+        }
+
+        private void ExpressionToList_FixIndexerAssignment(
+            ExpressionLexeme expression, Lexeme lexeme, Function function,
+            ref int labelIndex, ref int localVarIndex, ref int regCount, List<Variable> outRegisters,
+            FunctionInstructions instructionsSet, List<NumeratedVariable> locals, Variable storeResultTo)
+        {
+            //find assignment to array elements and replace it by vset and remove first vget
+            for (int i = 0; i < instructionsSet.Instructions.Count; i++)
+            {
+                Variable result = null;
+                var simplified = false;
+                var set = false;
+
+                if (instructionsSet.Instructions[i] is ArithmeticInstruction &&
+                    !(instructionsSet.Instructions[i] is InstructionVget))
+                {
+                    if(instructionsSet.Instructions[i] is BinaryArithmeticInstruction &&
+                            (instructionsSet.Instructions[i] as BinaryArithmeticInstruction).CanBeSimplified())
+                    {
+                        var instruction = ((BinaryArithmeticInstruction) instructionsSet.Instructions[i]);
+
+                        result = instruction.Operand1;
+                        simplified = true;
+
+                        if (instruction.AType == BinaryArithmeticInstructionType.A_Set)
+                            set = true;
+                    }
+                    else
+                        result = ((ArithmeticInstruction) instructionsSet.Instructions[i]).Result;
+                }
+                else
+                {
+                    continue;
+                }
+
+                InstructionVset vset;
+
+                if (result.VariableType == VariableType.ArrayItem)
+                {
+                    if (!simplified)
+                    {
+                        var newReg = new Variable(result.Type, "__arrayReg", function.Scope,
+                            result.Token, localVarIndex++, VariableType.Variable);
+
+                        vset = new InstructionVset(
+                            result.Array, newReg, result.ArrayItem, function, this, labelIndex++);
+
+                        outRegisters.Add(newReg);
+
+                        instructionsSet.Instructions.Insert(i + 1, vset);
+
+                        var globalIndex = 0;
+                        var deleted = instructionsSet.Instructions.RemoveAll(p =>
+                        {
+                            var vget = p as InstructionVget;
+
+                            if (vget == null) return false;
+
+                            var used = false;
+                            var index = 0;
+
+                            for (var j = globalIndex + 1; j < instructionsSet.Instructions.Count; j++)
+                            {
+                                Console.WriteLine(instructionsSet.Instructions[j].ToSource());
+
+                                var count = instructionsSet.Instructions[j].FetchUsedVariables(vget.Result.Index).Count;
+                                count -= (instructionsSet.Instructions[j] as ArithmeticInstruction)?.Result.Index ==
+                                         vget.Result.Index
+                                    ? 1
+                                    : 0;
+
+                                if (count > 0)
+                                {
+                                    used = true;
+                                    break;
+                                }
+                            }
+
+                            globalIndex++;
+
+                            return vget.Result.Index == result.Index && !used;
+                        });
+
+                        (instructionsSet.Instructions[i - deleted] as ArithmeticInstruction).Result = newReg;
+                    }
+                    else
+                    {
+                        if (!set)
+                        {
+                            instructionsSet.Instructions[i] =
+                                ((BinaryArithmeticInstruction) instructionsSet.Instructions[i]).Simplify();
+
+                            vset = new InstructionVset(
+                                result.Array, (instructionsSet.Instructions[i] as ArithmeticInstruction).Result,
+                                    result.ArrayItem, function, this, labelIndex++);
+
+                            instructionsSet.Instructions.Insert(i + 1, vset);
+                        }
+                        else
+                        {
+                            vset = new InstructionVset(
+                                result.Array, result, result.ArrayItem, function, this, labelIndex++);
+
+                            instructionsSet.Instructions.Insert(i + 1, vset);
+                            instructionsSet.Instructions.RemoveAt(i);
+
+                            instructionsSet.Instructions.RemoveAll(p =>
+                            {
+                                var vget = p as InstructionVget;
+                                return vget != null && vget.Result.Index == result.Index;
+                            });
+                        }
+                    }
+
+
+                }
+            }
+        }
+
+        private void ExpressionToList_GetList(
+            ExpressionLexeme expression, Lexeme lexeme, Function function, out Variable resultVar,
+            ref int labelIndex, ref int localVarIndex, ref int regCount, List<Variable> outRegisters,
+            FunctionInstructions instructionsSet, List<NumeratedVariable> locals, Variable storeResultTo)
+        {
+
             var list = expression.ToList();
             var labelIndexCopy = labelIndex;
-
 
             if (list == null)
             {
@@ -119,7 +249,10 @@ namespace Nevermind.ByteCode
                 List<Variable> registers;
                 var res = ExpressionLineItem.GetInstructions(function, this, ref localVarIndex, list, out registers, locals);
 
-                if ((res.Last() is BinaryArithmeticInstruction) && ((BinaryArithmeticInstruction)res.Last()).CanBeSimplified())
+                if (
+                    (res.Last() is BinaryArithmeticInstruction) &&
+                    ((BinaryArithmeticInstruction)res.Last()).CanBeSimplified() &&
+                    (res.Count < 2 || (res[res.Count - 2] as ArithmeticInstruction)?.Type != InstructionType.Vget))
                 {
                     var last = (BinaryArithmeticInstruction)res.Last();
 
@@ -175,7 +308,6 @@ namespace Nevermind.ByteCode
             }
 
             labelIndex = labelIndexCopy;
-
         }
 
         private void GetInstructionList(Lexeme rootLexeme, Function function, ref int localVarIndex, ref int regCount, ref int labelIndex,

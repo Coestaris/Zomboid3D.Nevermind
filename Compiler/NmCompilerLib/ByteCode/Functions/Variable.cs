@@ -32,7 +32,7 @@ namespace Nevermind.ByteCode.Functions
         public bool IndexFixed;
 
         public Variable Array;
-        public Variable ArrayItem;
+        public List<Variable> ArrayItem;
 
         public Variable(Type type, string name, int scope, Token token, int index, VariableType variableType, int constIndex = -1)
         {
@@ -57,7 +57,7 @@ namespace Nevermind.ByteCode.Functions
             else if (VariableType == VariableType.LinkToConst)
                 return $"^{ConstIndex}";
             else if (VariableType == VariableType.ArrayItem)
-                return $"{Index} ({Array.ToSourceValue()}[{ArrayItem.ToSourceValue()}])";
+                return $"{Index} ({Array.ToSourceValue()}[{string.Join(", ", ArrayItem.Select(p => p.ToSourceValue()))}])";
             else
                 return $"tuple({string.Join(", ", Tuple.Select(p => p.ToSourceValue()))})";
         }
@@ -86,7 +86,11 @@ namespace Nevermind.ByteCode.Functions
 
         public Variable Clone(int newIndex)
         {
-            return new Variable(Type, Name, Scope, Token, newIndex, VariableType, ConstIndex);
+            return new Variable(Type, Name, Scope, Token, newIndex, VariableType, ConstIndex)
+            {
+                Array = Array,
+                ArrayItem = ArrayItem
+            };
         }
     }
 }

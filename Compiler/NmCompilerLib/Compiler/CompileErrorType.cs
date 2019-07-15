@@ -53,6 +53,7 @@ namespace Nevermind.Compiler
         ModuleFunctionCall,
         RecursiveImport,
         ExpectedArrayType,
-        ExpectedIntegerIndex
+        ExpectedIntegerIndex,
+        WrongIndicesCount
     }
 }

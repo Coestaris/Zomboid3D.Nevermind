@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Nevermind.ByteCode.Functions;
 using Nevermind.ByteCode.Instructions;
+using Nevermind.ByteCode.Instructions.ArithmeticInstructions;
 using Nevermind.ByteCode.InternalClasses;
 // ReSharper disable PossibleNullReferenceException
 
@@ -14,10 +15,28 @@ namespace Nevermind.ByteCode
         {
             foreach (var function in byteCode.Instructions)
             {
+                //SimplifySetInstructions(byteCode, function);
                 DeleteUnusedRegisters(byteCode, function);
                 OptimizeRegisters(byteCode, function);
                 DeleteDuplicatedRegisters(byteCode, function);
                 FixRegistersIndexes(byteCode, function);
+            }
+        }
+
+        private static void SimplifySetInstructions(ByteCode byteCode, FunctionInstructions function)
+        {
+            for (int i = 0; i < function.Instructions.Count; i++)
+            {
+                if (function.Instructions[i].Type == InstructionType._Binary &&
+                    ((BinaryArithmeticInstruction) function.Instructions[i]).AType == BinaryArithmeticInstructionType.A_Set)
+                {
+                    var instruction = (BinaryArithmeticInstruction) function.Instructions[i];
+                    if (!VariableUsed(instruction.Result.Index, i + 1, function))
+                    {
+                        function.Instructions[i] = new InstructionLdi(instruction.Operand2, instruction.Operand1,
+                            instruction.Function, instruction.ByteCode, instruction.Label);
+                    }
+                }
             }
         }
 
@@ -28,7 +47,7 @@ namespace Nevermind.ByteCode
             {
                 foreach (var instruction in function.Instructions)
                 {
-                    instruction.FetchUsedVariables(register.Index).ForEach(p => p.Index = index);
+                    instruction.ReplaceRegisterUsage(register.Index, index);
                 }
                 register.Index = index;
                 index++;

@@ -4,13 +4,36 @@
 
 //import arrays;
 
+function func1(a : real[])
+{
+   a[0] = a[9] - 1;
+}
+
+function real[] func2()
+{
+   var a : real[];
+}
+
+function assignments()
+{
+    /*var a : real[][];
+    var b : real[];
+    var c : real;
+
+    c = 2;
+    b[0] = 1;
+    a[4,6] = 6;
+
+    b[0] = a[4,6] + c;
+    b[1] += -a[4,6];   */
+}
+
 entrypoint function integer main()
 {
     var a : real[];
-    var b : real;
+    var r : real;
 
-    a[4] = 5 + a[1];
-    //a[0 + 1] = 5;
-    //a[1] = 4 * 51;
-    //a[2] = a[0] * 2 - 59;
+    func1(a);
+
+    a = func2();
 }
