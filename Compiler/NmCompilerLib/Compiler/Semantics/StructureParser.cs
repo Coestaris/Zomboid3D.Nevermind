@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Policy;
 using Nevermind.ByteCode;
 using Nevermind.ByteCode.Functions;
 using Nevermind.Compiler.Formats;
@@ -26,6 +27,7 @@ namespace Nevermind.Compiler.Semantics
                 program.Module = new Module(moduleLexeme.ModuleName.StringValue, program);
             }
 
+            var attributes = new List<Attribute>();
             var functionIndex = 0;
             foreach (var lex in program.Lexemes)
             {
@@ -48,6 +50,9 @@ namespace Nevermind.Compiler.Semantics
 
                     func.Index = functionIndex++;
                     program.Functions.Add(func);
+
+                    func.Attributes = attributes.ToList();
+                    attributes.Clear();
 
                     if (!prototypesOnly)
                     {
@@ -118,6 +123,10 @@ namespace Nevermind.Compiler.Semantics
                     {
                         IsLibrary = (lex as ModuleLexeme).IsLibrary
                     };
+                }
+                else if (lex.Type == LexemeType.Attribute)
+                {
+                    attributes.Add(new Attribute(lex.Tokens));
                 }
                 else
                 {

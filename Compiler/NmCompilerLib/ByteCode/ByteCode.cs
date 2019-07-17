@@ -99,8 +99,6 @@ namespace Nevermind.ByteCode
                             if (vget == null) return false;
 
                             var used = false;
-                            var index = 0;
-
                             for (var j = globalIndex + 1; j < instructionsSet.Instructions.Count; j++)
                             {
                                 var count = instructionsSet.Instructions[j].FetchUsedVariables(vget.Result.Index).Count;

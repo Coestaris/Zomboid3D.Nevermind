@@ -30,6 +30,8 @@ namespace Nevermind.Compiler.LexemeParsing
                         return new ImportLexeme(tokens);
                     case LexemeType.Module:
                         return new ModuleLexeme(tokens);
+                    case LexemeType.Attribute:
+                        return new AttributeLexeme(tokens);
                     case LexemeType.Function:
                         return new FunctionLexeme(tokens);
                     case LexemeType.Var:
@@ -60,6 +62,8 @@ namespace Nevermind.Compiler.LexemeParsing
                         return new IfLexeme(tokens);
                     case LexemeType.Function:
                         return new FunctionLexeme(tokens);
+                    case LexemeType.Attribute:
+                        return new AttributeLexeme(tokens);
                     case LexemeType.Expression:
                         return new ExpressionLexeme(tokens);
                     case LexemeType.Return:

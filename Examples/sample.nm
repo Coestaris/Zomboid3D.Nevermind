@@ -2,7 +2,12 @@
  * Simple program example
  */
 
+[someAttrib: param1, param2, param3];
+function print(a : integer)
+{
+}
+
 entrypoint function integer main()
 {
-
+    print(4);
 }

@@ -96,7 +96,7 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes
             Parameters = new List<LexemeFunctionParameter>();
             var state = 0;
 
-            var tokenIterator = new TokenIterator<Token>(tokens.Skip(index).Take(tokens.Count - 1 - index).ToList());
+            var tokenIterator = new TokenIterator<Token>(tokens.Skip(index).Take(tokens.Count - 1 - index));
             while(tokenIterator.GetNext() != null)
             {
                 switch (state)

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Nevermind.Compiler
 {
@@ -7,6 +8,8 @@ namespace Nevermind.Compiler
         private readonly List<T> _list;
         public T Current;
         public int Index;
+
+        public TokenIterator(IEnumerable<T> list) : this(list.ToList()) { }
 
         public TokenIterator(List<T> list)
         {

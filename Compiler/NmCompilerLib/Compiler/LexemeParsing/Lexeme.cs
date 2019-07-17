@@ -21,7 +21,7 @@ namespace Nevermind.Compiler.LexemeParsing
 
         protected Lexeme(List<Token> tokens, LexemeType type, bool requireBlock)
         {
-            if(tokens != null)
+            if (tokens != null)
                 Tokens = tokens.Select(p => p).ToList();
 
             RequireBlock = requireBlock;
@@ -48,7 +48,18 @@ namespace Nevermind.Compiler.LexemeParsing
                 new List<LexemePatternToken>
                 {
                     new LexemePatternToken(TokenType.ImportKeyword | TokenType.LibraryKeyword),
-                    new LexemePatternToken(TokenType.Identifier   )
+                    new LexemePatternToken(TokenType.Identifier)
+                }),
+
+            new LexemeInfo(
+                LexemeType.Attribute,
+                new List<LexemePatternToken>
+                {
+                    new LexemePatternToken(TokenType.SquareBracketOpen),
+                    new LexemePatternToken(TokenType.Identifier),
+                    new LexemePatternToken(TokenType.Semicolon, false),
+                    new LexemePatternToken(Token.AnyTokenType, false, true),
+                    new LexemePatternToken(TokenType.SquareBracketClosed)
                 }),
 
             new LexemeInfo(
@@ -56,21 +67,20 @@ namespace Nevermind.Compiler.LexemeParsing
                 new List<LexemePatternToken>
                 {
                     new LexemePatternToken(TokenType.ModuleKeyword),
-                    new LexemePatternToken(TokenType.Identifier   )
+                    new LexemePatternToken(TokenType.Identifier)
                 }),
 
-            //Variable with definition
             new LexemeInfo(
                 LexemeType.Var,
                 new List<LexemePatternToken>
                 {
-                    new LexemePatternToken(TokenType.VarKeyword         ),
-                    new LexemePatternToken(TokenType.Identifier         ),
-                    new LexemePatternToken(TokenType.Colon              ),
-                    new LexemePatternToken(TokenType.Identifier         ),
+                    new LexemePatternToken(TokenType.VarKeyword),
+                    new LexemePatternToken(TokenType.Identifier),
+                    new LexemePatternToken(TokenType.Colon),
+                    new LexemePatternToken(TokenType.Identifier),
                     new LexemePatternToken(
                         TokenType.SquareBracketOpen | TokenType.SquareBracketClosed | TokenType.ComplexToken, false),
-                    new LexemePatternToken(TokenType.EqualSign          , false),
+                    new LexemePatternToken(TokenType.EqualSign, false),
                     new LexemePatternToken(Token.MathExpressionTokenType, false),
                 }),
 
@@ -78,10 +88,10 @@ namespace Nevermind.Compiler.LexemeParsing
                 LexemeType.If,
                 new List<LexemePatternToken>
                 {
-                    new LexemePatternToken(TokenType.IfKeyword                      ),
-                    new LexemePatternToken(TokenType.BracketOpen                    ),
+                    new LexemePatternToken(TokenType.IfKeyword),
+                    new LexemePatternToken(TokenType.BracketOpen),
                     new LexemePatternToken(Token.MathExpressionTokenType, true, true),
-                    new LexemePatternToken(TokenType.BracketClosed                  )
+                    new LexemePatternToken(TokenType.BracketClosed)
                 }),
 
             new LexemeInfo(
@@ -96,24 +106,24 @@ namespace Nevermind.Compiler.LexemeParsing
                 new List<LexemePatternToken>
                 {
                     new LexemePatternToken(
-                        TokenType.PublicKeyword     | TokenType.PrivateKeyword      | 
-                        TokenType.EntrypointKeyword | TokenType.FinalizationKeyword | 
-                        TokenType.InitializationKeyword,              false),
+                        TokenType.PublicKeyword | TokenType.PrivateKeyword |
+                        TokenType.EntrypointKeyword | TokenType.FinalizationKeyword |
+                        TokenType.InitializationKeyword, false),
                     new LexemePatternToken(TokenType.FunctionKeyword),
-                    new LexemePatternToken(TokenType.Identifier  ,false),
+                    new LexemePatternToken(TokenType.Identifier, false),
                     new LexemePatternToken(
                         TokenType.SquareBracketOpen | TokenType.SquareBracketClosed | TokenType.ComplexToken, false),
-                    new LexemePatternToken(TokenType.Identifier,         false),
-                    new LexemePatternToken(TokenType.BracketOpen           ),
-                    new LexemePatternToken(Token.AnyTokenType              ),
-                    new LexemePatternToken(TokenType.BracketClosed         )
+                    new LexemePatternToken(TokenType.Identifier, false),
+                    new LexemePatternToken(TokenType.BracketOpen),
+                    new LexemePatternToken(Token.AnyTokenType),
+                    new LexemePatternToken(TokenType.BracketClosed)
                 }),
 
-           new LexemeInfo(
+            new LexemeInfo(
                 LexemeType.Return,
                 new List<LexemePatternToken>
                 {
-                    new LexemePatternToken(TokenType.ReturnKeyword      ),
+                    new LexemePatternToken(TokenType.ReturnKeyword),
                     new LexemePatternToken(Token.MathExpressionTokenType)
                 }),
 

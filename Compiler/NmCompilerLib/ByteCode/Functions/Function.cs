@@ -4,6 +4,7 @@ using Nevermind.Compiler;
 using Nevermind.Compiler.Formats;
 using Nevermind.Compiler.LexemeParsing;
 using Nevermind.Compiler.LexemeParsing.Lexemes;
+using Nevermind.Compiler.Semantics;
 
 namespace Nevermind.ByteCode.Functions
 {
@@ -20,6 +21,7 @@ namespace Nevermind.ByteCode.Functions
         public int Scope;
         public NmProgram Program;
         public List<Variable> LocalVariables;
+        public List<Attribute> Attributes;
 
         public int ModuleIndex = -1;
         public int Index;
