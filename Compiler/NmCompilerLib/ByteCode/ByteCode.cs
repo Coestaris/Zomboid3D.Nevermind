@@ -103,8 +103,6 @@ namespace Nevermind.ByteCode
 
                             for (var j = globalIndex + 1; j < instructionsSet.Instructions.Count; j++)
                             {
-                                Console.WriteLine(instructionsSet.Instructions[j].ToSource());
-
                                 var count = instructionsSet.Instructions[j].FetchUsedVariables(vget.Result.Index).Count;
                                 count -= (instructionsSet.Instructions[j] as ArithmeticInstruction)?.Result.Index ==
                                          vget.Result.Index
@@ -252,7 +250,8 @@ namespace Nevermind.ByteCode
                 if (
                     (res.Last() is BinaryArithmeticInstruction) &&
                     ((BinaryArithmeticInstruction)res.Last()).CanBeSimplified() &&
-                    (res.Count < 2 || (res[res.Count - 2] as ArithmeticInstruction)?.Type != InstructionType.Vget))
+                    (res.Count < 2 || res[res.Count - 2].Type != InstructionType.Vget ||
+                     (res.Last() as BinaryArithmeticInstruction).Operand1.VariableType != VariableType.ArrayItem))
                 {
                     var last = (BinaryArithmeticInstruction)res.Last();
 

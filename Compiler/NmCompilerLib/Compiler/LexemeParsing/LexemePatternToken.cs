@@ -60,6 +60,13 @@ namespace Nevermind.Compiler.LexemeParsing
                                 if (tokenCounter == tokens.Count)
                                     return true;
                             }
+
+                            if (!pattern[patternCounter].Required)
+                            {
+                                patternCounter++;
+                                continue;
+                            }
+
                             return false;
                         }
                     }

@@ -54,22 +54,34 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes
             if (Modifier != FunctionModifier.None) index = 1;
 
             index++; //Function keyword;
-            ReturnType = new List<Token>();
 
-            if (tokens[index + 1].Type == TokenType.Identifier)
+            var bracketIndex = tokens.FindIndex(p => p.Type == TokenType.BracketOpen);
+
+            if (bracketIndex != 2)
             {
                 //Has type and Name
-                Name = tokens[index + 1];
-                ReturnType.Add(tokens[index].StringValue == "void" ? null : tokens[index]);
+                Name = tokens[bracketIndex - 1];
+                ReturnType =
+                    tokens[index].StringValue == "void" ? null :
+                    new List<Token>
+                    {
+                        tokens[index]
 
-                index += 2;
+                    };
+
+                index += 1;
 
                 while (tokens[index].Type == TokenType.SquareBracketClosed ||
                        tokens[index].Type == TokenType.SquareBracketOpen)
                 {
+                    if(ReturnType == null)
+                        throw new CompileException(CompileErrorType.UnexpectedToken, tokens[index]);
+
                     ReturnType.Add(tokens[index]);
                     index++;
                 }
+
+                index++;
             }
             else
             {

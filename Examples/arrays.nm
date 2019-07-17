@@ -2,27 +2,43 @@
  * Simple program example
  */
 
-//import arrays;
-     /*
-funcntion assignmentTest()
+function assignmentTest()
 {
     var a : real[][];
     var b : real[];
     var c : real;
 
-    b = a[1];
-    c = b[2 + 2];
-
     c = 2;
     b[0] = 1;
     a[4,6] = 6;
+
+    c += 1;
+    b[1] += 4;
+    a[5, 7] -= 13 * 5;
+
+    c = 4.0f - 1.0f * 5.0f;
+    b[5] = b[1] + b[2] - a[4,1];
 }
-         */
+
+
+function passArray(a : real[][])
+{
+    a[1, 1] = a[2, 2] == a[0, 0];
+}
+
+function real[] returnArray()
+{
+    var a : real[];
+    a[0] = 1;
+    a[2] = 4;
+    return a; //returning pointer to local variable...
+}
+
 entrypoint function integer main()
 {
     var a : real[][];
-    var r : real;
+    var r : real[];
 
-    //r = a[4, 5] + 1;
-    a[1, 2] = 77;
+    passArray(a);
+    r = returnArray();
 }

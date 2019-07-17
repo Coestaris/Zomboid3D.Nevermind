@@ -79,9 +79,11 @@ namespace Nevermind.ByteCode.Types
 
         public static bool CanCastAssignment(Type dest, Type src)
         {
-            if (dest.ID == TypeID.String || src.ID == TypeID.String ||
-                dest.ID == TypeID.Array || src.ID == TypeID.Array)
+            if (dest.ID == TypeID.String || src.ID == TypeID.String)
                 return false;
+
+            if (dest.ID == TypeID.Array && src.ID == TypeID.Array)
+                return dest == src;
 
             return dest.GetBase() >= src.GetBase() && (dest.ID != TypeID.Integer && dest.ID != TypeID.UInteger || src.ID != TypeID.Float);
         }

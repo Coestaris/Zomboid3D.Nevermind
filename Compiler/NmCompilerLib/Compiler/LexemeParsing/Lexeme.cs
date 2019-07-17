@@ -99,11 +99,11 @@ namespace Nevermind.Compiler.LexemeParsing
                         TokenType.PublicKeyword     | TokenType.PrivateKeyword      | 
                         TokenType.EntrypointKeyword | TokenType.FinalizationKeyword | 
                         TokenType.InitializationKeyword,              false),
-                    new LexemePatternToken(TokenType.FunctionKeyword       ),
+                    new LexemePatternToken(TokenType.FunctionKeyword),
                     new LexemePatternToken(TokenType.Identifier  ,false),
                     new LexemePatternToken(
                         TokenType.SquareBracketOpen | TokenType.SquareBracketClosed | TokenType.ComplexToken, false),
-                    new LexemePatternToken(TokenType.Identifier),
+                    new LexemePatternToken(TokenType.Identifier,         false),
                     new LexemePatternToken(TokenType.BracketOpen           ),
                     new LexemePatternToken(Token.AnyTokenType              ),
                     new LexemePatternToken(TokenType.BracketClosed         )
