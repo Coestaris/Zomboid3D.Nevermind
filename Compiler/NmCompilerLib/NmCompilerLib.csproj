@@ -43,6 +43,7 @@
     <Compile Include="ByteCode\Instructions\InstructionCast.cs" />
     <Compile Include="ByteCode\Instructions\InstructionPush.cs" />
     <Compile Include="ByteCode\Instructions\InstructionPop.cs" />
+    <Compile Include="ByteCode\Instructions\InstructionSyscall.cs" />
     <Compile Include="ByteCode\Instructions\InstructionVget.cs" />
     <Compile Include="ByteCode\Instructions\InstructionVset.cs" />
     <Compile Include="ByteCode\InstructionType.cs" />
@@ -116,6 +117,7 @@
     <Compile Include="Compiler\LexemeParsing\Lexemizer.cs" />
     <Compile Include="Compiler\CompileException.cs" />
     <Compile Include="Compiler\Semantics\Attribute.cs" />
+    <Compile Include="Compiler\Semantics\Attributes\SyscallAttribute.cs" />
     <Compile Include="Compiler\Semantics\Import.cs" />
     <Compile Include="Compiler\Semantics\Module.cs" />
     <Compile Include="Compiler\Semantics\ModuleItem.cs" />

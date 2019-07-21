@@ -54,6 +54,10 @@ namespace Nevermind.Compiler
         RecursiveImport,
         ExpectedArrayType,
         ExpectedIntegerIndex,
-        WrongIndicesCount
+        WrongIndicesCount,
+        UnknownAttributeType,
+        UnknownSyscallType,
+        WrongAttributeParameterCount,
+        WrongSyscallAppendType
     }
 }

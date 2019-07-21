@@ -38,33 +38,46 @@ namespace Nevermind.Compiler
             TokenType.SquareBracketClosed | TokenType.SquareBracketOpen;
 
         public const TokenType AnyTokenType =
-            MathExpressionTokenType   | TokenType.ImportKeyword | TokenType.VarKeyword   | TokenType.IfKeyword |
-            TokenType.FunctionKeyword | TokenType.Quote         | TokenType.Semicolon    | TokenType.Colon |
-            TokenType.BraceOpened     | TokenType.BraceClosed   | TokenType.ComplexToken;
+            MathExpressionTokenType     | TokenType.ImportKeyword         | TokenType.Quote                 | TokenType.Semicolon           |
+            TokenType.Colon             | TokenType.BraceOpened           | TokenType.BraceClosed           | TokenType.ComplexToken        |
+            TokenType.FunctionKeyword   | TokenType.ImportKeyword         | TokenType.IfKeyword             | TokenType.VarKeyword          |
+            TokenType.ModuleKeyword     | TokenType.LibraryKeyword        | TokenType.PublicKeyword         | TokenType.PrivateKeyword      |
+            TokenType.EntrypointKeyword | TokenType.InitializationKeyword | TokenType.FinalizationKeyword   | TokenType.ReturnKeyword       |
+            TokenType.ElseKeyword;
 
-        public Token(string fileName) : this("", fileName, -1, -1, null)
+
+        public Token(string fileName) : this("", fileName, -1, -1, null) { }
+
+        private static readonly Dictionary<string, TokenType> TokenDict = new Dictionary<string, TokenType>
         {
-
-        }
-
-        private Dictionary<string, TokenType> _TokenDict = new Dictionary<string, TokenType>()
-        {
-            {"=", TokenType.EqualSign},
             {"(", TokenType.BracketOpen},
             {")", TokenType.BracketClosed},
-            {"*", TokenType.MultiplySign},
-            {"+", TokenType.PlusSign},
-            {";", TokenType.Semicolon},
-            {":", TokenType.Colon},
             {"{", TokenType.BraceOpened},
             {"}", TokenType.BraceClosed},
             {"[", TokenType.SquareBracketOpen},
             {"]", TokenType.SquareBracketClosed},
+            {"-", TokenType.MinusSign},
+            {"/", TokenType.DivideSign},
+            {">", TokenType.GreaterSign},
+            {"<", TokenType.LessThanSign},
+            {"~", TokenType.Tilda},
+            {"&", TokenType.AmpersandSign},
+            {"=", TokenType.EqualSign},
+            {"|", TokenType.OrSign},
+            {"^", TokenType.CircumflexSign},
+            {"%", TokenType.PercentSign},
+            {"?", TokenType.QuestingSign},
+            {"*", TokenType.MultiplySign},
+            {"+", TokenType.PlusSign},
+            {";", TokenType.Semicolon},
+            {":", TokenType.Colon},
+            {"!", TokenType.ExclamationMark},
+            {",", TokenType.ComaSign},
+            {"\"", TokenType.Quote},
             {"if", TokenType.IfKeyword},
             {"var", TokenType.VarKeyword},
             {"function", TokenType.FunctionKeyword},
             {"import", TokenType.ImportKeyword},
-            {"\"", TokenType.Quote},
             {"module", TokenType.ModuleKeyword},
             {"library", TokenType.LibraryKeyword},
             {"public", TokenType.PublicKeyword},
@@ -72,20 +85,8 @@ namespace Nevermind.Compiler
             {"entrypoint", TokenType.EntrypointKeyword},
             {"initialization", TokenType.InitializationKeyword},
             {"finalization", TokenType.FinalizationKeyword},
-            {"-", TokenType.MinusSign},
-            {"/", TokenType.DivideSign},
-            {">", TokenType.GreaterSign},
-            {"<", TokenType.LessThanSign},
-            {"~", TokenType.Tilda},
-            {"&", TokenType.AmpersandSign},
-            {"|", TokenType.OrSign},
-            {"^", TokenType.CircumflexSign},
-            {"%", TokenType.PercentSign},
-            {"?", TokenType.QuestingSign},
-            {"!", TokenType.ExclamationMark},
             {"return", TokenType.ReturnKeyword},
             {"else", TokenType.ElseKeyword},
-            {",", TokenType.ComaSign},
         };
 
         public Token(string str, string fileName, int lineIndex, int lineOffset, NmProgram program,
@@ -98,7 +99,7 @@ namespace Nevermind.Compiler
 
             if (!isString)
             {
-                if (!_TokenDict.TryGetValue(str, out Type))
+                if (!TokenDict.TryGetValue(str, out Type))
                 {
                     if (LineIndex == -1)
                     {

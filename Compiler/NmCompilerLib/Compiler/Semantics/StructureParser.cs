@@ -126,7 +126,11 @@ namespace Nevermind.Compiler.Semantics
                 }
                 else if (lex.Type == LexemeType.Attribute)
                 {
-                    attributes.Add(new Attribute(lex.Tokens));
+                    Attribute attribute;
+                    if ((error = Attribute.CreateAttribute(lex.Tokens, out attribute)) != null)
+                        return error;
+
+                    attributes.Add(attribute);
                 }
                 else
                 {

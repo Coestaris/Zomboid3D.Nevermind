@@ -13,6 +13,8 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using Nevermind.ByteCode.NMB;
+using Nevermind.Compiler.Semantics;
+using Nevermind.Compiler.Semantics.Attributes;
 using Type = Nevermind.ByteCode.Types.Type;
 
 namespace Nevermind.ByteCode
@@ -499,6 +501,13 @@ namespace Nevermind.ByteCode
                 var registers = new List<Variable>();
                 var regCount = 0;
 
+                //begin syscalls
+                foreach (var attribute in function.Attributes.FindAll(p => p is SyscallAttribute && !((SyscallAttribute) p).AppendToEnd))
+                {
+                    instructionSet.Instructions.Add(new InstructionSyscall((attribute as SyscallAttribute).CallCode,
+                        function, this, labelIndex++));
+                }
+
                 GetInstructionList(function.RawLexeme, function, ref localVarIndex, ref regCount, ref labelIndex,
                     registers, instructionSet, locals);
 
@@ -506,6 +515,13 @@ namespace Nevermind.ByteCode
                     foreach (var initFunction in fins)
                         instructionSet.Instructions.Add(
                             new InstructionCall(initFunction.Function, function, this, labelIndex));
+
+                //end syscalls
+                foreach (var attribute in function.Attributes.FindAll(p => p is SyscallAttribute && ((SyscallAttribute) p).AppendToEnd))
+                {
+                    instructionSet.Instructions.Add(new InstructionSyscall((attribute as SyscallAttribute).CallCode,
+                        function, this, labelIndex++));
+                }
 
                 instructionSet.Instructions.Add(new InstructionRet(function, this, labelIndex++));
 

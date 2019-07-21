@@ -56,7 +56,7 @@ namespace Nevermind.Compiler.LexemeParsing
                 new List<LexemePatternToken>
                 {
                     new LexemePatternToken(TokenType.SquareBracketOpen),
-                    new LexemePatternToken(TokenType.Identifier),
+                    new LexemePatternToken(Token.AnyTokenType & ~Token.MathExpressionTokenType | TokenType.Identifier, true, true),
                     new LexemePatternToken(TokenType.Semicolon, false),
                     new LexemePatternToken(Token.AnyTokenType, false, true),
                     new LexemePatternToken(TokenType.SquareBracketClosed)

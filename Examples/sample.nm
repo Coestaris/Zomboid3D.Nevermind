@@ -2,10 +2,8 @@
  * Simple program example
  */
 
-[someAttrib: param1, param2, param3];
-function print(a : integer)
-{
-}
+[syscall: printi, begin];
+function print(a : integer) { }
 
 entrypoint function integer main()
 {

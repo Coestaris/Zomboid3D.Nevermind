@@ -66,7 +66,6 @@ namespace Nevermind.Compiler
             var mlCommentIndex = 0;
             var str = "";
 
-
             foreach (var c in input)
             {
                 if (!collectingComment)

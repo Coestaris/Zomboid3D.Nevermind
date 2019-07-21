@@ -12,6 +12,7 @@ namespace Nevermind.ByteCode
         Cast,
         Vget,
         Vset,
+        Syscall,
 
         _Unary,
         _Binary,

@@ -32,7 +32,8 @@ namespace Nevermind.ByteCode.NMB
                 { InstructionType.BrEq, 0x7 },
                 { InstructionType.Cast, 0x8 },
                 { InstructionType.Vget, 0x9 },
-                { InstructionType.Vset, 0xA }
+                { InstructionType.Vset, 0xA },
+                { InstructionType.Syscall, 0xB }
             };
 
         public static readonly Dictionary<BinaryArithmeticInstructionType, UInt16> ABInstructionDict =
@@ -74,5 +75,10 @@ namespace Nevermind.ByteCode.NMB
                 { UnaryArithmeticInstructionType.A_Not,    0x101 },
                 { UnaryArithmeticInstructionType.A_BNeg,   0x102 },
             };
+
+        public static readonly Dictionary<string, UInt16> SyscallTypes = new Dictionary<string, ushort>
+        {
+            {"printi", 0x1}
+        };
     }
 }
