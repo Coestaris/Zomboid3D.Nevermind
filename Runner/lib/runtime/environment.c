@@ -2,8 +2,9 @@
 // Created by maxim on 6/30/19.
 //
 
-#include <zconf.h>
 #include "environment.h"
+
+nmEnvironment_t* currentEnv;
 
 void setDefaultValue(void* var, nmType_t* type)
 {
@@ -76,6 +77,8 @@ void nmEnvExecute(nmEnvironment_t* env)
     uint32_t pc = 0;
     uint32_t func = env->program->entryPointFuncIndex;
 
+    setCurrentEnv(env);
+
     pushStack(env->callStack, &func);
 
     env->programCounter = &pc;
@@ -83,7 +86,7 @@ void nmEnvExecute(nmEnvironment_t* env)
 
     env->execStartTime = clock();
 
-    while(pc != functions[func]->instructionsCount)
+    while(pc < functions[func]->instructionsCount)
     {
         current = functions[func]->callableInstructions[pc];
         current->function(env, current->parameters);
@@ -155,8 +158,8 @@ instructionFunction_t getInstructionFunction(nmCallableFunction_t* func, nmProgr
 {
     nmInstructionData_t* data = instr->dataPtr;
 
-    //ret, jmp, call
-    if(data->index == 0x1 || data->index == 0x5 || data->index == 0x6)
+    //ret, jmp, call, syscall
+    if(data->index == 0x1 || data->index == 0x5 || data->index == 0x6 || data->index == 0xB)
         return data->function[0]; //doesn't really care
 
     //push breq
@@ -363,14 +366,9 @@ nmEnvironment_t* nmEnvCreate(nmProgram_t* program)
                         break;
                     }
                     case functionIndex:
-                    {
-                        *(uint64_t*)env->callableFunctions[i]->callableInstructions[instrIndex]->parameters[counter++]
-                            = program->functions[i]->instructions[instrIndex]->parameters[parameterIndex];
-                        break;
-                    }
                     case jumpIndex:
                     {
-                        *(uint64_t*)env->callableFunctions[i]->callableInstructions[instrIndex]->parameters[counter++]
+                        env->callableFunctions[i]->callableInstructions[instrIndex]->parameters[counter++]
                                 = program->functions[i]->instructions[instrIndex]->parameters[parameterIndex];
                         break;
                     }
@@ -406,4 +404,9 @@ void nmEnvFree(nmEnvironment_t* env)
     }
     free(env->callableFunctions);
     free(env);
+}
+
+void setCurrentEnv(nmEnvironment_t* env)
+{
+    currentEnv = env;
 }

@@ -31,9 +31,6 @@
 #define instructionDataBinary(name, index)  { #name, index, { varIndex, varConstFlag, varConstIndex, varConstFlag, varConstIndex }, enumerateFunc(instruction_ ## name) }
 #define instructionDataUnary(name, index)    { #name, index, { varIndex, varConstFlag, varConstIndex, 0, 0 }, enumerateFunc(instruction_ ## name) }
 
-#define declareRetInstruction(name, type)                \
-void name(struct _nmEnvironment* env, void** data) { }   \
-
 #define declarePushInstruction(name, type)           \
 void name(struct _nmEnvironment* env, void** data)   \
 {                                                    \
@@ -50,18 +47,6 @@ void name(struct _nmEnvironment* env, void** data)          \
 void name(struct _nmEnvironment* env, void** data)  \
 {                                                   \
     *(type*)data[0] = *(type*)data[1];              \
-}                                                   \
-
-#define declareJmpInstruction(name, type)           \
-void name(struct _nmEnvironment* env, void** data)  \
-{                                                   \
-    *env->programCounter = *(type*)data[0];         \
-}                                                   \
-
-#define declareCallInstruction(name, type)          \
-void name(struct _nmEnvironment* env, void** data)  \
-{                                                   \
-                                                    \
 }                                                   \
 
 #define declareBreqInstruction(name, type)          \

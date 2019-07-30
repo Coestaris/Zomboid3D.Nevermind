@@ -104,19 +104,28 @@ static instructionFunction_t castFunctions[] = {
     enumerateCastFunc(f32)
     enumerateCastFunc(f64)
 };
+//ret, jmp, call, syscall
+
+void instruction_Ret(struct _nmEnvironment* env, void** data);
+void instruction_Jmp(struct _nmEnvironment* env, void** data);
+void instruction_Call(struct _nmEnvironment* env, void** data);
+void instruction_Syscall(struct _nmEnvironment* env, void** data);
 
 static nmInstructionData_t instructionsData[totalInstructionsCount] = 
 {
         //   Index     PCnt    Function
         //Generic Instructions
-        { "ret",        0x1,  { 0, 0, 0, 0, 0 },                                enumerateFunc(instruction_ret)   }, // ret
+        { "ret",        0x1,  { 0, 0, 0, 0, 0 },                                { instruction_Ret }              }, // ret
         { "push",       0x2,  { varConstFlag, varConstIndex, 0, 0, 0 },         enumerateFunc(instruction_push)  }, // push
         { "pop",        0x3,  { varIndex, 0, 0, 0, 0 },                         enumerateFunc(instruction_pop)   }, // pop
         { "ldi",        0x4,  { varIndex, varConstFlag, varConstIndex, 0, 0 },  enumerateFunc(instruction_ldi)   }, // ldi
-        { "jmp",        0x5,  { jumpIndex, 0, 0, 0, 0 },                        enumerateFunc(instruction_jmp)   }, // jmp
-        { "call",       0x6,  { functionIndex, functionIndex, 0, 0, 0 },        enumerateFunc(instruction_call)  }, // call
+        { "jmp",        0x5,  { jumpIndex, 0, 0, 0, 0 },                        { instruction_Jmp }              }, // jmp
+        { "call",       0x6,  { functionIndex, functionIndex, 0, 0, 0 },        { instruction_Call }             }, // call
         { "breq",       0x7,  { varConstFlag, varConstIndex, jumpIndex, 0, 0 }, enumerateFunc(instruction_breq)  }, // breq,
-        { "cast",       0x8,  { varIndex, varConstFlag, varConstIndex, 0, 0 },  {}                               }, // breq
+        { "cast",       0x8,  { 0, 0, 0, 0, 0 },                                {}                               }, // cast
+        { "vget",       0x9,  { 0, 0, 0, 0, 0 },                                {}                               }, // vget
+        { "vset",       0xA,  { 0, 0, 0, 0, 0 },                                {}                               }, // vset
+        { "syscall",    0xB,  { functionIndex, 0, 0, 0, 0 },                    { instruction_Syscall }          }, //syscall
 
         //Binary Arithmetic instructions
         instructionDataBinary(A_Add,      0x64),

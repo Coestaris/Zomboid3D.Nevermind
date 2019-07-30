@@ -279,6 +279,7 @@ uint8_t chunkhandler_functions(nmProgram_t* program, FILE* file)
 
         if(!program->functions[funcIndex]->instructions[i]->dataPtr)
         {
+            printf("Unknown instruction 0x%X\n", index);
             return 0;
         }
 

@@ -6,11 +6,11 @@
 #define NMRUNNER_ENVIRONMENT_H
 
 #include <stdio.h>
-
-#include "stack.h"
 #include <math.h>
 #include <time.h>
+#include <zconf.h>
 
+#include "stack.h"
 #include "../coretypes.h"
 
 typedef struct _nmCallableInstruction
@@ -55,6 +55,8 @@ typedef struct _nmEnvironment
 
 } nmEnvironment_t;
 
+extern nmEnvironment_t* currentEnv;
+
 void setDefaultValue(void* var, nmType_t* type);
 
 void nmEnvExecute(nmEnvironment_t* env);
@@ -62,5 +64,6 @@ void nmEnvSetStreams(nmEnvironment_t* env, FILE* in, FILE* out);
 void nmEnvDump(nmEnvironment_t* env, FILE* f);
 nmEnvironment_t* nmEnvCreate(nmProgram_t* program);
 void nmEnvFree(nmEnvironment_t* env);
+void setCurrentEnv(nmEnvironment_t* env);
 
 #endif //NMRUNNER_ENVIRONMENT_H

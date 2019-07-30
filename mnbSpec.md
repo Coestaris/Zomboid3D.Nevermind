@@ -133,6 +133,9 @@
    * **1 byte** : src var type
    * **4 bytes**: src variable
 
+###### syscall (0xB)
+   * **4 bytes**: syscall subroutine
+
 ###### Any ab instruction (0x64 - 0x7E):
    * **4 bytes**: result index
    * **1 byte** : operand1 type

@@ -6,6 +6,7 @@
 
 #include "lib/parser.h"
 #include "lib/runtime/environment.h"
+#include "lib/runtime/subroutines.h"
 
 int main()
 {
@@ -16,10 +17,12 @@ int main()
         return 1;
     }
 
+    registerBuiltinSubroutines(subroutines_io | subroutines_sys);
+
     nmProgramPrint(program, stdout);
 
     nmEnvironment_t* env = nmEnvCreate(program);
-    nmEnvSetStreams(env, stdout, stdin);
+    nmEnvSetStreams(env, stdin, stdout);
 
     nmEnvDump(env, stdout);
     nmEnvExecute(env);

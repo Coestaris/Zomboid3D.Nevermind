@@ -317,6 +317,13 @@ namespace Nevermind.ByteCode
                 ch.Add(func.Name.Select(p => (byte)p));
                 ch.Add(func.Token.LineIndex);
                 ch.Add(func.Token.LineOffset);
+                foreach (var variable in func.Parameters)
+                {
+                    ch.Add(variable.Name.Length);
+                    ch.Add(variable.Name.Select(p => (byte)p));
+                    ch.Add(variable.CodeToken.LineIndex);
+                    ch.Add(variable.CodeToken.LineOffset);
+                }
                 foreach (var variable in func.LocalVariables)
                 {
                     ch.Add(variable.Name.Length);

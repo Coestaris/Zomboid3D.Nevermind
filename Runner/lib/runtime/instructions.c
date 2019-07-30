@@ -5,17 +5,6 @@
 #include "instructions.h"
 #include "environment.h"
 
-declareRetInstruction(instruction_ret_i8,  int8_t)
-declareRetInstruction(instruction_ret_i16, int32_t)
-declareRetInstruction(instruction_ret_i32, int32_t)
-declareRetInstruction(instruction_ret_i64, uint64_t)
-declareRetInstruction(instruction_ret_u8,  uint8_t)
-declareRetInstruction(instruction_ret_u16, uint16_t)
-declareRetInstruction(instruction_ret_u32, uint32_t)
-declareRetInstruction(instruction_ret_u64, uint64_t)
-declareRetInstruction(instruction_ret_f32, float)
-declareRetInstruction(instruction_ret_f64, double)
-
 declarePushInstruction(instruction_push_i8,  int8_t)
 declarePushInstruction(instruction_push_i16, int32_t)
 declarePushInstruction(instruction_push_i32, int32_t)
@@ -48,28 +37,6 @@ declareLdiInstruction(instruction_ldi_u32, uint32_t)
 declareLdiInstruction(instruction_ldi_u64, uint64_t)
 declareLdiInstruction(instruction_ldi_f32, float)
 declareLdiInstruction(instruction_ldi_f64, double)
-
-declareJmpInstruction(instruction_jmp_i8,  int8_t)
-declareJmpInstruction(instruction_jmp_i16, int32_t)
-declareJmpInstruction(instruction_jmp_i32, int32_t)
-declareJmpInstruction(instruction_jmp_i64, uint64_t)
-declareJmpInstruction(instruction_jmp_u8,  uint8_t)
-declareJmpInstruction(instruction_jmp_u16, uint16_t)
-declareJmpInstruction(instruction_jmp_u32, uint32_t)
-declareJmpInstruction(instruction_jmp_u64, uint64_t)
-declareJmpInstruction(instruction_jmp_f32, float)
-declareJmpInstruction(instruction_jmp_f64, double)
-
-declareCallInstruction(instruction_call_i8,  int8_t)
-declareCallInstruction(instruction_call_i16, int32_t)
-declareCallInstruction(instruction_call_i32, int32_t)
-declareCallInstruction(instruction_call_i64, uint64_t)
-declareCallInstruction(instruction_call_u8,  uint8_t)
-declareCallInstruction(instruction_call_u16, uint16_t)
-declareCallInstruction(instruction_call_u32, uint32_t)
-declareCallInstruction(instruction_call_u64, uint64_t)
-declareCallInstruction(instruction_call_f32, float)
-declareCallInstruction(instruction_call_f64, double)
 
 declareBreqInstruction(instruction_breq_i8,  int8_t)
 declareBreqInstruction(instruction_breq_i16, int32_t)
@@ -157,4 +124,37 @@ size_t getOperandsCount(nmInstructionData_t* data)
     size_t count = 0;
     while(count < 5 && data->parameterTypes[count] != 0) count++;
     return count;
+}
+
+#include "subroutines.h"
+
+void instruction_Syscall(struct _nmEnvironment* env, void** data)
+{
+    uint64_t index = data[0];
+    subroutines[index]->func(env);
+}
+
+void instruction_Ret(struct _nmEnvironment* env, void** data)
+{
+    uint32_t pc = popStack(env->pcStack);
+    uint32_t func = popStack(env->callStack);
+
+    *env->funcIndex = func;
+    *env->programCounter = pc;
+}
+
+void instruction_Jmp(struct _nmEnvironment* env, void** data)
+{
+
+}
+
+void instruction_Call(struct _nmEnvironment* env, void** data)
+{
+    //module index??
+    uint64_t funcIndex = data[1];
+    pushStack(env->callStack, (void*)*env->funcIndex);
+    pushStack(env->pcStack,   (void*)*env->programCounter);
+
+    *env->funcIndex = funcIndex;
+    *env->programCounter = -1;
 }

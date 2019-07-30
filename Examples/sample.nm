@@ -2,7 +2,7 @@
  * Simple program example
  */
 
-[syscall: printi, begin];
+//[syscall: printi, begin];
 function print(a : integer) { }
 
 entrypoint function integer main()
