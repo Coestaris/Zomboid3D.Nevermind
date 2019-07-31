@@ -22,7 +22,7 @@ void freeStack(stack_t* stack)
 void* popStack(stack_t* stack)
 {
     assert(stack->position != 0);
-    return stack->stack[stack->position--];
+    return stack->stack[--stack->position];
 }
 
 void pushStack(stack_t* stack, void* value)

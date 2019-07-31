@@ -2,10 +2,10 @@
  * Simple program example
  */
 
-//[syscall: printi, begin];
-function print(a : integer) { }
+[syscall: printi, begin];
+function printi(a : integer) { }
 
 entrypoint function integer main()
 {
-    print(4);
+    printi(4 + 5 * 2);
 }

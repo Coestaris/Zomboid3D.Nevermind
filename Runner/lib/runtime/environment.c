@@ -79,7 +79,8 @@ void nmEnvExecute(nmEnvironment_t* env)
 
     setCurrentEnv(env);
 
-    pushStack(env->callStack, &func);
+    pushStack(env->callStack, (void*)func);
+    pushStack(env->pcStack, (void*)functions[func]->instructionsCount);
 
     env->programCounter = &pc;
     env->funcIndex = &func;
@@ -94,8 +95,6 @@ void nmEnvExecute(nmEnvironment_t* env)
     }
 
     env->execEndTime = clock();
-
-    popStack(env->callStack);
 
     env->programCounter = NULL;
     env->funcIndex = NULL;

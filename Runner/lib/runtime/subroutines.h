@@ -17,8 +17,10 @@ typedef struct _nmSubroutine {
 
 typedef enum _nmSubroutineScope {
 
-    subroutines_io  = 0x1U,
-    subroutines_sys = 0x2U,
+    subroutines_io   = 0x1U,
+    subroutines_sys  = 0x2U,
+    subroutines_math = 0x4U,
+
 } nmSubroutineScope_t;
 
 void registerSubroutine(nmSubroutine_t*);
