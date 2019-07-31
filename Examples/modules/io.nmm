@@ -1,17 +1,10 @@
 module io;
 
-initialization function init()
-{
-}
+initialization function init() { }
 
-var global : integer;
+[syscall: io_printi, begin];
+function printi(a : integer) { }
 
-finalization function fin()
-{
-    var v : integer = 4 * 1 + 99o + global;
-}
+[syscall: io_printf, begin];
+function printf(a : real) { }
 
-private function real inc(param : real)
-{
-    return param + 1;
-}

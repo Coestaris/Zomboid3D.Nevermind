@@ -1,0 +1,16 @@
+module math;
+
+initialization function init() { }
+finalization function fin() { }
+
+[syscall: m_sin, begin]
+public function real sin(a : real) 
+{
+    return a;
+}
+
+[syscall: m_cos, begin]
+public function real cos(a : real) 
+{
+    return a;
+}

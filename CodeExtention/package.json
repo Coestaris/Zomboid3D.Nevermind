@@ -13,7 +13,7 @@
         "languages": [{
             "id": "nm",
             "aliases": ["Nevermind", "nm"],
-            "extensions": [".nm"],
+            "extensions": [".nm", ".nmm"],
             "configuration": "./language-configuration.json"
         }],
         "grammars": [{

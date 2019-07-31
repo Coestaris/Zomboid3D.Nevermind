@@ -88,6 +88,49 @@
      * **4 bytes**: Local definition line index
      * **4 bytes**: Local definition char index
 
+#### Syscall specification
+todo
+##### io
+
+###### io_print_i (0x1)
+###### io_print_f (0x2)
+###### io_print_s (0x3)
+###### io_print   (0x4)
+###### io_fprint  (0x5)
+
+##### sys
+
+###### sys_get_time (0x100)
+###### sys_get_gpc  (0x101)
+###### sys_get_pc   (0x102)
+###### sys_get_fc   (0x103)
+
+##### math
+
+###### m_acos  (0x200)
+###### m_asin  (0x201)
+###### m_atan  (0x202)
+###### m_atan2 (0x203)
+###### m_ceil  (0x204)
+###### m_cos   (0x205)
+###### m_cosh  (0x206)
+###### m_exp   (0x207)
+###### m_fabs  (0x208)
+###### m_floor (0x209)
+###### m_fmod  (0x20A)
+###### m_frexp (0x20B)
+###### m_ldexp (0x20C)
+###### m_log   (0x20D)
+###### m_log10 (0x20E)
+###### m_log2  (0x20F)
+###### m_modf  (0x210)
+###### m_pow   (0x211)
+###### m_sin   (0x212)
+###### m_sinh  (0x213)
+###### m_sqrt  (0x214)
+###### m_tan   (0x215)
+###### m_tanh  (0x216)
+
 #### Instructions format
 ###### ret (0x1)
 
@@ -134,7 +177,7 @@
    * **4 bytes**: src variable
 
 ###### syscall (0xB)
-   * **4 bytes**: syscall subroutine
+   * **4 bytes**: subroutine index
 
 ###### Any ab instruction (0x64 - 0x7E):
    * **4 bytes**: result index

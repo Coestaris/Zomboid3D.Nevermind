@@ -2,8 +2,8 @@
  * Simple program example
  */
 
-[syscall: printi, begin];
-function printi(a : integer) { }
+import io;
+import math;
 
 entrypoint function integer main()
 {

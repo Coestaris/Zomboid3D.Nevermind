@@ -32,6 +32,11 @@
 			"begin": "//",
 			"end": "\\n"
 		},
+		"attribName":
+		{
+			"name": "entity.name.class",
+			"match": "(?<=\\[)\\w+(?=\\:)"
+		},
 		"mlComment":
 		{
 			"name": "comment.nm",
