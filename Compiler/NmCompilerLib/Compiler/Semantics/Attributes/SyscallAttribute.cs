@@ -18,7 +18,7 @@ namespace Nevermind.Compiler.Semantics.Attributes
             else return new CompileError(CompileErrorType.WrongSyscallAppendType, Parameters[1]);
 
             if(!Codes.SyscallTypes.TryGetValue(CallName.StringValue, out CallCode))
-                throw new CompileException(CompileErrorType.UnknownSyscallType, Parameters[0]);
+                return new CompileError(CompileErrorType.UnknownSyscallType, Parameters[0]);
 
             return null;
         }

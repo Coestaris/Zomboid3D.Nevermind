@@ -19,7 +19,7 @@ int main()
 
     registerBuiltinSubroutines(subroutines_io | subroutines_sys);
 
-    //nmProgramPrint(program, stdout);
+    nmProgramPrint(program, stdout);
 
     nmEnvironment_t* env = nmEnvCreate(program);
     nmEnvSetStreams(env, stdin, stdout);

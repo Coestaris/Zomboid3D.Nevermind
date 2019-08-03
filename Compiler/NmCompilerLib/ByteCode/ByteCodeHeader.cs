@@ -58,7 +58,7 @@ namespace Nevermind.ByteCode
             foreach (var import in Program.Imports)
             {
                 //ммм, какая ахуенная рекурсия
-                var func = import.LinkedModule.Program.ByteCode.Instructions.Find(p => p.Function.Name == name);
+                var func = import.LinkedModule.Program.ByteCode.Instructions.Find(p => p.Function.OriginalName == name);
                 if (func != null)
                 {
                     if(func.Function.Modifier != FunctionModifier.Public)
@@ -76,11 +76,14 @@ namespace Nevermind.ByteCode
                     else
                     {
                         //embedding
-                        EmbedFunction(func, nearToken);
+                        if (!func.IsEmbedded)
+                        {
+                            EmbedFunction(func, nearToken);
+                            func.IsEmbedded = true;
+                        }
                     }
                     return func.Function;
                 }
-
                 index++;
             }
 

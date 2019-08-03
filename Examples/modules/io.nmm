@@ -1,10 +1,11 @@
 module io;
 
 initialization function init() { }
+finalization function fin() { }
 
-[syscall: io_printi, begin];
-function printi(a : integer) { }
+[syscall: io_print_i, begin];
+public function printi(a : integer) { }
 
-[syscall: io_printf, begin];
-function printf(a : real) { }
+[syscall: io_print_f, begin];
+public function printf(a : real) { }
 

@@ -98,12 +98,8 @@ namespace Nevermind.Compiler.Semantics
                 else if(lex.Type == LexemeType.Import)
                 {
                     var importName = (lex as ImportLexeme).ImportName.StringValue;
-                    var files = new List<string>();
 
-                    foreach (var directory in program.IncludeDirectories)
-                        files.AddRange(Directory.GetFiles(directory, "*.nm"));
-
-                    var matchedFile = files.Find(p => new FileInfo(p).Name == importName + ".nm");
+                    var matchedFile = program.Source.ModuleNames.Find(p => new FileInfo(p).Name == importName + ".nmm");
                     if(matchedFile == null)
                         return new CompileError(CompileErrorType.UnknownModuleName, lex.Tokens?[0]);
 

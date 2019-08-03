@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Text;
 using Nevermind.ByteCode.Types;
 using Nevermind.Compiler;
 using Nevermind.Compiler.Formats;
@@ -26,6 +27,8 @@ namespace Nevermind.ByteCode.Functions
         public int ModuleIndex = -1;
         public int Index;
 
+        public string OriginalName;
+
         public Function(NmProgram program, string name, FunctionModifier modifier,
             Type returnType, int scope,
             List<FunctionParameter> parameters = null,
@@ -38,6 +41,8 @@ namespace Nevermind.ByteCode.Functions
             Parameters = parameters ?? new List<FunctionParameter>();
             RawLexeme = rawLexeme;
             Scope = scope;
+
+            OriginalName = name;
         }
 
         public CompileError ResolveLexemes()

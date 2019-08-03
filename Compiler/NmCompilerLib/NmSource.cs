@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using Nevermind.Compiler;
@@ -7,6 +8,15 @@ namespace Nevermind
     public class NmSource
     {
         private readonly string _source;
+
+        internal List<string> ModuleNames;
+
+        internal void ProceedModuleNames(List<string> includeDirectories)
+        {
+            ModuleNames = new List<string>();
+            foreach (var directory in includeDirectories)
+                ModuleNames.AddRange(Directory.GetFiles(directory, "*.nmm"));
+        }
 
         private NmSource(string source, string fileName = null)
         {

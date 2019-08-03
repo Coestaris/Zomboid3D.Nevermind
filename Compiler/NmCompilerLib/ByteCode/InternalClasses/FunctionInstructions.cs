@@ -9,6 +9,7 @@ namespace Nevermind.ByteCode.InternalClasses
     {
         public List<Variable> Registers;
         public List<Variable> Locals;
+        public bool IsEmbedded;
 
         public readonly List<Instruction> Instructions;
         public readonly Function Function;
@@ -18,6 +19,7 @@ namespace Nevermind.ByteCode.InternalClasses
             Function = function;
             Instructions = new List<Instruction>();
         }
+
 
         public Chunk GetChunk()
         {

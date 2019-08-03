@@ -57,6 +57,8 @@ namespace Nevermind.Compiler.Semantics
         internal CompileError Parse(NmProgram program, Token token)
         {
             var source = NmSource.FromFile(FileName);
+            source.ModuleNames = program.Source.ModuleNames;
+
             var newProgram = new NmProgram(source)
             {
                 Verbose = program.Verbose,

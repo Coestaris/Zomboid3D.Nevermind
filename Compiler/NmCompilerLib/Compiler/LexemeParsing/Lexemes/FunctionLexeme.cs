@@ -57,7 +57,7 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes
 
             var bracketIndex = tokens.FindIndex(p => p.Type == TokenType.BracketOpen);
 
-            if (bracketIndex != 2)
+            if (bracketIndex != 2 + (Modifier != FunctionModifier.None ? 1 : 0))
             {
                 //Has type and Name
                 Name = tokens[bracketIndex - 1];

@@ -122,7 +122,7 @@ static nmInstructionData_t instructionsData[totalInstructionsCount] =
         { "jmp",        0x5,  { jumpIndex, 0, 0, 0, 0 },                        { instruction_Jmp }              }, // jmp
         { "call",       0x6,  { functionIndex, functionIndex, 0, 0, 0 },        { instruction_Call }             }, // call
         { "breq",       0x7,  { varConstFlag, varConstIndex, jumpIndex, 0, 0 }, enumerateFunc(instruction_breq)  }, // breq,
-        { "cast",       0x8,  { 0, 0, 0, 0, 0 },                                {}                               }, // cast
+        { "cast",       0x8,  { varIndex, varConstFlag, varConstIndex, 0, 0 },  {}                               }, // cast
         { "vget",       0x9,  { 0, 0, 0, 0, 0 },                                {}                               }, // vget
         { "vset",       0xA,  { 0, 0, 0, 0, 0 },                                {}                               }, // vset
         { "syscall",    0xB,  { functionIndex, 0, 0, 0, 0 },                    { instruction_Syscall }          }, //syscall

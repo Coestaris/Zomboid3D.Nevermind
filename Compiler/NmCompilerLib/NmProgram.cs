@@ -95,6 +95,7 @@ namespace Nevermind
         {
             CompileError error;
             StartMeasureTime();
+            Source.ProceedModuleNames(IncludeDirectories);
             var source = Source.GetSource(out error);
             if (error != null)
                 return error;
