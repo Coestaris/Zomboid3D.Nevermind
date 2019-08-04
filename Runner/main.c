@@ -19,18 +19,18 @@ int main()
 
     registerBuiltinSubroutines(subroutines_default);
 
-    nmProgramPrint(program, stdout);
+    //nmProgramPrint(program, stdout);
 
     nmEnvironment_t* env = nmEnvCreate(program);
     nmEnvSetStreams(env, stdin, stdout);
 
-    nmEnvDump(env, stdout);
+    //nmEnvDump(env, stdout);
     fputs("\n================\n", stdout);
 
     nmEnvExecute(env);
     fputs("\n===============\n\n", stdout);
 
-    nmEnvDump(env, stdout);
+    //nmEnvDump(env, stdout);
 
     printf("Done in %lf ms", nmGetExecTime(env));
 

@@ -12,6 +12,7 @@ namespace Nevermind.Compiler.LexemeParsing
         Function,
         Expression,
         Return,
+        While,
         Else,
 
         Unknown

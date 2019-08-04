@@ -384,6 +384,33 @@ namespace Nevermind.ByteCode
                                 registers, instructionsSet, locals, null);
                         }
                         break;
+                    case LexemeType.While:
+                        {
+                            var whileLexeme = lexeme as WhileLexeme;
+                            int startIndex = labelIndex;
+
+                            //Calculate expression
+                            var expression = whileLexeme.Expression;
+                            Variable variable;
+                            ExpressionToList(expression, lexeme, function, out variable, ref labelIndex, ref localVarIndex, ref regCount,
+                                registers, instructionsSet, locals, null);
+
+                            if(variable == null)
+                                throw new CompileException(CompileErrorType.ExpressionIsNotVariable, lexeme.Tokens[1]);
+
+                            instructionsSet.Instructions.Add(new InstructionBrEq(variable, -1, function, this, labelIndex++));
+                            var eq = instructionsSet.Instructions.Last() as InstructionBrEq;
+
+                            //Proceed block
+                            GetInstructionList(whileLexeme.Block, function, ref localVarIndex, ref regCount, ref labelIndex,
+                                registers, instructionsSet, locals);
+
+                            instructionsSet.Instructions.Add(
+                                new InstructionJmp(startIndex, function, this, labelIndex++));
+
+                            eq.Index = labelIndex;
+                        }
+                        break;
                     case LexemeType.Return:
                         {
                             //Calculate expression
@@ -471,10 +498,11 @@ namespace Nevermind.ByteCode
                 var labelIndex = 0;
                 var instructionSet = new FunctionInstructions(function);
 
-                if (function.Modifier == FunctionModifier.Entrypoint)
+                //link inits
+                /*if (function.Modifier == FunctionModifier.Entrypoint)
                     foreach (var initFunction in inits)
                         instructionSet.Instructions.Add(
-                            new InstructionCall(initFunction.Function, function, this, labelIndex));
+                            new InstructionCall(initFunction.Function, function, this, labelIndex));*/
 
                 var localVarIndex = Program.ProgramGlobals.Count;
 
@@ -511,10 +539,11 @@ namespace Nevermind.ByteCode
                 GetInstructionList(function.RawLexeme, function, ref localVarIndex, ref regCount, ref labelIndex,
                     registers, instructionSet, locals);
 
-                if (function.Modifier == FunctionModifier.Entrypoint)
+                //link fins
+/*                if (function.Modifier == FunctionModifier.Entrypoint)
                     foreach (var initFunction in fins)
                         instructionSet.Instructions.Add(
-                            new InstructionCall(initFunction.Function, function, this, labelIndex));
+                            new InstructionCall(initFunction.Function, function, this, labelIndex));*/
 
                 //end syscalls
                 foreach (var attribute in function.Attributes.FindAll(p => p is SyscallAttribute && ((SyscallAttribute) p).AppendToEnd))

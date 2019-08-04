@@ -145,7 +145,7 @@ void instruction_Ret(struct _nmEnvironment* env, void** data)
 
 void instruction_Jmp(struct _nmEnvironment* env, void** data)
 {
-
+    *env->programCounter = data[0] - 1;
 }
 
 void instruction_Call(struct _nmEnvironment* env, void** data)

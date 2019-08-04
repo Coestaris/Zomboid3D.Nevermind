@@ -15,26 +15,32 @@ namespace Nevermind.ByteCode
         {
             foreach (var function in byteCode.Instructions)
             {
-                //SimplifySetInstructions(byteCode, function);
                 DeleteUnusedRegisters(byteCode, function);
                 OptimizeRegisters(byteCode, function);
                 DeleteDuplicatedRegisters(byteCode, function);
+
+                //OptimizePopPushCase(byteCode, function);
+                //DeleteUnusedRegisters(byteCode, function);
+
                 FixRegistersIndexes(byteCode, function);
             }
         }
 
-        private static void SimplifySetInstructions(ByteCode byteCode, FunctionInstructions function)
+        private static void OptimizePopPushCase(ByteCode byteCode, FunctionInstructions function)
         {
-            for (int i = 0; i < function.Instructions.Count; i++)
+            for (int i = 0; i < function.Instructions.Count - 1; i++)
             {
-                if (function.Instructions[i].Type == InstructionType._Binary &&
-                    ((BinaryArithmeticInstruction) function.Instructions[i]).AType == BinaryArithmeticInstructionType.A_Set)
+                //has PUSH after POP
+                if (function.Instructions[i].Type == InstructionType.Pop &&
+                    function.Instructions[i + 1].Type == InstructionType.Push)
                 {
-                    var instruction = (BinaryArithmeticInstruction) function.Instructions[i];
-                    if (!VariableUsed(instruction.Result.Index, i + 1, function))
+                    //both have same index
+                    if ((function.Instructions[i] as InstructionPop).Result.Index ==
+                        (function.Instructions[i + 1] as InstructionPush).Variable.Index)
                     {
-                        function.Instructions[i] = new InstructionLdi(instruction.Operand2, instruction.Operand1,
-                            instruction.Function, instruction.ByteCode, instruction.Label);
+                        function.Instructions.RemoveAt(i + 1);
+                        function.Instructions.RemoveAt(i);
+                        i -= 1;
                     }
                 }
             }

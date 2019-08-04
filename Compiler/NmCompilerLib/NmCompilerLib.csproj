@@ -113,6 +113,7 @@
     <Compile Include="Compiler\LexemeParsing\Lexemes\ModuleLexeme.cs" />
     <Compile Include="Compiler\LexemeParsing\Lexemes\UnknownLexeme.cs" />
     <Compile Include="Compiler\LexemeParsing\Lexemes\VarLexeme.cs" />
+    <Compile Include="Compiler\LexemeParsing\Lexemes\WhileLexeme.cs" />
     <Compile Include="Compiler\LexemeParsing\LexemeType.cs" />
     <Compile Include="Compiler\LexemeParsing\Lexemizer.cs" />
     <Compile Include="Compiler\CompileException.cs" />

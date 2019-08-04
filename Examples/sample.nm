@@ -2,10 +2,22 @@
  * Simple program example
  */
  
-import io;
+import io; 
 import math;
 
-entrypoint function integer main()
+entrypoint function main()
 {
-    var a : integer = 5;
+    var a : integer = 0;
+    var b : integer = 1;
+    var c : integer = 0;
+
+    while(a > 1000)
+    {
+       printi(a);       
+       a = b + c;
+       c = b;
+       b = a;
+    }
+
+    printi(a);
 }

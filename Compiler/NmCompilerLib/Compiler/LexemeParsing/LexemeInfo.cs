@@ -36,6 +36,7 @@ namespace Nevermind.Compiler.LexemeParsing
                         return new FunctionLexeme(tokens);
                     case LexemeType.Var:
                     case LexemeType.If:
+                    case LexemeType.While:
                     case LexemeType.Expression:
                     case LexemeType.Return:
                     case LexemeType.Else:
@@ -52,6 +53,8 @@ namespace Nevermind.Compiler.LexemeParsing
 
                 switch (Type)
                 {
+                    case LexemeType.While:
+                        return new WhileLexeme(tokens);
                     case LexemeType.Import:
                         return new ImportLexeme(tokens);
                     case LexemeType.Module:

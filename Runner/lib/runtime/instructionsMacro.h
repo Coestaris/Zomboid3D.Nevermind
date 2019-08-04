@@ -49,11 +49,12 @@ void name(struct _nmEnvironment* env, void** data)  \
     *(type*)data[0] = *(type*)data[1];              \
 }                                                   \
 
-#define declareBreqInstruction(name, type)          \
-void name(struct _nmEnvironment* env, void** data)  \
-{                                                   \
-                                                    \
-}                                                   \
+#define declareBreqInstruction(name, type)            \
+void name(struct _nmEnvironment* env, void** data)    \
+{                                                     \
+    if(*(type*)data[0])                               \
+        *env->programCounter = (uint32_t)data[1] - 1; \
+}                                                     \
 
 
 #define decalreABInstruction(name, type, sign)                  \

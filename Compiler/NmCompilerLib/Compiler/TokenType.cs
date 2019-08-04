@@ -55,10 +55,12 @@ namespace Nevermind.Compiler
         EntrypointKeyword     = (ulong)(1UL << 37),
         ReturnKeyword         = (ulong)(1UL << 38),
         ElseKeyword           = (ulong)(1UL << 39),
+        WhileKeyword          = (ulong)(1UL << 40),
+        ForKeyword            = (ulong)(1UL << 41),
 
-        StringToken           = (ulong)(1UL << 40),
+        StringToken           = (ulong)(1UL << 42),
 
-        ComplexToken          = (ulong)(1UL << 41)
+        ComplexToken          = (ulong)(1UL << 43)
     }
 
     internal static class TokenTypeExtensions
@@ -73,6 +75,8 @@ namespace Nevermind.Compiler
         private static Dictionary<TokenType, string> _tokenDict = new Dictionary<TokenType, string>()
         {
             { TokenType.ImportKeyword, "import" },
+            { TokenType.WhileKeyword, "while" },
+            { TokenType.ForKeyword, "for" },
             { TokenType.VarKeyword, "var" },
             { TokenType.IfKeyword, "if" },
             { TokenType.FunctionKeyword, "function" },

@@ -209,6 +209,33 @@ void nmEnvDump(nmEnvironment_t* env, FILE* f)
 {
     fputs("===Memory Dump===\n\n", f);
 
+    fprintf(f, "Globals: \n");
+    for(size_t i = 0; i < env->program->globalsCount; i++)
+    {
+        nmType_t* type = getTypeByIndex(NULL, env->program, env->program->globalsTypes[i]);
+        char* sValue = nmConstantToStr(env->globals[i], type);
+
+        if(env->program->sourceFilename)
+        {
+            fprintf(f, " - \"%s\" (%li) at %i:%i: global of type %i. Value: %s (%p)\n",
+                    env->program->globalsNames[i],
+                    i,
+                    env->program->globalsSourceLineIndices[i],
+                    env->program->globalsSourceCharIndices[i],
+                    type->typeIndex,
+                    sValue,
+                    env->globals[i]);
+        }
+        else
+        {
+            fprintf(f, " - %li: global of type %i. Value: %s (%p)\n",
+                    i,
+                    type->typeIndex,
+                    sValue,
+                    env->globals[i]);
+        }
+    }
+
     for(size_t i = 0; i < env->program->funcCount; i++)
     {
         if(env->program->sourceFilename)

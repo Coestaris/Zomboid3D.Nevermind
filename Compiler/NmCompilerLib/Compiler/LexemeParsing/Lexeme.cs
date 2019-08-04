@@ -85,6 +85,16 @@ namespace Nevermind.Compiler.LexemeParsing
                 }),
 
             new LexemeInfo(
+                LexemeType.While,
+                new List<LexemePatternToken>
+                {
+                    new LexemePatternToken(TokenType.WhileKeyword),
+                    new LexemePatternToken(TokenType.BracketOpen),
+                    new LexemePatternToken(Token.MathExpressionTokenType, true, true),
+                    new LexemePatternToken(TokenType.BracketClosed)
+                }),
+
+            new LexemeInfo(
                 LexemeType.If,
                 new List<LexemePatternToken>
                 {
