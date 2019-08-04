@@ -20,8 +20,7 @@ namespace Nevermind.ByteCode.InternalClasses
             Instructions = new List<Instruction>();
         }
 
-
-        public Chunk GetChunk()
+        public Chunk GetChunk(ByteCodeHeader parentHeader)
         {
             var ch = new Chunk(ChunkType.FUNC);
             ch.Add(Function.Index);
@@ -29,11 +28,11 @@ namespace Nevermind.ByteCode.InternalClasses
 
             ch.Add(Locals.Count);
             foreach (var local in Locals)
-                ch.Add(Function.Program.ByteCode.Header.GetTypeIndex(local.Type));
+                ch.Add(parentHeader.GetTypeIndex(local.Type));
 
             ch.Add(Registers.Count);
             foreach (var register in Registers)
-                ch.Add(Function.Program.ByteCode.Header.GetTypeIndex(register.Type));
+                ch.Add(parentHeader.GetTypeIndex(register.Type));
 
             foreach (var instruction in Instructions)
             {

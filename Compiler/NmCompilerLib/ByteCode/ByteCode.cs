@@ -578,7 +578,7 @@ namespace Nevermind.ByteCode
 
             foreach (var instruction in Instructions)
             {
-                chunks.Add(instruction.GetChunk());
+                chunks.Add(instruction.GetChunk(Header));
             }
 
             if(Program.SaveDebugInfo)
