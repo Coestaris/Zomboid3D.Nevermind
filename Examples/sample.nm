@@ -7,5 +7,5 @@ import math;
 
 entrypoint function integer main()
 {
-    printf(sqrt(16 + 1) / 2);
+    var a : integer = 5;
 }

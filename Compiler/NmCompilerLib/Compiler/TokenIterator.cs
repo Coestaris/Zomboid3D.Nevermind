@@ -18,11 +18,18 @@ namespace Nevermind.Compiler
             Current = default(T);
         }
 
+        public bool IsLast => Index == _list.Count - 1;
+
         public T GetNext()
         {
             if(Index >= _list.Count - 1) return default(T);
             Current = _list[++Index];
             return Current;
+        }
+
+        public void RollBack()
+        {
+            if(Index != 0) Index--;
         }
     }
 }

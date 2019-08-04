@@ -34,7 +34,7 @@ public function double fabs(a : double) { return a; }
 public function double floor(a : double) { return a; }
 
 [syscall: m_fmod, begin];
-public function double fmod(a : double, a : double) { return a; }
+public function double fmod(a : double, b : double) { return a; }
 
 [syscall: m_log, begin];
 public function double log(a : double) { return a; }

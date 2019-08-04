@@ -139,6 +139,10 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes
 
                         Parameters.Add(new LexemeFunctionParameter(parameterType, parameterName));
                         state = 3;
+
+                        if (parameterType.Count == 1 && !tokenIterator.IsLast)
+                            tokenIterator.RollBack();
+
                         break;
                     }
 
