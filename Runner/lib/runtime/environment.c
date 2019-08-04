@@ -6,6 +6,11 @@
 
 nmEnvironment_t* currentEnv;
 
+double nmGetExecTime(nmEnvironment_t* env)
+{
+    return 1000.0 * (double)(env->execEndTime - env->execStartTime) / (double)CLOCKS_PER_SEC;
+}
+
 void setDefaultValue(void* var, nmType_t* type)
 {
     switch(type->typeSignature)

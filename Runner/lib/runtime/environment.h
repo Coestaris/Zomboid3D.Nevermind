@@ -65,5 +65,6 @@ void nmEnvDump(nmEnvironment_t* env, FILE* f);
 nmEnvironment_t* nmEnvCreate(nmProgram_t* program);
 void nmEnvFree(nmEnvironment_t* env);
 void setCurrentEnv(nmEnvironment_t* env);
+double nmGetExecTime(nmEnvironment_t* env);
 
 #endif //NMRUNNER_ENVIRONMENT_H

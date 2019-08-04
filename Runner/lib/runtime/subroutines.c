@@ -39,60 +39,7 @@ void registerSubroutine(nmSubroutine_t* subroutine)
     subroutines[subroutine->index] = subroutine;
 }
 
-void sr_io_print_i()
-{
-    void* local = currentEnv->callableFunctions[*currentEnv->funcIndex]->locals[0];
-    fprintf(currentEnv->outs,"[PROGRAM]: %i\n", *((int32_t*)local));
-}
-
-void sr_io_print_f()
-{
-    void* local = currentEnv->callableFunctions[*currentEnv->funcIndex]->locals[0];
-    fprintf(currentEnv->outs,"[PROGRAM]: %lf\n", *((double*)local));
-}
-
-void sr_io_print_s() { }
-void sr_io_print() { }
-void sr_io_fprint() { }
-
-void sr_sys_get_time() {}
-void sr_sys_get_gpc() {}
-void sr_sys_get_pc() {}
-void sr_sys_get_fc() {}
-
-#define subroutineMath(name)                                                          \
-    double* local = currentEnv->callableFunctions[*currentEnv->funcIndex]->locals[0]; \
-    *local = name(*local);
-
-void sr_m_acos() { }
-void sr_m_asin() {}
-void sr_m_atan() {}
-void sr_m_atan2() {}
-void sr_m_ceil() {}
-void sr_m_cos() { subroutineMath(cos) }
-void sr_m_cosh() {}
-void sr_m_exp() {}
-void sr_m_fabs() {}
-void sr_m_floor() {}
-void sr_m_fmod() {}
-void sr_m_frexp() {}
-void sr_m_ldexp() {}
-void sr_m_log() {}
-void sr_m_log10() {}
-void sr_m_log2() {}
-void sr_m_modf() {}
-void sr_m_pow() {}
-void sr_m_sin() { subroutineMath(sin) }
-void sr_m_sinh() {}
-void sr_m_sqrt()
-{
-    double* local = currentEnv->callableFunctions[*currentEnv->funcIndex]->locals[0];
-    *local = sqrt(*local);
-}
-
-void sr_m_tan() {}
-void sr_m_tanh() {}
-
+#include "defaultSubroutines.h"
 void registerBuiltinSubroutines(nmSubroutineScope_t scope)
 {
     if(scope & subroutines_io)
@@ -125,18 +72,57 @@ void registerBuiltinSubroutines(nmSubroutineScope_t scope)
         registerSubroutine(createSubroutine(0x208, sr_m_fabs));
         registerSubroutine(createSubroutine(0x209, sr_m_floor));
         registerSubroutine(createSubroutine(0x20A, sr_m_fmod));
-        registerSubroutine(createSubroutine(0x20B, sr_m_frexp));
-        registerSubroutine(createSubroutine(0x20C, sr_m_ldexp));
-        registerSubroutine(createSubroutine(0x20D, sr_m_log));
-        registerSubroutine(createSubroutine(0x20E, sr_m_log10));
-        registerSubroutine(createSubroutine(0x20F, sr_m_log2));
-        registerSubroutine(createSubroutine(0x210, sr_m_modf));
-        registerSubroutine(createSubroutine(0x211, sr_m_pow));
-        registerSubroutine(createSubroutine(0x212, sr_m_sin));
-        registerSubroutine(createSubroutine(0x213, sr_m_sinh));
-        registerSubroutine(createSubroutine(0x214, sr_m_sqrt));
-        registerSubroutine(createSubroutine(0x215, sr_m_tan));
-        registerSubroutine(createSubroutine(0x216, sr_m_tanh));
+        registerSubroutine(createSubroutine(0x20B, sr_m_log));
+        registerSubroutine(createSubroutine(0x20C, sr_m_log10));
+        registerSubroutine(createSubroutine(0x20D, sr_m_log2));
+        registerSubroutine(createSubroutine(0x20E, sr_m_pow));
+        registerSubroutine(createSubroutine(0x20F, sr_m_sin));
+        registerSubroutine(createSubroutine(0x210, sr_m_sinh));
+        registerSubroutine(createSubroutine(0x211, sr_m_sqrt));
+        registerSubroutine(createSubroutine(0x212, sr_m_tan));
+        registerSubroutine(createSubroutine(0x213, sr_m_tanh));
+
+        registerSubroutine(createSubroutine(0x214, sr_m_acosf));
+        registerSubroutine(createSubroutine(0x215, sr_m_asinf));
+        registerSubroutine(createSubroutine(0x216, sr_m_atanf));
+        registerSubroutine(createSubroutine(0x217, sr_m_atan2f));
+        registerSubroutine(createSubroutine(0x218, sr_m_ceilf));
+        registerSubroutine(createSubroutine(0x219, sr_m_cosf));
+        registerSubroutine(createSubroutine(0x21A, sr_m_coshf));
+        registerSubroutine(createSubroutine(0x21B, sr_m_expf));
+        registerSubroutine(createSubroutine(0x21C, sr_m_fabsf));
+        registerSubroutine(createSubroutine(0x21D, sr_m_floorf));
+        registerSubroutine(createSubroutine(0x21E, sr_m_fmodf));
+        registerSubroutine(createSubroutine(0x21F, sr_m_logf));
+        registerSubroutine(createSubroutine(0x220, sr_m_log10f));
+        registerSubroutine(createSubroutine(0x221, sr_m_log2f));
+        registerSubroutine(createSubroutine(0x222, sr_m_powf));
+        registerSubroutine(createSubroutine(0x223, sr_m_sinf));
+        registerSubroutine(createSubroutine(0x224, sr_m_sinhf));
+        registerSubroutine(createSubroutine(0x225, sr_m_sqrtf));
+        registerSubroutine(createSubroutine(0x226, sr_m_tanf));
+        registerSubroutine(createSubroutine(0x227, sr_m_tanhf));
+
+        registerSubroutine(createSubroutine(0x228, sr_m_acosl));
+        registerSubroutine(createSubroutine(0x229, sr_m_asinl));
+        registerSubroutine(createSubroutine(0x22A, sr_m_atanl));
+        registerSubroutine(createSubroutine(0x22B, sr_m_atan2l));
+        registerSubroutine(createSubroutine(0x22C, sr_m_ceill));
+        registerSubroutine(createSubroutine(0x22D, sr_m_cosl));
+        registerSubroutine(createSubroutine(0x22E, sr_m_coshl));
+        registerSubroutine(createSubroutine(0x22F, sr_m_expl));
+        registerSubroutine(createSubroutine(0x230, sr_m_fabsl));
+        registerSubroutine(createSubroutine(0x231, sr_m_floorl));
+        registerSubroutine(createSubroutine(0x232, sr_m_fmodl));
+        registerSubroutine(createSubroutine(0x233, sr_m_logl));
+        registerSubroutine(createSubroutine(0x234, sr_m_log10l));
+        registerSubroutine(createSubroutine(0x235, sr_m_log2l));
+        registerSubroutine(createSubroutine(0x236, sr_m_powl));
+        registerSubroutine(createSubroutine(0x237, sr_m_sinl));
+        registerSubroutine(createSubroutine(0x238, sr_m_sinhl));
+        registerSubroutine(createSubroutine(0x239, sr_m_sqrtl));
+        registerSubroutine(createSubroutine(0x23A, sr_m_tanl));
+        registerSubroutine(createSubroutine(0x23B, sr_m_tanhl));
     }
 }
 

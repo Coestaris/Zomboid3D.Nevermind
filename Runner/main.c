@@ -17,7 +17,7 @@ int main()
         return 1;
     }
 
-    registerBuiltinSubroutines(subroutines_io | subroutines_sys | subroutines_math);
+    registerBuiltinSubroutines(subroutines_default);
 
     nmProgramPrint(program, stdout);
 
@@ -32,7 +32,7 @@ int main()
 
     nmEnvDump(env, stdout);
 
-    printf("Done in %lf ms", 1000 * (env->execEndTime - env->execStartTime) / (double)CLOCKS_PER_SEC);
+    printf("Done in %lf ms", nmGetExecTime(env));
 
     nmEnvFree(env);
     nmProgramFree(program);

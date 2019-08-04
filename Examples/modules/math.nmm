@@ -3,11 +3,62 @@ module math;
 initialization function init() { }
 finalization function fin() { }
 
-[syscall: m_sin, begin];
-public function double sin(a : double) { return a; }
+[syscall: m_acos, begin];
+public function double acos(a : double) { return a; }
+
+[syscall: m_asin, begin];
+public function double asin(a : double) { return a; }
+
+[syscall: m_atan, begin];
+public function double atan(a : double) { return a; }
+
+[syscall: m_atan2, begin];
+public function double atan2(a : double, b : double) { return a; }
+
+[syscall: m_ceil, begin];
+public function double ceil(a : double) { return a; }
 
 [syscall: m_cos, begin];
 public function double cos(a : double) { return a; }
 
+[syscall: m_cosh, begin];
+public function double cosh(a : double) { return a; }
+
+[syscall: m_exp, begin];
+public function double exp(a : double) { return a; }
+
+[syscall: m_fabs, begin];
+public function double fabs(a : double) { return a; }
+
+[syscall: m_floor, begin];
+public function double floor(a : double) { return a; }
+
+[syscall: m_fmod, begin];
+public function double fmod(a : double, a : double) { return a; }
+
+[syscall: m_log, begin];
+public function double log(a : double) { return a; }
+
+[syscall: m_log10, begin];
+public function double log10(a : double) { return a; }
+
+[syscall: m_log2, begin];
+public function double log2(a : double) { return a; }
+
+[syscall: m_pow, begin];
+public function double pow(a : double, b : double) { return a; }
+
+[syscall: m_sin, begin];
+public function double sin(a : double) { return a; }
+
+[syscall: m_sinh, begin];
+public function double sinh(a : double) { return a; }
+
 [syscall: m_sqrt, begin];
 public function double sqrt(a : double) { return a; }
+
+[syscall: m_tan, begin];
+public function double tan(a : double) { return a; }
+
+[syscall: m_tanh, begin];
+public function double tanh(a : double) { return a; }

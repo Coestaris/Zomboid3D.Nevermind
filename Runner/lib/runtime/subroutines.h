@@ -24,6 +24,9 @@ typedef enum _nmSubroutineScope {
     subroutines_sys  = 0x2U,
     subroutines_math = 0x4U,
 
+
+    subroutines_default = 0x1U | 0x2U | 0x4U,
+
 } nmSubroutineScope_t;
 
 void registerSubroutine(nmSubroutine_t*);
