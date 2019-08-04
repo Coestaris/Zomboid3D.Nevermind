@@ -4,10 +4,10 @@ initialization function init() { }
 finalization function fin() { }
 
 [syscall: m_sin, begin];
-public function real sin(a : real) { return a; }
+public function double sin(a : double) { return a; }
 
 [syscall: m_cos, begin];
-public function real cos(a : real) { return a; }
+public function double cos(a : double) { return a; }
 
 [syscall: m_sqrt, begin];
-public function real sqrt(a : real) { return a; }
+public function double sqrt(a : double) { return a; }

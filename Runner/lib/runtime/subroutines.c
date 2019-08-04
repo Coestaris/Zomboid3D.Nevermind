@@ -18,10 +18,22 @@ nmSubroutine_t** subroutines = NULL;
 
 void registerSubroutine(nmSubroutine_t* subroutine)
 {
-    if(subroutine->index + 1>= subroutinesCount)
+    if(!subroutines)
     {
-        subroutines = realloc(subroutines, sizeof(nmSubroutine_t*) * (subroutine->index + 1));
-        subroutinesCount = subroutine->index;
+        subroutinesCount = 10;
+        subroutines = malloc(sizeof(nmSubroutine_t*) * subroutinesCount);
+        memset(subroutines, 0, sizeof(nmSubroutine_t*) * subroutinesCount);
+    }
+
+    if(subroutine->index + 1 >= subroutinesCount)
+    {
+        size_t newSize = (size_t)((double)subroutine->index * 1.5);
+
+        subroutines = realloc(subroutines, sizeof(nmSubroutine_t*) * newSize);
+        for(size_t i = subroutinesCount + 1; i < newSize; i++)
+            subroutines[i] = NULL;
+
+        subroutinesCount = newSize;
     };
 
     subroutines[subroutine->index] = subroutine;
@@ -36,7 +48,7 @@ void sr_io_print_i()
 void sr_io_print_f()
 {
     void* local = currentEnv->callableFunctions[*currentEnv->funcIndex]->locals[0];
-    fprintf(currentEnv->outs,"[PROGRAM]: %f\n", *((double*)local));
+    fprintf(currentEnv->outs,"[PROGRAM]: %lf\n", *((double*)local));
 }
 
 void sr_io_print_s() { }
@@ -72,7 +84,12 @@ void sr_m_modf() {}
 void sr_m_pow() {}
 void sr_m_sin() { subroutineMath(sin) }
 void sr_m_sinh() {}
-void sr_m_sqrt() { subroutineMath(sqrt) }
+void sr_m_sqrt()
+{
+    double* local = currentEnv->callableFunctions[*currentEnv->funcIndex]->locals[0];
+    *local = sqrt(*local);
+}
+
 void sr_m_tan() {}
 void sr_m_tanh() {}
 
@@ -120,6 +137,13 @@ void registerBuiltinSubroutines(nmSubroutineScope_t scope)
         registerSubroutine(createSubroutine(0x214, sr_m_sqrt));
         registerSubroutine(createSubroutine(0x215, sr_m_tan));
         registerSubroutine(createSubroutine(0x216, sr_m_tanh));
-
     }
+}
+
+uint8_t hasSubroutine(uint32_t index)
+{
+    for(size_t i = 0; i < subroutinesCount; i++)
+        if(subroutines[i] && subroutines[i]->index == index)
+            return 1;
+    return 0;
 }

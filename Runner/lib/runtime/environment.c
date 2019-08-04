@@ -182,7 +182,7 @@ instructionFunction_t getInstructionFunction(nmCallableFunction_t* func, nmProgr
     //cast
     if(data->index == 0x8)
     {
-        uint64_t index1 = data->function[getFuncIndexByType(getTypeByIndex(func, program, instr->parameters[0]))];
+        uint64_t index1 = getFuncIndexByType(getTypeByIndex(func, program, instr->parameters[0]));
         uint64_t index2;
         uint64_t flag = instr->parameters[1];
         if(!flag)
@@ -193,7 +193,7 @@ instructionFunction_t getInstructionFunction(nmCallableFunction_t* func, nmProgr
         else //const
             index2 = getFuncIndexByType(program->constants[instr->parameters[2]]->typePtr);
 
-        return castFunctions[index1 * 10 + index2]; //=3
+        return castFunctions[index1 * 10 + index2]; // =3
     }
 
     uint64_t variableIndex = instr->parameters[0];
@@ -267,8 +267,15 @@ void nmEnvDump(nmEnvironment_t* env, FILE* f)
 
 }
 
+#include "subroutines.h"
 nmEnvironment_t* nmEnvCreate(nmProgram_t* program)
 {
+    if(!subroutines)
+    {
+        puts("You should initialize subroutines list first");
+        abort();
+    }
+
     nmEnvironment_t* env = malloc(sizeof(nmEnvironment_t));
     env->program = program;
     env->funcIndex = NULL;
@@ -313,6 +320,16 @@ nmEnvironment_t* nmEnvCreate(nmProgram_t* program)
 
         for(size_t instrIndex = 0; instrIndex < program->functions[i]->instructionsCount; instrIndex++)
         {
+            if(program->functions[i]->instructions[instrIndex]->dataPtr->index == 0xB) //syscall
+            {
+                uint32_t index = program->functions[i]->instructions[instrIndex]->parameters[0];
+                if(!hasSubroutine(index))
+                {
+                    printf("Unknown subroutine with index 0x%X\n", index);
+                    abort();
+                }
+            }
+
             size_t count = getOperandsCount(program->functions[i]->instructions[instrIndex]->dataPtr);
             env->callableFunctions[i]->callableInstructions[instrIndex] = malloc(sizeof(nmCallableInstruction_t));
             env->callableFunctions[i]->callableInstructions[instrIndex]->function =

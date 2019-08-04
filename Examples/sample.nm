@@ -3,17 +3,18 @@
  */
 
 import io;
-//import math;
+import math;
 
 entrypoint function integer main()
 {
-    printf(10);
+    //printf(10);
 
-    //printf(sqrt(16));
+    printf(sqrt(16));
+
     //printf(sqrt(144));
 
     //printf(sin(0));
     //printf(sin(10));
 
-    printi(4 + 5 * 2);
+    //printi(4 + 5 * 2);
 }

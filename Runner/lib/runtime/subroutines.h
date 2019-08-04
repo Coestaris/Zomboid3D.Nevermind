@@ -8,6 +8,8 @@
 #include <stdint.h>
 #include <malloc.h>
 #include <math.h>
+#include <memory.h>
+
 #include "environment.h"
 
 typedef struct _nmSubroutine {
@@ -27,7 +29,9 @@ typedef enum _nmSubroutineScope {
 void registerSubroutine(nmSubroutine_t*);
 nmSubroutine_t* createSubroutine(uint32_t index, void (*func)());
 void registerBuiltinSubroutines(nmSubroutineScope_t);
+uint8_t hasSubroutine(uint32_t index);
 
+extern size_t subroutinesCount;
 extern nmSubroutine_t** subroutines;
 
 #endif //NMRUNNER_SUBROUTINES_H

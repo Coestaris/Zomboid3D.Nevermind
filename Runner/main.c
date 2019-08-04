@@ -17,14 +17,14 @@ int main()
         return 1;
     }
 
-    registerBuiltinSubroutines(subroutines_io | subroutines_sys);
+    registerBuiltinSubroutines(subroutines_io | subroutines_sys | subroutines_math);
 
     nmProgramPrint(program, stdout);
 
     nmEnvironment_t* env = nmEnvCreate(program);
     nmEnvSetStreams(env, stdin, stdout);
 
-    //nmEnvDump(env, stdout);
+    nmEnvDump(env, stdout);
     fputs("\n================\n", stdout);
 
     nmEnvExecute(env);

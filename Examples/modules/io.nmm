@@ -7,5 +7,5 @@ finalization function fin() { }
 public function printi(a : integer) { }
 
 [syscall: io_print_f, begin];
-public function printf(a : real) { }
+public function printf(a : double) { }
 
