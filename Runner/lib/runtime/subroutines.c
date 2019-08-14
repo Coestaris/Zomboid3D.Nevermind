@@ -124,6 +124,12 @@ void registerBuiltinSubroutines(nmSubroutineScope_t scope)
         registerSubroutine(createSubroutine(0x23A, sr_m_tanl));
         registerSubroutine(createSubroutine(0x23B, sr_m_tanhl));
     }
+
+    if(scope & subroutines_arrays)
+    {
+        registerSubroutine(createSubroutine(0x300, sr_array_resize));
+        registerSubroutine(createSubroutine(0x301, sr_array_free));
+    }
 }
 
 uint8_t hasSubroutine(uint32_t index)

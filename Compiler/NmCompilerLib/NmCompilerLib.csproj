@@ -121,7 +121,9 @@
     <Compile Include="Compiler\CompileException.cs" />
     <Compile Include="Compiler\Semantics\Attribute.cs" />
     <Compile Include="Compiler\Semantics\Attributes\SyscallAttribute.cs" />
+    <Compile Include="Compiler\Semantics\Attributes\VarCountAttribute.cs" />
     <Compile Include="Compiler\Semantics\Attributes\VariadicAttribute.cs" />
+    <Compile Include="Compiler\Semantics\Attributes\VarRestrictAttribute.cs" />
     <Compile Include="Compiler\Semantics\Import.cs" />
     <Compile Include="Compiler\Semantics\Module.cs" />
     <Compile Include="Compiler\Semantics\ModuleItem.cs" />

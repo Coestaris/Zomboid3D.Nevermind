@@ -7,6 +7,9 @@
 
 #include <math.h>
 
+void sr_array_resize();
+void sr_array_free();
+
 void sr_io_print_i();
 void sr_io_print_f();
 

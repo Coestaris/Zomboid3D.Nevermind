@@ -1,7 +1,5 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Policy;
 using System.Text.RegularExpressions;
 using Nevermind.Compiler.Semantics.Attributes;
 
@@ -9,9 +7,9 @@ namespace Nevermind.Compiler.Semantics
 {
     internal class AttributeInfo
     {
-        public Regex Regex;
-        public int ParametersCount;
-        public AttributeType Type;
+        public readonly Regex Regex;
+        public readonly int ParametersCount;
+        public readonly AttributeType Type;
 
         public AttributeInfo(Regex regex, int parametersCount, AttributeType type)
         {
@@ -24,7 +22,9 @@ namespace Nevermind.Compiler.Semantics
     internal enum AttributeType
     {
         Syscall,
-        Variadic
+        Variadic,
+        VarRestrict,
+        VarCount
     }
 
     internal abstract class Attribute
@@ -38,6 +38,8 @@ namespace Nevermind.Compiler.Semantics
         {
             new AttributeInfo(new Regex(@"^syscall$"), 2, AttributeType.Syscall),
             new AttributeInfo(new Regex(@"^variadic$"), 0, AttributeType.Variadic),
+            new AttributeInfo(new Regex(@"^varRestrict"), 3, AttributeType.VarRestrict),
+            new AttributeInfo(new Regex(@"^varCount"), 2, AttributeType.VarCount),
         };
 
         private static Attribute CreateAttributeMember(AttributeType type, List<Token> parameters)
@@ -48,7 +50,10 @@ namespace Nevermind.Compiler.Semantics
                     return new SyscallAttribute(parameters);
                 case AttributeType.Variadic:
                     return new VariadicAttribute(parameters);
-
+                case AttributeType.VarRestrict:
+                    return new VarRestrictAttribute(parameters);
+                case AttributeType.VarCount:
+                    return new VarCountAttribute(parameters);
                 default:
                     return null;
             }

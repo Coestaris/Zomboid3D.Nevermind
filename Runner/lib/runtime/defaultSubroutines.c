@@ -5,6 +5,16 @@
 #include "defaultSubroutines.h"
 #include "environment.h"
 
+void sr_array_resize()
+{
+
+}
+
+void sr_array_free()
+{
+
+}
+
 void sr_io_print_i()
 {
     void* local = currentEnv->callableFunctions[*currentEnv->funcIndex]->locals[0];
@@ -21,9 +31,6 @@ void sr_io_print_s() { }
 
 void sr_io_print()
 {
-    uint32_t funcIndex = getPrevElement(currentEnv->callStack);
-    nmCallableFunction_t* func = currentEnv->callableFunctions[funcIndex];
-
     size_t count = (size_t)popStack(currentEnv->variableStack);
     for(size_t i = 0; i < count; i++)
     {

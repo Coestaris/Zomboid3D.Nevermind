@@ -58,6 +58,12 @@ namespace Nevermind.Compiler
         UnknownAttributeType,
         UnknownSyscallType,
         WrongAttributeParameterCount,
-        WrongSyscallAppendType
+        WrongSyscallAppendType,
+        UnknownCountMode,
+        WrongCountValue,
+        WrongParameterIndexFormat,
+        UnknownVariableTypeFormat,
+        UnknownVariableBaseFormat,
+        WrongResrtictOptions
     }
 }

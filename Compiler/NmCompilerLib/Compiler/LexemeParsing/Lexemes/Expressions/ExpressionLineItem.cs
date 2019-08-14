@@ -7,7 +7,10 @@ using Nevermind.ByteCode.InternalClasses;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Xml.Schema;
 using Nevermind.ByteCode.Types;
+using Nevermind.Compiler.Semantics;
+using Nevermind.Compiler.Semantics.Attributes;
 
 namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
 {
@@ -208,6 +211,27 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
                             //if variadic we dont care about types
                             if (funcToCall.IsVariadic)
                             {
+                                var countAttribute =
+                                    (VarCountAttribute)funcToCall.Attributes.Find(p => p.Type == AttributeType.VarCount);
+
+                                var restrictAttributes =
+                                    funcToCall.Attributes.FindAll(p => p.Type == AttributeType.VarRestrict)
+                                        .Select(p => (VarRestrictAttribute)p)
+                                        .ToList();
+
+                                //User can specify parameters count in a variadic function
+                                if (countAttribute != null)
+                                {
+                                    if (!countAttribute.CheckCount(operand1.Tuple.Count))
+                                        throw new CompileException(CompileErrorType.WrongParameterCount, item.FunctionCall);
+                                }
+
+                                foreach (var attribute in restrictAttributes)
+                                {
+                                    if(!attribute.CheckValues(operand1.Tuple))
+                                        throw new CompileException(CompileErrorType.IncompatibleTypes, item.FunctionCall);
+                                }
+
                                 foreach (var variable in operand1.Tuple.ToArray().Reverse())
                                 {
                                     instructions.Add(new InstructionPushI(-byteCode.Header.GetTypeIndex(variable.Type) - 1, func, byteCode, -1));
@@ -224,7 +248,6 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
                                 for (int i = 0; i < operand1.Tuple.Count; i++)
                                     if (funcToCall.Parameters[i].Type != operand1.Tuple[i].Type)
                                     {
-                                        //throw new ParseException(CompileErrorType.IncompatibleTypes, item.FunctionCall);
 
                                         //not equals, but can we cast?
                                         if (!Type.CanCastAssignment(funcToCall.Parameters[i].Type,

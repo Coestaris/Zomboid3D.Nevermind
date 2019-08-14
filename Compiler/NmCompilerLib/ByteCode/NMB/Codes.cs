@@ -153,7 +153,11 @@ namespace Nevermind.ByteCode.NMB
             { "m_sinhl",  0x238 },
             { "m_sqrtl",  0x239 },
             { "m_tanl",   0x23A },
-            { "m_tanhl",  0x23B }
+            { "m_tanhl",  0x23B },
+
+            //array
+            { "array_resize",  0x300 },
+            { "array_free",    0x301 },
         };
     }
 }

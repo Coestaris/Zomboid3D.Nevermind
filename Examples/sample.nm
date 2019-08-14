@@ -6,11 +6,18 @@
 //import math;
 
 [variadic];
-[syscall: io_print, begin];
-function void print() { }
+[varRestrict: 0, array, any];
+[syscall: array_resize, begin];
+function void resizeArray() { }
+
+[variadic];                   
+[varRestrict: 0, array, any];      
+[varCount: eq, 1];            //eq, gr, greq, ls or lseq
+[syscall: array_free, begin]; 
+function void freeArray() { }
 
 entrypoint function main()
 {
-   print(1, 2, 3);
-   print(4.2, 23.5f, 3l);
+    var a : integer[];
+    resizeArray(a, 4);   
 }
