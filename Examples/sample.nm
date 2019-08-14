@@ -2,22 +2,15 @@
  * Simple program example
  */
  
-import io; 
-import math;
+//import io; 
+//import math;
+
+[variadic];
+function void print()
+{
+}
 
 entrypoint function main()
 {
-    var a : integer = 0;
-    var b : integer = 1;
-    var c : integer = 0;
-
-    while(a > 1000)
-    {
-       printi(a);       
-       a = b + c;
-       c = b;
-       b = a;
-    }
-
-    printi(a);
+   print(1, 2, 3);
 }

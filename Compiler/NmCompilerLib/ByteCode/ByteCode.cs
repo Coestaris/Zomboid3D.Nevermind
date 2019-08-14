@@ -529,11 +529,21 @@ namespace Nevermind.ByteCode
                 var registers = new List<Variable>();
                 var regCount = 0;
 
-                //begin syscalls
-                foreach (var attribute in function.Attributes.FindAll(p => p is SyscallAttribute && !((SyscallAttribute) p).AppendToEnd))
+                //begin syscalls, variadic attributes
+                foreach (var attribute in function.Attributes)
                 {
-                    instructionSet.Instructions.Add(new InstructionSyscall((attribute as SyscallAttribute).CallCode,
-                        function, this, labelIndex++));
+                    switch (attribute.Type)
+                    {
+                        case AttributeType.Syscall:
+                            if(!((SyscallAttribute)attribute).AppendToEnd)
+                                instructionSet.Instructions.Add(new InstructionSyscall((attribute as SyscallAttribute).CallCode,
+                                    function, this, labelIndex++));
+                            break;
+
+                        case AttributeType.Variadic:
+                            function.IsVariadic = true;
+                            break;
+                    }
                 }
 
                 GetInstructionList(function.RawLexeme, function, ref localVarIndex, ref regCount, ref labelIndex,

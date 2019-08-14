@@ -7,14 +7,6 @@ using Type = Nevermind.ByteCode.Types.Type;
 
 namespace Nevermind.ByteCode.Functions
 {
-    internal enum VariableType
-    {
-        Variable,
-        LinkToConst,
-        Tuple,
-        ArrayItem
-    }
-
     internal class Variable
     {
         public readonly int Scope;

@@ -23,6 +23,6 @@ namespace Nevermind.Compiler.Semantics.Attributes
             return null;
         }
 
-        public SyscallAttribute(Token name, List<Token> parameters) : base(AttributeType.Syscall, name, parameters) { }
+        public SyscallAttribute(List<Token> parameters) : base(AttributeType.Syscall, parameters) { }
     }
 }

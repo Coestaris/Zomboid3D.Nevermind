@@ -24,10 +24,12 @@ namespace Nevermind.ByteCode.Functions
         public List<Variable> LocalVariables;
         public List<Attribute> Attributes;
 
-        public int ModuleIndex = -1;
         public int Index;
 
-        public string OriginalName;
+        public bool IsVariadic;
+        public int ModuleIndex = -1;
+
+        public readonly string OriginalName;
 
         public Function(NmProgram program, string name, FunctionModifier modifier,
             Type returnType, int scope,
@@ -41,6 +43,7 @@ namespace Nevermind.ByteCode.Functions
             Parameters = parameters ?? new List<FunctionParameter>();
             RawLexeme = rawLexeme;
             Scope = scope;
+            IsVariadic = false;
 
             OriginalName = name;
         }

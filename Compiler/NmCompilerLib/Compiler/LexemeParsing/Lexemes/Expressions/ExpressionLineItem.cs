@@ -205,38 +205,55 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
                         }
                         else
                         {
-                            if (funcToCall.Parameters.Count != operand1.Tuple.Count)
-                                throw new CompileException(CompileErrorType.WrongParameterCount, item.FunctionCall, funcToCall.Token);
-
-                            for(int i = 0; i < operand1.Tuple.Count; i++)
-                                if (funcToCall.Parameters[i].Type != operand1.Tuple[i].Type)
-                                {
-                                    //throw new ParseException(CompileErrorType.IncompatibleTypes, item.FunctionCall);
-
-                                    //not equals, but can we cast?
-                                    if(!Type.CanCastAssignment(funcToCall.Parameters[i].Type, operand1.Tuple[i].Type))
-                                        throw new CompileException(CompileErrorType.IncompatibleTypes, item.FunctionCall, funcToCall.Token);
-
-                                    //casting
-                                    var varCast = new Variable(funcToCall.Parameters[i].Type,
-                                        $"__castedReg{localVarIndex}", func.Scope, null, localVarIndex++,
-                                        VariableType.Variable);
-                                    instructions.Add(new InstructionCast(varCast, operand1.Tuple[i], func, byteCode, -1));
-                                    operand1.Tuple[i] = varCast;
-                                }
-
-                            for (int i = 0; i < operand1.Tuple.Count; i++)
-                                instructions.Add(new InstructionPush(operand1.Tuple[i], func, byteCode, -1));
-
-                            //I dunno what is it, just comment it.
-                            //registers.RemoveRange(registers.Count - funcToCall.Parameters.Count + 1, funcToCall.Parameters.Count- 1);
-                            //localVarIndex -= funcToCall.Parameters.Count - 1;
-
-                            /*for (int i = currentIndex + 1; i < list.Count; i++)
+                            //if variadic we dont care about types
+                            if (funcToCall.IsVariadic)
                             {
-                                if (list[i].RegOperand1 != -1) list[i].RegOperand1 -= funcToCall.Parameters.Count - 1;
-                                if (list[i].RegOperand2 != -1) list[i].RegOperand2 -= funcToCall.Parameters.Count - 1;
-                            }*/
+                                foreach (var variable in operand1.Tuple)
+                                {
+                                    instructions.Add(new InstructionPushI(-byteCode.Header.GetTypeIndex(variable.Type), func, byteCode, -1));
+                                    instructions.Add(new InstructionPush(variable, func, byteCode, -1));
+                                }
+                                instructions.Add(new InstructionPushI(-operand1.Tuple.Count, func, byteCode, -1));
+                            }
+                            else
+                            {
+                                if (funcToCall.Parameters.Count != operand1.Tuple.Count)
+                                    throw new CompileException(CompileErrorType.WrongParameterCount, item.FunctionCall,
+                                        funcToCall.Token);
+
+                                for (int i = 0; i < operand1.Tuple.Count; i++)
+                                    if (funcToCall.Parameters[i].Type != operand1.Tuple[i].Type)
+                                    {
+                                        //throw new ParseException(CompileErrorType.IncompatibleTypes, item.FunctionCall);
+
+                                        //not equals, but can we cast?
+                                        if (!Type.CanCastAssignment(funcToCall.Parameters[i].Type,
+                                            operand1.Tuple[i].Type))
+                                            throw new CompileException(CompileErrorType.IncompatibleTypes,
+                                                item.FunctionCall, funcToCall.Token);
+
+                                        //casting
+                                        var varCast = new Variable(funcToCall.Parameters[i].Type,
+                                            $"__castedReg{localVarIndex}", func.Scope, null, localVarIndex++,
+                                            VariableType.Variable);
+                                        instructions.Add(new InstructionCast(varCast, operand1.Tuple[i], func, byteCode,
+                                            -1));
+                                        operand1.Tuple[i] = varCast;
+                                    }
+
+                                for (int i = 0; i < operand1.Tuple.Count; i++)
+                                    instructions.Add(new InstructionPush(operand1.Tuple[i], func, byteCode, -1));
+
+                                //I dunno what is it, just comment it.
+                                //registers.RemoveRange(registers.Count - funcToCall.Parameters.Count + 1, funcToCall.Parameters.Count- 1);
+                                //localVarIndex -= funcToCall.Parameters.Count - 1;
+
+                                /*for (int i = currentIndex + 1; i < list.Count; i++)
+                                {
+                                    if (list[i].RegOperand1 != -1) list[i].RegOperand1 -= funcToCall.Parameters.Count - 1;
+                                    if (list[i].RegOperand2 != -1) list[i].RegOperand2 -= funcToCall.Parameters.Count - 1;
+                                }*/
+                            }
 
                             instructions.Add(new InstructionCall(funcToCall, func, byteCode, -1));
                         }

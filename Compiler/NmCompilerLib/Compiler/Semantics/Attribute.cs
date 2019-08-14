@@ -23,12 +23,12 @@ namespace Nevermind.Compiler.Semantics
 
     internal enum AttributeType
     {
-        Syscall
+        Syscall,
+        Variadic
     }
 
     internal abstract class Attribute
     {
-        public Token Name;
         public List<Token> Parameters;
         public AttributeType Type;
 
@@ -36,8 +36,23 @@ namespace Nevermind.Compiler.Semantics
 
         internal static readonly List<AttributeInfo> Types = new List<AttributeInfo>
         {
-            new AttributeInfo(new Regex("syscall"), 2, AttributeType.Syscall),
+            new AttributeInfo(new Regex(@"^syscall$"), 2, AttributeType.Syscall),
+            new AttributeInfo(new Regex(@"^variadic$"), 0, AttributeType.Variadic),
         };
+
+        private static Attribute CreateAttributeMember(AttributeType type, List<Token> parameters)
+        {
+            switch (type)
+            {
+                case AttributeType.Syscall:
+                    return new SyscallAttribute(parameters);
+                case AttributeType.Variadic:
+                    return new VariadicAttribute(parameters);
+
+                default:
+                    return null;
+            }
+        }
 
         public static CompileError CreateAttribute(List<Token> tokens, out Attribute attribute)
         {
@@ -45,7 +60,7 @@ namespace Nevermind.Compiler.Semantics
 
             if (tokens.Count == 0) return null;
             var parameters = new List<Token>();
-            var name = tokens[0];
+            var name = tokens[1];
 
             var info = Types.Find(p => p.Regex.IsMatch(tokens[1].StringValue));
 
@@ -62,22 +77,17 @@ namespace Nevermind.Compiler.Semantics
             if(parameters.Count != info.ParametersCount && info.ParametersCount != -1)
                 return new CompileError(CompileErrorType.WrongAttributeParameterCount, name);
 
-            switch (info.Type)
-            {
-                case AttributeType.Syscall:
-                    attribute = new SyscallAttribute(name, parameters);
-                    break;
-                default:
-                    return new CompileError(CompileErrorType.UnknownAttributeType, name);
-            }
+            attribute = CreateAttributeMember(info.Type, parameters);
+            if(attribute == null)
+                return new CompileError(CompileErrorType.UnknownAttributeType, name);
 
             return attribute.VerifyParameters();
         }
 
-        protected Attribute(AttributeType type, Token name, List<Token> parameters)
+        protected Attribute(AttributeType type, List<Token> parameters)
         {
-            Name = name;
             Parameters = parameters;
+            Type = type;
         }
     }
 }

@@ -39,10 +39,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ByteCode\Functions\VariableType.cs" />
     <Compile Include="ByteCode\Instructions\InstructionCall.cs" />
     <Compile Include="ByteCode\Instructions\InstructionCast.cs" />
     <Compile Include="ByteCode\Instructions\InstructionPush.cs" />
     <Compile Include="ByteCode\Instructions\InstructionPop.cs" />
+    <Compile Include="ByteCode\Instructions\InstructionPushI.cs" />
     <Compile Include="ByteCode\Instructions\InstructionSyscall.cs" />
     <Compile Include="ByteCode\Instructions\InstructionVget.cs" />
     <Compile Include="ByteCode\Instructions\InstructionVset.cs" />
@@ -119,6 +121,7 @@
     <Compile Include="Compiler\CompileException.cs" />
     <Compile Include="Compiler\Semantics\Attribute.cs" />
     <Compile Include="Compiler\Semantics\Attributes\SyscallAttribute.cs" />
+    <Compile Include="Compiler\Semantics\Attributes\VariadicAttribute.cs" />
     <Compile Include="Compiler\Semantics\Import.cs" />
     <Compile Include="Compiler\Semantics\Module.cs" />
     <Compile Include="Compiler\Semantics\ModuleItem.cs" />

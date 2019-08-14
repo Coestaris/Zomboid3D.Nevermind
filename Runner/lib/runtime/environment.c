@@ -193,7 +193,7 @@ instructionFunction_t getInstructionFunction(nmCallableFunction_t* func, nmProgr
         if(!flag)
         {
             //var
-            index2 = data->function[getFuncIndexByType(getTypeByIndex(func, program, instr->parameters[2]))];
+            index2 = getFuncIndexByType(getTypeByIndex(func, program, instr->parameters[2]));
         }
         else //const
             index2 = getFuncIndexByType(program->constants[instr->parameters[2]]->typePtr);
@@ -417,7 +417,7 @@ nmEnvironment_t* nmEnvCreate(nmProgram_t* program)
                     case jumpIndex:
                     {
                         env->callableFunctions[i]->callableInstructions[instrIndex]->parameters[counter++]
-                                = program->functions[i]->instructions[instrIndex]->parameters[parameterIndex];
+                                = (void*)program->functions[i]->instructions[instrIndex]->parameters[parameterIndex];
                         break;
                     }
                 }
