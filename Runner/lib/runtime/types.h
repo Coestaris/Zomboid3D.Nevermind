@@ -22,6 +22,8 @@ typedef struct _nmType
     uint8_t typeBase;
     uint32_t typeIndex;
 
+    uint64_t funcIndex;
+
 } nmType_t;
 
 #endif //NMRUNNER_CORETYPES_H

@@ -110,6 +110,7 @@ void nmEnvSetStreams(nmEnvironment_t* env, FILE* in, FILE* out)
     env->ins = in;
     env->outs = out;
 }
+
 int getFuncIndexByType(nmType_t* type)
 {
     switch (type->typeSignature)
@@ -174,7 +175,14 @@ instructionFunction_t getInstructionFunction(nmCallableFunction_t* func, nmProgr
         {
             //var
             uint64_t variableIndex = instr->parameters[1];
-            return data->function[getFuncIndexByType(getTypeByIndex(func, program, variableIndex))];
+            if((int32_t)variableIndex < 0)
+            {
+                return data->function[2];
+            }
+            else
+            {
+                return data->function[getFuncIndexByType(getTypeByIndex(func, program, variableIndex))];
+            }
         }
         else
         {
@@ -318,6 +326,13 @@ nmEnvironment_t* nmEnvCreate(nmProgram_t* program)
     env->variableStack = createStack();
     env->callableFunctions = malloc(sizeof(nmCallableFunction_t*) * program->funcCount);
 
+    for(size_t i = 0; i < env->program->usedTypesCount; i++)
+    {
+        env->program->usedTypes[i]->funcIndex =
+                getFuncIndexByType(env->program->usedTypes[i]);
+    }
+
+    //allocating globals
     env->globals = malloc(sizeof(void*) * program->globalsCount);
     for(size_t i = 0; i < program->globalsCount; i++)
         env->globals[i] = malloc(sizeof(program->globalsTypes[i]));
@@ -377,6 +392,17 @@ nmEnvironment_t* nmEnvCreate(nmProgram_t* program)
 
             uint8_t varConstFlagValue = 0;
             size_t counter = 0;
+
+            //push
+            if(program->functions[i]->instructions[instrIndex]->dataPtr->index == 0x2)
+            {
+                if((int32_t)program->functions[i]->instructions[instrIndex]->parameters[1] < 0)
+                {
+                    env->callableFunctions[i]->callableInstructions[instrIndex]->parameters[0] =
+                            (void*)(-(int32_t)program->functions[i]->instructions[instrIndex]->parameters[1] - 1);
+                    continue;
+                }
+            }
 
             for(size_t parameterIndex = 0; parameterIndex < count; parameterIndex++)
             {

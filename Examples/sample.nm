@@ -6,11 +6,11 @@
 //import math;
 
 [variadic];
-function void print()
-{
-}
+[syscall: io_print, begin];
+function void print() { }
 
 entrypoint function main()
 {
    print(1, 2, 3);
+   print(4.2, 23.5f, 3l);
 }

@@ -18,7 +18,61 @@ void sr_io_print_f()
 }
 
 void sr_io_print_s() { }
-void sr_io_print() { }
+
+void sr_io_print()
+{
+    uint32_t funcIndex = getPrevElement(currentEnv->callStack);
+    nmCallableFunction_t* func = currentEnv->callableFunctions[funcIndex];
+
+    size_t count = (size_t)popStack(currentEnv->variableStack);
+    for(size_t i = 0; i < count; i++)
+    {
+        void* variable = popStack(currentEnv->variableStack);
+        uint64_t typeIndex = (uint64_t)popStack(currentEnv->variableStack);
+        nmType_t* type = currentEnv->program->usedTypes[typeIndex];
+
+        switch(type->funcIndex)
+        {
+            case 0:
+                fprintf(currentEnv->outs,"%i", *(int8_t*)variable);
+                break;
+            case 1:
+                fprintf(currentEnv->outs,"%i", *(int16_t*)variable);
+                break;
+            case 2:
+                fprintf(currentEnv->outs,"%i", *(int32_t*)variable);
+                break;
+            case 3:
+                fprintf(currentEnv->outs,"%li", *(int64_t*)variable);
+                break;
+            case 4:
+                fprintf(currentEnv->outs,"%u", *(uint8_t*)variable);
+                break;
+            case 5:
+                fprintf(currentEnv->outs,"%u", *(uint16_t*)variable);
+                break;
+            case 6:
+                fprintf(currentEnv->outs,"%u", *(uint32_t*)variable);
+                break;
+            case 7:
+                fprintf(currentEnv->outs,"%lu", *(uint64_t*)variable);
+                break;
+            case 8:
+                fprintf(currentEnv->outs,"%f", *(float*)variable);
+                break;
+            case 9:
+                fprintf(currentEnv->outs,"%lf", *(double*)variable);
+                break;
+            default:
+                abort();
+        }
+
+        printf(", ");
+    }
+
+    putc('\n', currentEnv->outs);
+}
+
 void sr_io_fprint() { }
 
 void sr_sys_get_time() {}

@@ -25,5 +25,6 @@ void freeStack(stack_t* stack);
 void* popStack(stack_t* stack);
 void pushStack(stack_t* stack, void* value);
 void printStack(stack_t* stack, FILE* file);
+void* getPrevElement(stack_t* stack);
 
 #endif //NMRUNNER_STACK_H

@@ -10,6 +10,7 @@ namespace Nevermind.ByteCode.Instructions
         public int Value;
 
         public override List<byte> Serialize() => ToBytes(
+                new List<byte> { 0 },
                 Chunk.Int32ToBytes(Value)
             );
 

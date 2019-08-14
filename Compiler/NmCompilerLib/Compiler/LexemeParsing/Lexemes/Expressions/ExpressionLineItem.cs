@@ -208,12 +208,12 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
                             //if variadic we dont care about types
                             if (funcToCall.IsVariadic)
                             {
-                                foreach (var variable in operand1.Tuple)
+                                foreach (var variable in operand1.Tuple.ToArray().Reverse())
                                 {
-                                    instructions.Add(new InstructionPushI(-byteCode.Header.GetTypeIndex(variable.Type), func, byteCode, -1));
+                                    instructions.Add(new InstructionPushI(-byteCode.Header.GetTypeIndex(variable.Type) - 1, func, byteCode, -1));
                                     instructions.Add(new InstructionPush(variable, func, byteCode, -1));
                                 }
-                                instructions.Add(new InstructionPushI(-operand1.Tuple.Count, func, byteCode, -1));
+                                instructions.Add(new InstructionPushI(-operand1.Tuple.Count - 1, func, byteCode, -1));
                             }
                             else
                             {

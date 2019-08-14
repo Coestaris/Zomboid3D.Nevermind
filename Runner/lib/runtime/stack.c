@@ -25,6 +25,12 @@ void* popStack(stack_t* stack)
     return stack->stack[--stack->position];
 }
 
+void* getPrevElement(stack_t* stack)
+{
+    assert(stack->position != 1);
+    return stack->stack[stack->position - 2];
+}
+
 void pushStack(stack_t* stack, void* value)
 {
     if(stack->position == stack->size - 1)

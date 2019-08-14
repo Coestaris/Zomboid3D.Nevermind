@@ -67,4 +67,7 @@ void nmEnvFree(nmEnvironment_t* env);
 void setCurrentEnv(nmEnvironment_t* env);
 double nmGetExecTime(nmEnvironment_t* env);
 
+int getFuncIndexByType(nmType_t* type);
+nmType_t* getTypeByIndex(nmCallableFunction_t* func, nmProgram_t* program, uint64_t index);
+
 #endif //NMRUNNER_ENVIRONMENT_H
