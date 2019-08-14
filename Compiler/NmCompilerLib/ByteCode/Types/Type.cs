@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -27,12 +28,24 @@ namespace Nevermind.ByteCode.Types
             {
                 Type innerType;
                 CompileError error;
-                if ((error = GetType(program, tokens.Take(tokens.Count - 2).ToList(), out innerType)) != null)
+
+                var counter = tokens.Count;
+                var dimensions = 0;
+
+                while (tokens[counter - 1].Type == TokenType.SquareBracketClosed &&
+                       tokens[counter - 2].Type == TokenType.SquareBracketOpen)
+                {
+                    counter -= 2;
+                    dimensions++;
+                }
+
+                if ((error = GetType(program, tokens.Take(tokens.Count - counter).ToList(), out innerType)) != null)
                     return error;
 
-                type = new ArrayType(innerType);
+                type = new ArrayType(innerType, dimensions);
 
                 program.UsedTypes.Add(type);
+
                 return null;
             }
             else

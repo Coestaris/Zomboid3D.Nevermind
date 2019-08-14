@@ -4,11 +4,14 @@ namespace Nevermind.ByteCode.Types
 {
     internal class ArrayType : Type
     {
-        public Type ElementType;
+        public Type BaseType;
+        public int Dimensions;
 
-        public ArrayType(Type elementType)
+        public ArrayType(Type baseType, int dimensions)
         {
-            ElementType = elementType;
+            BaseType = baseType;
+            Dimensions = dimensions;
+
             ID = TypeID.Array;
         }
 
@@ -19,10 +22,13 @@ namespace Nevermind.ByteCode.Types
 
         public override bool Compare(Type type)
         {
-            return (type as ArrayType).ElementType == ElementType;
+            var arrayType = (type as ArrayType);
+
+            return arrayType.BaseType == BaseType &&
+                   arrayType.Dimensions == Dimensions;
         }
 
-        public override int GetBase() => ElementType.GetBase();
+        public override int GetBase() => -1;
         public override bool HasLength => true;
     }
 }

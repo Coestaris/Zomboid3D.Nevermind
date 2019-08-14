@@ -18,6 +18,6 @@ function void freeArray() { }
 
 entrypoint function main()
 {
-    var a : integer[];
+    var a : integer[][];
     resizeArray(a, 4);   
 }
