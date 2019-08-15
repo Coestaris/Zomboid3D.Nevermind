@@ -63,5 +63,7 @@ namespace Nevermind.ByteCode.Types.Scalar
 
             return list;
         }
+
+        public override int GetDim() => 1;
     }
 }

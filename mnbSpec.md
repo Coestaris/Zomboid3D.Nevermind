@@ -48,7 +48,8 @@
   * **4 bytes**: Type count
   <br>Type format:
      * **2 bytes**: Type signature
-     * **1 byte**:  Type base
+     * **1 bytes**: Type dimensions
+     * **4 byte** : Type base
 
 ###### "CO" - Constants Chunk (unique, required)
   * **4 bytes**: Constant count

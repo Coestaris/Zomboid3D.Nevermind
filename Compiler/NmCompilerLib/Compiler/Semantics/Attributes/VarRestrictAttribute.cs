@@ -86,7 +86,7 @@ namespace Nevermind.Compiler.Semantics.Attributes
                 return false;
 
             //expected vector but found array
-            if (VarType == VarRestrictVarType.Vector && (var.Type as ArrayType).ElementType.ID == TypeID.Array)
+            if (VarType == VarRestrictVarType.Vector && (var.Type as ArrayType).Dimensions != 1)
                 return false;
 
             //expected variable but found array
@@ -96,7 +96,7 @@ namespace Nevermind.Compiler.Semantics.Attributes
             //check vector type
             if (VarType == VarRestrictVarType.Vector &&
                 VarBase != VarRestrictVarBase.Any &&
-                !CompareBase(VarBase, (var.Type as ArrayType).ElementType.ID))
+                !CompareBase(VarBase, (var.Type as ArrayType).BaseType.ID))
                 return false;
 
             //check variable type

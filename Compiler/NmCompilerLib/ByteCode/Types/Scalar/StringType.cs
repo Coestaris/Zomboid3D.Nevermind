@@ -27,5 +27,7 @@ namespace Nevermind.ByteCode.Types.Scalar
         {
             throw new System.NotImplementedException();
         }
+
+        public override int GetDim() => 1;
     }
 }

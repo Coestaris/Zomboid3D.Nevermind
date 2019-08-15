@@ -34,5 +34,7 @@ namespace Nevermind.ByteCode.Types.Scalar
             else
                 return BitConverter.GetBytes(v).ToList();
         }
+
+        public override int GetDim() => 1;
     }
 }

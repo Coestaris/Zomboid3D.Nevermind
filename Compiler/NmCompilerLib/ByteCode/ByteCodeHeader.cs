@@ -187,13 +187,15 @@ namespace Nevermind.ByteCode
         {
             var sb = new StringBuilder();
             sb.AppendFormat("Type count: {0}\n", UsedTypes.Count);
-            sb.AppendLine("╔═╤═════════╤══════════╤═════════╗");
-            sb.AppendLine("║#│  Index  │   Type   │   Base  ║");
-            sb.AppendLine("╟─┼─────────┼──────────┼─────────╢");
+            sb.AppendLine("╔═╤═════════╤══════════╤════════╤═══════╗");
+            sb.AppendLine("║#│  Index  │   Type   │  Base  │  Dim  ║");
+            sb.AppendLine("╟─┼─────────┼──────────┼────────┼───────╢");
             var counter = 0;
             foreach (var type in UsedTypes)
-                sb.AppendFormat("║{0}│ {1, 3}     │ {2, 8} │   {3, 3}   ║\n", counter++, type.Index, type.Type.ID, type.Type.GetBase());
-            sb.AppendLine("╚═╧═════════╧══════════╧═════════╝");
+                sb.AppendFormat("║{0}│ {1, 3}     │ {2, 8} │   {3, 3}  │   {4, 3} ║\n",
+                    counter++, type.Index, type.Type.ID,
+                    type.Type.GetBase(), type.Type.GetDim());
+            sb.AppendLine("╚═╧═════════╧══════════╧════════╧═══════╝");
 
 
             counter = 0;
@@ -344,8 +346,9 @@ namespace Nevermind.ByteCode
             ch.Add(UsedTypes.Count);
             foreach (var type in UsedTypes)
             {
-                ch.Add(Codes.TypeIdDict[type.Type.ID]);
-                ch.Add((byte)type.Type.GetBase());
+                ch.Add(Codes.TypeIdDict[type.Type.ID]);  //signature
+                ch.Add((byte)type.Type.GetDim());     //dim
+                ch.Add((uint)type.Type.GetBase());    //base
             }
             return ch;
         }

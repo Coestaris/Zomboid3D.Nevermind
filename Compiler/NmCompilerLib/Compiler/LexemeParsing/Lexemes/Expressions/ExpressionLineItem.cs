@@ -303,14 +303,8 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
                         if(array.Type.ID != TypeID.Array)
                             throw new CompileException(CompileErrorType.ExpectedArrayType, item.NearToken);
 
-                        var resultType = array.Type;
-                        var arrayDim = 0;
-
-                        while (resultType.ID == TypeID.Array)
-                        {
-                            resultType = (resultType as ArrayType).ElementType;
-                            arrayDim++;
-                        }
+                        var resultType = (array.Type as ArrayType).BaseType;
+                        var arrayDim = (array.Type as ArrayType).Dimensions;
 
                         var indexes = new List<Variable>();
 

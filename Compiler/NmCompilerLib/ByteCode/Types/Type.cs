@@ -10,14 +10,13 @@ namespace Nevermind.ByteCode.Types
     internal abstract class Type
     {
         public TypeID ID;
+        public NmProgram Program;
 
         public virtual int GetBase() { return -1; }
-
         public abstract List<byte> Serialize(object value);
-
         public abstract bool Compare(Type type);
-
         public abstract bool HasLength { get; }
+        public abstract int GetDim();
 
         public static CompileError GetType(NmProgram program, List<Token> tokens, out Type type)
         {
@@ -42,7 +41,10 @@ namespace Nevermind.ByteCode.Types
                 if ((error = GetType(program, tokens.Take(tokens.Count - counter).ToList(), out innerType)) != null)
                     return error;
 
-                type = new ArrayType(innerType, dimensions);
+                type = new ArrayType(innerType, dimensions)
+                {
+                    Program = program
+                };
 
                 program.UsedTypes.Add(type);
 
@@ -53,6 +55,7 @@ namespace Nevermind.ByteCode.Types
                 type = BuiltInTypes.Get().Find(p => p.Name == tokens[0].StringValue)?.Type;
 
                 if (type != null) program.UsedTypes.Add(type);
+                type.Program = program;
 
                 return type == null ? new CompileError(CompileErrorType.UnknownTypeName, tokens[0]) : null;
             }

@@ -28,7 +28,15 @@ namespace Nevermind.ByteCode.Types
                    arrayType.Dimensions == Dimensions;
         }
 
-        public override int GetBase() => -1;
+        public override int GetBase()
+        {
+            if (Program.ByteCode == null)
+                return -1;
+
+            return Program.ByteCode.Header.GetTypeIndex(BaseType);
+        }
+
         public override bool HasLength => true;
+        public override int GetDim() => Dimensions;
     }
 }
