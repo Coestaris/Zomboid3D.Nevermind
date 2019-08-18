@@ -21,8 +21,9 @@ void registerSubroutine(nmSubroutine_t* subroutine)
     if(!subroutines)
     {
         subroutinesCount = 10;
-        subroutines = malloc(sizeof(nmSubroutine_t*) * subroutinesCount);
-        memset(subroutines, 0, sizeof(nmSubroutine_t*) * subroutinesCount);
+        subroutines = malloc(sizeof(nmSubroutine_t*) * (subroutinesCount + 1));
+        for(size_t i = 0; i <= subroutinesCount; i++)
+            subroutines[i] = NULL;
     }
 
     if(subroutine->index + 1 >= subroutinesCount)
@@ -135,7 +136,9 @@ void registerBuiltinSubroutines(nmSubroutineScope_t scope)
 uint8_t hasSubroutine(uint32_t index)
 {
     for(size_t i = 0; i < subroutinesCount; i++)
-        if(subroutines[i] && subroutines[i]->index == index)
+    {
+        if (subroutines[i] && subroutines[i]->index == index)
             return 1;
+    }
     return 0;
 }

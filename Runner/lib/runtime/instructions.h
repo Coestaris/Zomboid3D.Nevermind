@@ -28,7 +28,7 @@ typedef struct _nmInstructionData {
     const char* name;
     uint16_t index;
     nmInstructionOperandType_t parameterTypes[5];
-    instructionFunction_t function[10];
+    instructionFunction_t function[11];
 
 } nmInstructionData_t;
 
@@ -42,8 +42,8 @@ typedef struct _nmInstruction {
 #define totalInstructionsCount 37
 
 instructionPrototype(instruction_ret)
-instructionPrototype(instruction_push)
-instructionPrototype(instruction_pop)
+instructionPrototypeA(instruction_push)
+instructionPrototypeA(instruction_pop)
 instructionPrototype(instruction_ldi)
 instructionPrototype(instruction_jmp)
 instructionPrototype(instruction_call)
@@ -116,8 +116,8 @@ static nmInstructionData_t instructionsData[totalInstructionsCount] =
         //   Index     PCnt    Function
         //Generic Instructions
         { "ret",        0x1,  { 0, 0, 0, 0, 0 },                                { instruction_Ret }              }, // ret
-        { "push",       0x2,  { varConstFlag, varConstIndex, 0, 0, 0 },         enumerateFunc(instruction_push)  }, // push
-        { "pop",        0x3,  { varIndex, 0, 0, 0, 0 },                         enumerateFunc(instruction_pop)   }, // pop
+        { "push",       0x2,  { varConstFlag, varConstIndex, 0, 0, 0 },         enumerateAFunc(instruction_push) }, // push
+        { "pop",        0x3,  { varIndex, 0, 0, 0, 0 },                         enumerateAFunc(instruction_pop)  }, // pop
         { "ldi",        0x4,  { varIndex, varConstFlag, varConstIndex, 0, 0 },  enumerateFunc(instruction_ldi)   }, // ldi
         { "jmp",        0x5,  { jumpIndex, 0, 0, 0, 0 },                        { instruction_Jmp }              }, // jmp
         { "call",       0x6,  { functionIndex, functionIndex, 0, 0, 0 },        { instruction_Call }             }, // call

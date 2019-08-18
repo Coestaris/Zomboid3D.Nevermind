@@ -147,6 +147,8 @@ int getFuncIndexByType(nmType_t* type)
         }
         case tString:
             break;
+        case tArray:
+            return 10;
     }
     return -1;
 }
@@ -307,6 +309,31 @@ void nmEnvDump(nmEnvironment_t* env, FILE* f)
 
 }
 
+void* allocVariable(nmType_t* type, nmProgram_t* program)
+{
+    void* ptr;
+    if(type->typeSignature == tArray)
+    {
+        ptr = malloc(sizeof(nmArrayInfo_t));
+        nmArrayInfo_t* ai = ptr;
+        ai->index = type->typeIndex;
+        ai->dimenitions = type->dim;
+        ai->size = malloc(sizeof(uint32_t) * type->dim);
+        for(size_t i = 0; i < type->dim; i++)
+            ai->size[i] = 0;
+        ai->type = program->usedTypes[type->typeBase];
+        ai->data = NULL;
+    }
+    else
+        ptr = malloc(type->typeBase);
+    return ptr;
+}
+
+void freeVariable()
+{
+
+}
+
 #include "subroutines.h"
 nmEnvironment_t* nmEnvCreate(nmProgram_t* program)
 {
@@ -335,7 +362,7 @@ nmEnvironment_t* nmEnvCreate(nmProgram_t* program)
     //allocating globals
     env->globals = malloc(sizeof(void*) * program->globalsCount);
     for(size_t i = 0; i < program->globalsCount; i++)
-        env->globals[i] = malloc(sizeof(program->globalsTypes[i]));
+        env->globals[i] = allocVariable(program->usedTypes[program->globalsTypes[i]], program);
 
     for(size_t i = 0; i < program->funcCount; i++)
     {
@@ -344,14 +371,14 @@ nmEnvironment_t* nmEnvCreate(nmProgram_t* program)
         for(size_t localIndex = 0; localIndex < program->functions[i]->localsCount; localIndex++)
         {
             nmType_t* type = program->usedTypes[program->functions[i]->localTypes[localIndex]];
-            locals[localIndex] = malloc(sizeof(type->typeBase));
+            locals[localIndex] = allocVariable(type, program);
             localTypes[localIndex] = type;
             setDefaultValue(locals[localIndex], type);
         }
         for(size_t regIndex = 0; regIndex < program->functions[i]->regCount; regIndex++)
         {
             nmType_t* type = program->usedTypes[program->functions[i]->regTypes[regIndex]];
-            locals[regIndex + program->functions[i]->localsCount] = malloc(sizeof(type->typeBase));
+            locals[regIndex + program->functions[i]->localsCount] = allocVariable(type, program);
             localTypes[regIndex + program->functions[i]->localsCount] = type;
             setDefaultValue(locals[regIndex + program->functions[i]->localsCount], type);
         }

@@ -5,6 +5,11 @@
 #ifndef NMRUNNER_INSTRUCTIONSMACRO_H
 #define NMRUNNER_INSTRUCTIONSMACRO_H
 
+#define enumerateAFunc(name) {                              \
+    name ## _i8, name ## _i16, name ## _i32, name ## _i64, \
+    name ## _u8, name ## _u16, name ## _u32, name ## _u64, \
+    name ## _f32, name ## _f64, name ## _arr }
+
 #define enumerateFunc(name) {                              \
     name ## _i8, name ## _i16, name ## _i32, name ## _i64, \
     name ## _u8, name ## _u16, name ## _u32, name ## _u64, \
@@ -27,6 +32,25 @@
             name ## _i8, name ## _i16, name ## _i32, name ## _i64,  \
             name ## _u8, name ## _u16, name ## _u32, name ## _u64,  \
             name ## _f32, name ## _f64);
+
+#define AInstructionPrototypeA(name) void name(struct _nmEnvironment* env, void** data);
+#define AInstructionPrototypeSetA(name1, name2, name3, name4, name5, name6, name7, name8, name9, name10, name11)\
+    AInstructionPrototypeA(name1)  \
+    AInstructionPrototypeA(name2)  \
+    AInstructionPrototypeA(name3)  \
+    AInstructionPrototypeA(name4)  \
+    AInstructionPrototypeA(name5)  \
+    AInstructionPrototypeA(name6)  \
+    AInstructionPrototypeA(name7)  \
+    AInstructionPrototypeA(name8)  \
+    AInstructionPrototypeA(name9)  \
+    AInstructionPrototypeA(name10) \
+    AInstructionPrototypeA(name11) \
+
+#define instructionPrototypeA(name) AInstructionPrototypeSetA(      \
+            name ## _i8, name ## _i16, name ## _i32, name ## _i64,  \
+            name ## _u8, name ## _u16, name ## _u32, name ## _u64,  \
+            name ## _f32, name ## _f64, name ## _arr);
 
 #define instructionDataBinary(name, index)  { #name, index, { varIndex, varConstFlag, varConstIndex, varConstFlag, varConstIndex }, enumerateFunc(instruction_ ## name) }
 #define instructionDataUnary(name, index)    { #name, index, { varIndex, varConstFlag, varConstIndex, 0, 0 }, enumerateFunc(instruction_ ## name) }

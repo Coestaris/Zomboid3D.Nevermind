@@ -169,6 +169,7 @@ uint8_t chunkhandler_header(nmProgram_t* program, FILE* file)
 
     program->imports = malloc(sizeof(nmImport_t*) * program->importCount);
     program->functions = malloc(sizeof(nmFunction_t*) * program->funcCount);
+    program->globalsCount = 0;
 
     for(size_t i = 0; i < program->importCount; i++)
     {
@@ -214,9 +215,13 @@ uint8_t chunkhandler_types(nmProgram_t* program, FILE* file)
         readValue(signature);
         program->usedTypes[i]->typeSignature = signature;
 
+        readValue(program->usedTypes[i]->dim);
         readValue(program->usedTypes[i]->typeBase);
+
         program->usedTypes[i]->typeIndex = i;
-        program->usedTypes[i]->typeBase /= 8;
+
+        if(signature != tArray)
+            program->usedTypes[i]->typeBase /= 8;
     }
     return 1;
 }

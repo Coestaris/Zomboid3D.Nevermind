@@ -116,6 +116,7 @@ char* nmConstantToStr(void* value, nmType_t* type)
             snprintf(result, 10, "%lf", i);
             break;
         }
+        case tArray:
         case tString:
         default:
             return NULL;
@@ -135,6 +136,8 @@ const char* nmTypeSignatureToStr(nmTypeSignature_t signature)
             return "float";
         case tString:
             return "string";
+        case tArray:
+            return "array";
         default:
             return "none";
     }
@@ -198,10 +201,11 @@ void nmProgramPrint(nmProgram_t* program, FILE* f)
     fprintf(f, "Types (%i): \n", program->usedTypesCount);
     for(size_t i = 0; i < program->usedTypesCount; i++)
     {
-        fprintf(f, " - %i:%s:%i\n",
+        fprintf(f, " - %i:%s:%i:%i\n",
                 program->usedTypes[i]->typeIndex,
                 nmTypeSignatureToStr(program->usedTypes[i]->typeSignature),
-                program->usedTypes[i]->typeBase * 8);
+                program->usedTypes[i]->typeBase * 8,
+                program->usedTypes[i]->dim);
     }
 
     fprintf(f, "Globals (%i): ", program->globalsCount);
