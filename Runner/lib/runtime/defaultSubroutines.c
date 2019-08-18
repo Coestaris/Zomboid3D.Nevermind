@@ -7,12 +7,95 @@
 
 void sr_array_resize()
 {
+    size_t count = (size_t)popStack(currentEnv->variableStack);
+    nmArrayInfo_t* arrayInfo = NULL;
+    size_t i;
 
+    for(i = 0; i < count; i++)
+    {
+        if(arrayInfo)
+            assert(i <= arrayInfo->dimenitions);
+
+        void* variable = popStack(currentEnv->variableStack);
+        uint64_t typeIndex = (uint64_t)popStack(currentEnv->variableStack);
+        nmType_t* type = currentEnv->program->usedTypes[typeIndex];
+
+        switch(type->funcIndex)
+        {
+            case 0:
+                assert(arrayInfo);
+                arrayInfo->size[i - 1] = *(int8_t*)variable;
+                break;
+            case 1:
+                assert(arrayInfo);
+                arrayInfo->size[i - 1] = *(int16_t*)variable;
+                break;
+            case 2:
+                assert(arrayInfo);
+                arrayInfo->size[i - 1] = *(int32_t*)variable;
+                break;
+            case 3:
+                assert(arrayInfo);
+                arrayInfo->size[i - 1] = *(int64_t*)variable;
+                break;
+            case 4:
+                assert(arrayInfo);
+                arrayInfo->size[i - 1] = *(uint8_t*)variable;
+                break;
+            case 5:
+                assert(arrayInfo);
+                arrayInfo->size[i - 1] = *(uint16_t*)variable;
+                break;
+            case 6:
+                assert(arrayInfo);
+                arrayInfo->size[i - 1] = *(uint32_t*)variable;
+                break;
+            case 7:
+                assert(arrayInfo);
+                arrayInfo->size[i - 1] = *(uint64_t*)variable;
+                break;
+            case 8:
+                assert(arrayInfo);
+                arrayInfo->size[i - 1] = *(float*)variable;
+                break;
+            case 9:
+                assert(arrayInfo);
+                arrayInfo->size[i - 1] = *(double*)variable;
+                break;
+            case 10: //array
+                assert(!arrayInfo);
+                arrayInfo = variable;
+                break;
+
+            default:
+                abort();
+        }
+    }
+
+    assert(arrayInfo);
+    assert(i == arrayInfo->dimenitions + 1);
+
+    if(arrayInfo->data)
+        free(arrayInfo->data);
+
+    size_t size = 1;
+    for(i = 0; i < arrayInfo->dimenitions; i++)
+        size *= arrayInfo->size[i];
+
+    arrayInfo->data = malloc(arrayInfo->type->typeBase * size);
 }
 
 void sr_array_free()
 {
+    size_t count = (size_t)popStack(currentEnv->variableStack);
+    nmArrayInfo_t* arrayInfo = popStack(currentEnv->variableStack);
+    uint64_t typeIndex = (uint64_t)popStack(currentEnv->variableStack);
 
+    free(arrayInfo->data);
+    arrayInfo->data = NULL;
+
+    for(size_t i = 0; i < arrayInfo->dimenitions; i++)
+        arrayInfo->size[i] = 0;
 }
 
 void sr_io_print_i()
@@ -69,6 +152,9 @@ void sr_io_print()
                 break;
             case 9:
                 fprintf(currentEnv->outs,"%lf", *(double*)variable);
+                break;
+            case 10:
+                puts("array"); //todo
                 break;
             default:
                 abort();
