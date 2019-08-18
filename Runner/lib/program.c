@@ -29,8 +29,18 @@ void nmProgramFree(nmProgram_t* program)
     free(program->metadata->binaryDescription);
     free(program->metadata);
 
+    free(program->globalsTypes);
+
     if(program->sourceFilename)
+    {
+        free(program->globalsSourceCharIndices);
+        free(program->globalsSourceLineIndices);
+        for(size_t i = 0; i < program->globalsCount; i++)
+            free(program->globalsNames[i]);
+        free(program->globalsNames);
+
         free(program->sourceFilename);
+    }
 
     for(size_t i = 0; i < program->funcCount; i++)
     {
@@ -54,7 +64,9 @@ void nmProgramFree(nmProgram_t* program)
         }
 
         free(program->functions[i]);
-    }    
+    }
+
+
     free(program->functions);
     free(program);
 }

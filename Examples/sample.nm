@@ -20,4 +20,6 @@ entrypoint function main()
 {
     var a : integer[][];
     resizeArray(a, 4, 6);
+
+    freeArray(a);
 }

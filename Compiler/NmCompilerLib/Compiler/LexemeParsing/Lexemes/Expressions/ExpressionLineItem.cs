@@ -187,23 +187,59 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes.Expressions
                         }
                         else if(operand1.VariableType != VariableType.Tuple)
                         {
-                            if(funcToCall.Parameters.Count != 1)
-                                throw new CompileException(CompileErrorType.WrongParameterCount, item.FunctionCall, funcToCall.Token);
-
-                            if (funcToCall.Parameters[0].Type != operand1.Type)
+                            //if variadic we dont care about types
+                            if (funcToCall.IsVariadic)
                             {
-                                //not equals, but can we cast?
-                                if(!Type.CanCastAssignment(funcToCall.Parameters[0].Type, operand1.Type))
-                                    throw new CompileException(CompileErrorType.IncompatibleTypes, item.FunctionCall, funcToCall.Token);
+                                var countAttribute =
+                                    (VarCountAttribute) funcToCall.Attributes.Find(p => p.Type == AttributeType.VarCount);
 
-                                //casting
-                                var varCast = new Variable(funcToCall.Parameters[0].Type, $"_castedReg{localVarIndex}",
-                                    func.Scope, null, localVarIndex++, VariableType.Variable);
-                                instructions.Add(new InstructionCast(varCast, operand1, func, byteCode, -1));
-                                operand1 = varCast;
+                                var restrictAttributes =
+                                    funcToCall.Attributes.FindAll(p => p.Type == AttributeType.VarRestrict)
+                                        .Select(p => (VarRestrictAttribute) p)
+                                        .ToList();
+
+                                //User can specify parameters count in a variadic function
+                                if (countAttribute != null)
+                                {
+                                    if (!countAttribute.CheckCount(1))
+                                        throw new CompileException(CompileErrorType.WrongParameterCount,
+                                            item.FunctionCall);
+                                }
+
+                                foreach (var attribute in restrictAttributes)
+                                {
+                                    if (!attribute.CheckValues(new List<Variable>() { operand1 } ))
+                                        throw new CompileException(CompileErrorType.IncompatibleTypes,
+                                            item.FunctionCall);
+                                }
+
+                                instructions.Add(new InstructionPushI(
+                                    -byteCode.Header.GetTypeIndex(operand1.Type) - 1, func, byteCode, -1));
+                                instructions.Add(new InstructionPush(operand1, func, byteCode, -1));
+
+                                //just one variable
+                                instructions.Add(new InstructionPushI(-1 - 1, func, byteCode, -1));
                             }
+                            else
+                            {
+                                if(funcToCall.Parameters.Count != 1)
+                                    throw new CompileException(CompileErrorType.WrongParameterCount, item.FunctionCall, funcToCall.Token);
 
-                            instructions.Add(new InstructionPush(operand1, func, byteCode, -1));
+                                if (funcToCall.Parameters[0].Type != operand1.Type)
+                                {
+                                    //not equals, but can we cast?
+                                    if(!Type.CanCastAssignment(funcToCall.Parameters[0].Type, operand1.Type))
+                                        throw new CompileException(CompileErrorType.IncompatibleTypes, item.FunctionCall, funcToCall.Token);
+
+                                    //casting
+                                    var varCast = new Variable(funcToCall.Parameters[0].Type, $"_castedReg{localVarIndex}",
+                                        func.Scope, null, localVarIndex++, VariableType.Variable);
+                                    instructions.Add(new InstructionCast(varCast, operand1, func, byteCode, -1));
+                                    operand1 = varCast;
+                                }
+
+                                instructions.Add(new InstructionPush(operand1, func, byteCode, -1));
+                            }
                             instructions.Add(new InstructionCall(funcToCall, func, byteCode, -1));
                         }
                         else

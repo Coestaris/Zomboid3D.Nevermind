@@ -329,9 +329,17 @@ void* allocVariable(nmType_t* type, nmProgram_t* program)
     return ptr;
 }
 
-void freeVariable()
+void freeVariable(void* variable, nmType_t* type)
 {
+    if(type->typeSignature == tArray)
+    {
+        nmArrayInfo_t* ai = variable;
+        free(ai->size);
+        if(ai->data)
+            free(ai->data);
+    }
 
+    free(variable);
 }
 
 #include "subroutines.h"
@@ -486,6 +494,12 @@ void nmEnvFree(nmEnvironment_t* env)
     freeStack(env->variableStack);
     freeStack(env->pcStack);
     freeStack(env->callStack);
+
+    for(size_t i = 0; i < env->program->globalsCount; i++)
+        freeVariable(env->globals[i],
+                env->program->usedTypes[env->program->globalsTypes[i]]);
+    free(env->globals);
+
     for(size_t i = 0; i < env->program->funcCount; i++)
     {
         for(size_t j = 0; j < env->callableFunctions[i]->instructionsCount; j++)
@@ -496,7 +510,8 @@ void nmEnvFree(nmEnvironment_t* env)
         free(env->callableFunctions[i]->callableInstructions);
         for(size_t j = 0; j < env->callableFunctions[i]->localsCount; j++)
         {
-            free(env->callableFunctions[i]->locals[j]);
+            freeVariable(env->callableFunctions[i]->locals[j],
+                    env->callableFunctions[i]->localTypes[j]);
         }
 
         free(env->callableFunctions[i]->locals);
