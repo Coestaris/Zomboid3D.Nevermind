@@ -2,7 +2,7 @@
  * Simple program example
  */
  
-//import io; 
+import io;
 //import math;
 
 [variadic];
@@ -19,9 +19,8 @@ function void freeArray() { }
 entrypoint function main()
 {
     var a : integer[][];
-    //resizeArray(a, 4, 6);
-
-    a[2,3] = 5 - 4;
+    resizeArray(a, 3, 6);
+    a[1, 2] = 4 + 3;
 
     //freeArray(a);
 }

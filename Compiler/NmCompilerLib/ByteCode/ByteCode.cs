@@ -12,6 +12,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using Nevermind.ByteCode.Instructions.VectorInstructions;
 using Nevermind.ByteCode.NMB;
 using Nevermind.ByteCode.Types;
 using Nevermind.Compiler.Semantics;
@@ -53,6 +54,35 @@ namespace Nevermind.ByteCode
             FunctionInstructions instructionsSet, List<NumeratedVariable> locals, Variable storeResultTo)
         {
             //when all indices were collected, we just replace it by product of them
+            for (int i = 0; i < instructionsSet.Instructions.Count; i++)
+            {
+                if (instructionsSet.Instructions[i].Type == InstructionType.Vget ||
+                    instructionsSet.Instructions[i].Type == InstructionType.Vset)
+                {
+                    List<Variable> indexes;
+                    Variable array;
+
+                    if (instructionsSet.Instructions[i].Type == InstructionType.Vget)
+                    {
+                        indexes = (instructionsSet.Instructions[i] as InstructionVget)._indices;
+                        array = (instructionsSet.Instructions[i] as InstructionVget)._array;
+                    }
+                    else
+                    {
+                        indexes = (instructionsSet.Instructions[i] as InstructionVset)._indices;
+                        array = (instructionsSet.Instructions[i] as InstructionVset)._array;
+                    }
+
+                    var newInstructions = new List<Instruction>();
+                    newInstructions.Add(new InstructionVect(array, function, this, labelIndex++));
+                    foreach (var index in indexes)
+                        newInstructions.Add(new InstructionVind(index, function, this, labelIndex++));
+
+                    instructionsSet.Instructions.InsertRange(i, newInstructions);
+                    i += newInstructions.Count;
+                }
+
+            }
         }
 
         private void ExpressionToList_FixIndexerAssignment(

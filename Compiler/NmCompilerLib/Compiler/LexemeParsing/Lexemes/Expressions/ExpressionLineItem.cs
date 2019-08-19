@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Xml.Schema;
+using Nevermind.ByteCode.Instructions.VectorInstructions;
 using Nevermind.ByteCode.Types;
 using Nevermind.Compiler.Semantics;
 using Nevermind.Compiler.Semantics.Attributes;

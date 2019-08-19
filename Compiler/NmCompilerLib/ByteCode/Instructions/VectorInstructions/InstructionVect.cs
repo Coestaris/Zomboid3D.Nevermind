@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Nevermind.ByteCode.Functions;
 
-namespace Nevermind.ByteCode.Instructions
+namespace Nevermind.ByteCode.Instructions.VectorInstructions
 {
     internal class InstructionVect : Instruction
     {
@@ -15,7 +15,7 @@ namespace Nevermind.ByteCode.Instructions
 
         public override string InstructionName => "vect";
 
-        public override string SourceValue() => ToSourceValue(Array);
+        public override string SourceValue() => ToSourceValue(Array.ToSourceValue());
 
         public override bool UsesVariable(int index) => Array.Index == index;
 

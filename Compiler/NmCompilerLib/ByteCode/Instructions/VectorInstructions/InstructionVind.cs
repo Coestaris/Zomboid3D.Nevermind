@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Nevermind.ByteCode.Functions;
 
-namespace Nevermind.ByteCode.Instructions
+namespace Nevermind.ByteCode.Instructions.VectorInstructions
 {
     internal class InstructionVind : Instruction
     {
@@ -10,11 +10,11 @@ namespace Nevermind.ByteCode.Instructions
 
         public override List<byte> Serialize() => Index.Serialize().ToList();
 
-        public override InstructionType Type => InstructionType.Vint;
+        public override InstructionType Type => InstructionType.Vind;
 
-        public override string InstructionName => "vget";
+        public override string InstructionName => "vind";
 
-        public override string SourceValue() => ToSourceValue(Index);
+        public override string SourceValue() => ToSourceValue(Index.ToSourceValue());
 
         public override bool UsesVariable(int index) => Index.Index == index;
 

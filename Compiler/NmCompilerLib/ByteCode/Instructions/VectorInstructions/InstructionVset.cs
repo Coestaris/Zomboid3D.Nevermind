@@ -1,16 +1,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using Nevermind.ByteCode.Functions;
-using Nevermind.ByteCode.Instructions.ArithmeticInstructions;
 using Nevermind.ByteCode.NMB;
-using Nevermind.Compiler;
 
-namespace Nevermind.ByteCode.Instructions
+namespace Nevermind.ByteCode.Instructions.VectorInstructions
 {
     internal class InstructionVset : Instruction
     {
-        private Variable _array;
-        private List<Variable> _indices;
+        internal Variable _array;
+        internal List<Variable> _indices;
 
         public Variable Src;
 

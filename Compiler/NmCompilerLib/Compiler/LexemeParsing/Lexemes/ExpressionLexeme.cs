@@ -253,6 +253,25 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes
                     result.AddRange(ToList(ref resultIndex, token));
             }
 
+            //proceed indexers
+            foreach (var token in root.SubTokens)
+            {
+                if (token.Indexer != null)
+                {
+                    if (token.CalculatedIndex != -1)
+                    {
+                        result.Add(new ExpressionLineItem(null, token.CalculatedIndex, resultIndex, null, token.Indexer));
+                        result.Last().NearToken = token.UnaryFunction;
+                    }
+                    else
+                    {
+                        result.Add(new ExpressionLineItem(null, token, resultIndex, null, token.Indexer));
+                        result.Last().NearToken = token.UnaryFunction;
+                    }
+                    token.CalculatedIndex = resultIndex++;
+                }
+            }
+
             //function calls
             foreach (var token in root.SubTokens)
             {
@@ -268,25 +287,6 @@ namespace Nevermind.Compiler.LexemeParsing.Lexemes
                     {
                         result.Add(new ExpressionLineItem(null,
                             token, resultIndex, token.UnaryFunction, null));
-                        result.Last().NearToken = token.UnaryFunction;
-                    }
-                    token.CalculatedIndex = resultIndex++;
-                }
-            }
-
-            //proceed indexers
-            foreach (var token in root.SubTokens)
-            {
-                if (token.Indexer != null)
-                {
-                    if (token.CalculatedIndex != -1)
-                    {
-                        result.Add(new ExpressionLineItem(null, token.CalculatedIndex, resultIndex, null, token.Indexer));
-                        result.Last().NearToken = token.UnaryFunction;
-                    }
-                    else
-                    {
-                        result.Add(new ExpressionLineItem(null, token, resultIndex, null, token.Indexer));
                         result.Last().NearToken = token.UnaryFunction;
                     }
                     token.CalculatedIndex = resultIndex++;

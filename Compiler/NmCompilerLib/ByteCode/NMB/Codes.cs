@@ -23,17 +23,19 @@ namespace Nevermind.ByteCode.NMB
         public static readonly Dictionary<InstructionType, UInt16> InstructionDict =
             new Dictionary<InstructionType, ushort>
             {
-                { InstructionType.Ret,  0x1 },
-                { InstructionType.Push, 0x2 },
-                { InstructionType.Pop,  0x3 },
-                { InstructionType.Ldi,  0x4 },
-                { InstructionType.Jmp,  0x5 },
-                { InstructionType.Call, 0x6 },
-                { InstructionType.BrEq, 0x7 },
-                { InstructionType.Cast, 0x8 },
-                { InstructionType.Vget, 0x9 },
-                { InstructionType.Vset, 0xA },
-                { InstructionType.Syscall, 0xB }
+                { InstructionType.Ret,     0x1 },
+                { InstructionType.Push,    0x2 },
+                { InstructionType.Pop,     0x3 },
+                { InstructionType.Ldi,     0x4 },
+                { InstructionType.Jmp,     0x5 },
+                { InstructionType.Call,    0x6 },
+                { InstructionType.BrEq,    0x7 },
+                { InstructionType.Cast,    0x8 },
+                { InstructionType.Vget,    0x9 },
+                { InstructionType.Vset,    0xA },
+                { InstructionType.Syscall, 0xB },
+                { InstructionType.Vect,    0xC },
+                { InstructionType.Vind,    0xD },
             };
 
         public static readonly Dictionary<BinaryArithmeticInstructionType, UInt16> ABInstructionDict =

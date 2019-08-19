@@ -13,10 +13,10 @@ namespace Nevermind.ByteCode
         Vget,
         Vset,
         Syscall,
+        Vect,
+        Vind,
 
         _Unary,
-        _Binary,
-        Vect,
-        Vint
+        _Binary
     }
 }
