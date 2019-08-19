@@ -15,7 +15,7 @@ sudo apt install -y mono-complete
 cd Compiler
 xbuild NmCompiler.sln
 cd NmCompiler/bin/Debug/
-mono ./NmCompiler.exe -td <inputSourceFile> -o <outputBinaryFile>
+mono ./NmCompiler.exe <inputSourceFile> -o <outputBinaryFile> -td
 ```
 You can get list of all possible options by running:
 ```bash
