@@ -20,8 +20,6 @@ namespace Nevermind.ByteCode.Instructions
 
         public override string InstructionName => "cast";
 
-        public override int ParameterCount => 0;
-
         public override string SourceValue() => ToSourceValue(
             Result.ToSourceValue(), Source.ToSourceValue() + $" (to {ByteCode.Header.GetTypeIndex(Result.Type)} = {Result.Type.ID}:{Result.Type.GetBase()})");
 

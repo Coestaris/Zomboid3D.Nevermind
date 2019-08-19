@@ -46,8 +46,10 @@
     <Compile Include="ByteCode\Instructions\InstructionPop.cs" />
     <Compile Include="ByteCode\Instructions\InstructionPushI.cs" />
     <Compile Include="ByteCode\Instructions\InstructionSyscall.cs" />
-    <Compile Include="ByteCode\Instructions\InstructionVget.cs" />
-    <Compile Include="ByteCode\Instructions\InstructionVset.cs" />
+    <Compile Include="ByteCode\Instructions\VectorInstructions\InstructionVect.cs" />
+    <Compile Include="ByteCode\Instructions\VectorInstructions\InstructionVget.cs" />
+    <Compile Include="ByteCode\Instructions\VectorInstructions\InstructionVind.cs" />
+    <Compile Include="ByteCode\Instructions\VectorInstructions\InstructionVset.cs" />
     <Compile Include="ByteCode\InstructionType.cs" />
     <Compile Include="ByteCode\InternalClasses\FunctionInstructions.cs" />
     <Compile Include="ByteCode\InternalClasses\NumberedVariable.cs" />

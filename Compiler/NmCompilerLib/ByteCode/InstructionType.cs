@@ -16,5 +16,7 @@ namespace Nevermind.ByteCode
 
         _Unary,
         _Binary,
+        Vect,
+        Vint
     }
 }

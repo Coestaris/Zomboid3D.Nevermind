@@ -8,25 +8,10 @@ namespace Nevermind.ByteCode.Instructions.ArithmeticInstructions
     {
         public Variable Result;
 
-        public override string InstructionName
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public override int ParameterCount
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public override List<byte> Serialize()
-        {
-            throw new NotImplementedException();
-        }
-
-        public override string SourceValue()
-        {
-            throw new NotImplementedException();
-        }
+        public override string InstructionName { get { throw new NotImplementedException(); } }
+        public override List<byte> Serialize() { throw new NotImplementedException(); }
+        public override string SourceValue() { throw new NotImplementedException(); }
+        public override InstructionType Type { get { throw new NotImplementedException(); } }
 
         public override bool UsesVariable(int index) => Result.Index == index;
 
@@ -36,11 +21,6 @@ namespace Nevermind.ByteCode.Instructions.ArithmeticInstructions
         }
 
         public override List<Variable> FetchUsedVariables(int index) => InnerFetch(index, Result);
-
-        public override InstructionType Type
-        {
-            get { throw new NotImplementedException(); }
-        }
 
         protected ArithmeticInstruction(Variable res, Function func, ByteCode byteCode, int label) : base(func, byteCode, label)
         {

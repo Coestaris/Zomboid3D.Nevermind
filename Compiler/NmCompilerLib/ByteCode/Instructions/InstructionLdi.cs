@@ -19,8 +19,6 @@ namespace Nevermind.ByteCode.Instructions
 
         public override string InstructionName => "ldi";
 
-        public override int ParameterCount => 2;
-
         public override string SourceValue() =>
             ToSourceValue(Result.ToSourceValue(), Src.ToSourceValue());
 

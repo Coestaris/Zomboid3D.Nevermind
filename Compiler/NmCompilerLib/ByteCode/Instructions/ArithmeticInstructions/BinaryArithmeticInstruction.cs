@@ -15,8 +15,6 @@ namespace Nevermind.ByteCode.Instructions.ArithmeticInstructions
 
         public override string InstructionName => AType.ToString().ToLower();
 
-        public override int ParameterCount => 3;
-
         public override string SourceValue() =>
               ToSourceValue(
                   Result?.ToSourceValue() ?? "-1",

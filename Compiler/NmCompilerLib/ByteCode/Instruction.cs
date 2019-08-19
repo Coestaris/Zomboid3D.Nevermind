@@ -23,7 +23,6 @@ namespace Nevermind.ByteCode
         public abstract List<byte> Serialize();
 
         public abstract string InstructionName { get; }
-        public abstract int ParameterCount { get; }
         public abstract InstructionType Type { get; }
         public abstract string SourceValue();
         public abstract bool UsesVariable(int index);

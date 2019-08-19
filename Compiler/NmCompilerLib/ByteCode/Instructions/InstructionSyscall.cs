@@ -18,8 +18,6 @@ namespace Nevermind.ByteCode.Instructions
 
         public override string InstructionName => "syscall";
 
-        public override int ParameterCount => 0;
-
         public override string SourceValue() => ToSourceValue($"{Index} ({Codes.SyscallTypes.FirstOrDefault(p => p.Value == Index).Key})");
 
         public override bool UsesVariable(int index) => false;

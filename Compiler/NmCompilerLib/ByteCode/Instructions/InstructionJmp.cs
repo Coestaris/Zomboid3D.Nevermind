@@ -17,8 +17,6 @@ namespace Nevermind.ByteCode.Instructions
 
         public override string InstructionName => "jmp";
 
-        public override int ParameterCount => 0;
-
         public override string SourceValue() => ToSourceValue(ToFunctionLabel(Index));
 
         public override bool UsesVariable(int index) => false;

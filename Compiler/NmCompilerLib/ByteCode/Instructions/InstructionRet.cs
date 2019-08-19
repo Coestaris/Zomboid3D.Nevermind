@@ -10,8 +10,6 @@ namespace Nevermind.ByteCode.Instructions
 
         public override string InstructionName => "ret";
 
-        public override int ParameterCount => 0;
-
         public override InstructionType Type => InstructionType.Ret;
 
         public override string SourceValue() => ToSourceValue();

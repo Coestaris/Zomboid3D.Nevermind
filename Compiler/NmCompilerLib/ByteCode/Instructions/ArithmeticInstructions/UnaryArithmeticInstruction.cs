@@ -12,8 +12,6 @@ namespace Nevermind.ByteCode.Instructions.ArithmeticInstructions
 
         public override string InstructionName => AType.ToString().ToLower();
 
-        public override int ParameterCount => 2;
-
         public override string SourceValue() => ToSourceValue(Result?.Index ?? -1, Operand.ToSourceValue());
 
         public override List<byte> Serialize() => ToBytes(

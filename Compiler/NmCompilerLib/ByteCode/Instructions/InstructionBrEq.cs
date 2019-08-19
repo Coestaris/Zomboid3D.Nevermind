@@ -19,8 +19,6 @@ namespace Nevermind.ByteCode.Instructions
 
         public override string InstructionName => "breq";
 
-        public override int ParameterCount => 2;
-
         public override string SourceValue() =>
             ToSourceValue(Variable.ToSourceValue(), ToFunctionLabel(Index));
 

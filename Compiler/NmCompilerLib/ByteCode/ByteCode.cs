@@ -13,6 +13,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using Nevermind.ByteCode.NMB;
+using Nevermind.ByteCode.Types;
 using Nevermind.Compiler.Semantics;
 using Nevermind.Compiler.Semantics.Attributes;
 using Type = Nevermind.ByteCode.Types.Type;
@@ -41,6 +42,17 @@ namespace Nevermind.ByteCode
 
             ExpressionToList_FixIndexerAssignment(expression, lexeme, function, ref labelIndex,
                 ref localVarIndex, ref regCount, outRegisters, instructionsSet, locals, storeResultTo);
+
+            ExpressionToList_IndexerMultiply(expression, lexeme, function, ref labelIndex,
+                ref localVarIndex, ref regCount, outRegisters, instructionsSet, locals, storeResultTo);
+        }
+
+        private void ExpressionToList_IndexerMultiply(
+            ExpressionLexeme expression, Lexeme lexeme, Function function,
+            ref int labelIndex, ref int localVarIndex, ref int regCount, List<Variable> outRegisters,
+            FunctionInstructions instructionsSet, List<NumeratedVariable> locals, Variable storeResultTo)
+        {
+            //when all indices were collected, we just replace it by product of them
         }
 
         private void ExpressionToList_FixIndexerAssignment(

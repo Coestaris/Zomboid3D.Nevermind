@@ -166,19 +166,20 @@ todo
 
 ###### vget (0x9)
    * **4 bytes**: dest variable index
-   * **4 bytes**: vector variable index
-   * **1 byte** : index var type
-   * **4 bytes**: index variable
 
 ###### vset (0xA)
-   * **4 bytes**: vector variable index
-   * **1 byte** : index var type
-   * **4 bytes**: index variable
    * **1 byte** : src var type
    * **4 bytes**: src variable
 
 ###### syscall (0xB)
    * **4 bytes**: subroutine index
+
+###### vect (0xC)
+   * **4 bytes**: vector index
+
+###### vind (0xD)   
+   * **1 byte** : src var type
+   * **4 bytes**: src variable
 
 ###### Any ab instruction (0x64 - 0x7E):
    * **4 bytes**: result index

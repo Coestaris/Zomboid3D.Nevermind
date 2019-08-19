@@ -18,13 +18,11 @@ namespace Nevermind.ByteCode.Instructions
 
         public override string InstructionName => "push";
 
-        public override int ParameterCount => 0;
-
         public override string SourceValue() => ToSourceValue(Value);
 
         public override bool UsesVariable(int index) => false;
 
-        public override List<Variable> FetchUsedVariables(int index) => null;
+        public override List<Variable> FetchUsedVariables(int index) => new List<Variable>();
 
         public override void ReplaceRegisterUsage(int oldIndex, int newIndex) {}
 

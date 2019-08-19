@@ -18,8 +18,6 @@ namespace Nevermind.ByteCode.Instructions
 
         public override string InstructionName => "call";
 
-        public override int ParameterCount => 0;
-
         public override string SourceValue() => ToSourceValue(
             $"{DestFunc.ModuleIndex}({(DestFunc.ModuleIndex != -1 ? DestFunc.Program.Module.Name : "self")})",
             $"{DestFunc.Index}({DestFunc.Name})");
