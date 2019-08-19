@@ -23,7 +23,7 @@ mono ./NmCompiler.exe --help
 ```
 Use the following command to put alias at bash config file to use compiler shortcut:
 ```bash
-printf "alias nmc=\"mono $(readlink -f ./NmCompiler.exe)"\" > ~./bashrc
+printf "alias nmc=\"mono $(readlink -f ./NmCompiler.exe)"\" > ~/bashrc
 ```
 
 ##### To Run Runner
