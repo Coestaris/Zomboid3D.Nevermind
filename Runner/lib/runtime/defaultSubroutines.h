@@ -6,6 +6,7 @@
 #define NMRUNNER_DEFAULTSUBROUTINES_H
 
 #include <math.h>
+#include <string.h>
 
 void sr_array_resize();
 void sr_array_free();

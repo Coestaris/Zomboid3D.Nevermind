@@ -9,3 +9,5 @@ obj/
 Runner/cmake-build-debug/
 *.log
 Compiler/packages/
+*.swp
+*.tmp

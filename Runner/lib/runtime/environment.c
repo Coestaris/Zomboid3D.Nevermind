@@ -166,12 +166,12 @@ instructionFunction_t getInstructionFunction(nmCallableFunction_t* func, nmProgr
     nmInstructionData_t* data = instr->dataPtr;
 
     //ret, jmp, call, syscall, vect, vind or vget
-    if(data->index == 0x1 || data->index == 0x5 || data->index == 0x6 || data->index == 0xB ||
-       data->index == 0xA || data->index == 0x9 || data->index == 0xC)
+    if(data->index == ii_ret || data->index == ii_jmp || data->index == ii_call || data->index == ii_syscall ||
+       data->index == ii_vect || data->index == ii_vset || data->index == ii_vget)
         return data->function[0]; //doesn't really care
 
-    //push breq
-    if(data->index == 0x2 || data->index == 0x7)
+    //push breq vind
+    if(data->index == ii_push || data->index == ii_breq || data->index == ii_vind)
     {
         uint64_t flag = instr->parameters[0];
         if(!flag)
@@ -196,7 +196,7 @@ instructionFunction_t getInstructionFunction(nmCallableFunction_t* func, nmProgr
     }
 
     //cast
-    if(data->index == 0x8)
+    if(data->index == ii_cast)
     {
         uint64_t index1 = getFuncIndexByType(getTypeByIndex(func, program, instr->parameters[0]));
         uint64_t index2;

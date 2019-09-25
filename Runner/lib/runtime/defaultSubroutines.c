@@ -79,7 +79,7 @@ void sr_array_resize()
         free(arrayInfo->data);
 
     size_t size = 1;
-    printf("Resized array %p to: ", arrayInfo);
+    printf("Resized array (%p) to: ", arrayInfo);
     for(i = 0; i < arrayInfo->dimenitions; i++)
     {
         arrayInfo->precalculatedProducts[i] = size;
@@ -90,6 +90,7 @@ void sr_array_resize()
     putchar('\n');
 
     arrayInfo->data = malloc(arrayInfo->type->typeBase * size);
+    memset(arrayInfo->data, 0, arrayInfo->type->typeBase * size);
 }
 
 void printElement(void* variable, nmType_t* type)
@@ -142,22 +143,22 @@ void sr_array_print()
 
     if(arrayInfo->dimenitions == 1)
     {
-        printf("Vector: [");
+        printf("Vector (%p): [", arrayInfo);
         for(size_t i = 0; i < arrayInfo->size[0]; i++)
         {
-            printElement(arrayInfo + i, arrayInfo->type);
+            printElement(arrayInfo->data + i * arrayInfo->type->typeBase, arrayInfo->type);
             if(i != arrayInfo->size[0] - 1) printf(", ");
             else printf("]\n");
         }
     }
     else if(arrayInfo->dimenitions == 2)
     {
-        printf("Array: [");
+        printf("Array (%p): [", arrayInfo);
         for(size_t i = 0; i < arrayInfo->size[0]; i++)
         {
             for(size_t j = 0; j < arrayInfo->size[1]; j++)
             {
-                printElement(arrayInfo + i * arrayInfo->size[0] + j, arrayInfo->type);
+                printElement(arrayInfo->data + i * arrayInfo->size[0] + j, arrayInfo->type);
                 printf(", ");
             }
             printf("\n");
@@ -166,7 +167,7 @@ void sr_array_print()
     }
     else
     {
-        printf("Array[");
+        printf("Array (%p)[", arrayInfo);
     }
 }
 
@@ -179,7 +180,7 @@ void sr_array_free()
     free(arrayInfo->data);
     arrayInfo->data = NULL;
 
-    printf("Freed array %p", arrayInfo);
+    printf("Freed array (%p)", arrayInfo);
 
     for(size_t i = 0; i < arrayInfo->dimenitions; i++)
         arrayInfo->size[i] = 0;

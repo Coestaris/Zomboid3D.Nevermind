@@ -25,8 +25,9 @@ function void printArray() { }
 entrypoint function main()
 {
     var a : integer[][];
-    resizeArray(a, 3, 6);
-    a[1, 2] = 4 + 3;
+    resizeArray(a, 22);
+    a[1 + 2] = 4 + 3;
 
+    printArray(a);
     freeArray(a);
 }

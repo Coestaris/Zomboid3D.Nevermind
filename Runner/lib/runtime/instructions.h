@@ -12,6 +12,56 @@
 
 struct _nmEnvironment;
 
+typedef enum _instructionIndex {
+    ii_ret = 0x1,
+    ii_push = 0x2,
+    ii_pop = 0x3,
+    ii_ldi = 0x4,
+    ii_jmp = 0x5,
+    ii_call = 0x6,
+    ii_breq = 0x7,
+    ii_cast = 0x8,
+    ii_vget = 0x9,
+    ii_vset = 0xA,
+    ii_syscall = 0xB,
+    ii_vect = 0xC,
+    ii_vind = 0xD,
+
+    ii_A_Add  = 0x64,
+    ii_A_Sub  = 0x65,
+    ii_A_Mul  = 0x66,
+    ii_A_Div  = 0x67,
+    ii_A_lseq = 0x68,
+    ii_A_ls   = 0x69,
+    ii_A_gr   = 0x6A,
+    ii_A_greq = 0x6B,
+    ii_A_neq  = 0x6C,
+    ii_A_eq   = 0x6D,
+    ii_A_EDiv = 0x6E,
+    ii_A_LAnd = 0x6F,
+    ii_A_LOr  = 0x70,
+    ii_A_And  = 0x71,
+    ii_A_Xor  = 0x72,
+    ii_A_Or   = 0x73,
+    ii_A_lsh  = 0x74,
+    ii_A_rlh  = 0x75,
+
+    ii_A_SetAdd  = 0x76,
+    ii_A_SetSub  = 0x77,
+    ii_A_SetMul  = 0x78,
+    ii_A_SetDiv  = 0x79,
+    ii_A_SetEDiv = 0x7A,
+    ii_A_SetAnd  = 0x7B,
+    ii_A_SetXor  = 0x7C,
+    ii_A_SetOr   = 0x7D,
+    ii_A_Set     = 0x7E,
+
+    ii_A_Neg  = 0x100,
+    ii_A_Not  = 0x101,
+    ii_A_BNeg = 0x102
+} instructionIndex_t;
+
+
 typedef enum _nmInstructionOperandType {
     varConstFlag     = 0x1,
     varIndex         = 0x2,
@@ -26,7 +76,7 @@ typedef void (*instructionFunction_t)(struct _nmEnvironment* env, void** data);
 typedef struct _nmInstructionData {
 
     const char* name;
-    uint16_t index;
+    instructionIndex_t index;
     nmInstructionOperandType_t parameterTypes[5];
     instructionFunction_t function[11];
 
@@ -119,54 +169,54 @@ static nmInstructionData_t instructionsData[totalInstructionsCount] =
 {
         //   Index     PCnt    Function
         //Generic Instructions
-        { "ret",        0x1,  { 0, 0, 0, 0, 0 },                                { instruction_Ret }              }, // ret
-        { "push",       0x2,  { varConstFlag, varConstIndex, 0, 0, 0 },         enumerateAFunc(instruction_push) }, // push
-        { "pop",        0x3,  { varIndex, 0, 0, 0, 0 },                         enumerateAFunc(instruction_pop)  }, // pop
-        { "ldi",        0x4,  { varIndex, varConstFlag, varConstIndex, 0, 0 },  enumerateFunc(instruction_ldi)   }, // ldi
-        { "jmp",        0x5,  { jumpIndex, 0, 0, 0, 0 },                        { instruction_Jmp }              }, // jmp
-        { "call",       0x6,  { functionIndex, functionIndex, 0, 0, 0 },        { instruction_Call }             }, // call
-        { "breq",       0x7,  { varConstFlag, varConstIndex, jumpIndex, 0, 0 }, enumerateFunc(instruction_breq)  }, // breq,
-        { "cast",       0x8,  { varIndex, varConstFlag, varConstIndex, 0, 0 },  {}                               }, // cast
-        { "vget",       0x9,  { varIndex, 0, 0, 0, 0 },                         { instruction_VGet }             }, // vget
-        { "vset",       0xA,  { varConstFlag, varConstIndex, 0, 0, 0 },         { instruction_VSet}              }, // vset
-        { "syscall",    0xB,  { functionIndex, 0, 0, 0, 0 },                    { instruction_Syscall }          }, // syscall
-        { "vect",       0xC,  { varIndex, 0, 0, 0, 0 },                         { instruction_Vect }             }, // vect
-        { "vind",       0xD,  { varConstFlag, varConstIndex, 0, 0, 0 },         enumerateFunc(instruction_vind)  }, // vind
+        { "ret",        ii_ret,       { 0, 0, 0, 0, 0 },                                { instruction_Ret }              }, // ret
+        { "push",       ii_push,     { varConstFlag, varConstIndex, 0, 0, 0 },         enumerateAFunc(instruction_push) }, // push
+        { "pop",        ii_pop,      { varIndex, 0, 0, 0, 0 },                         enumerateAFunc(instruction_pop)  }, // pop
+        { "ldi",        ii_ldi,      { varIndex, varConstFlag, varConstIndex, 0, 0 },  enumerateFunc(instruction_ldi)   }, // ldi
+        { "jmp",        ii_jmp,      { jumpIndex, 0, 0, 0, 0 },                        { instruction_Jmp }              }, // jmp
+        { "call",       ii_call,     { functionIndex, functionIndex, 0, 0, 0 },        { instruction_Call }             }, // call
+        { "breq",       ii_breq,     { varConstFlag, varConstIndex, jumpIndex, 0, 0 }, enumerateFunc(instruction_breq)  }, // breq,
+        { "cast",       ii_cast,     { varIndex, varConstFlag, varConstIndex, 0, 0 },  {}                               }, // cast
+        { "vget",       ii_vget,     { varIndex, 0, 0, 0, 0 },                         { instruction_VGet }             }, // vget
+        { "vset",       ii_vset,     { varConstFlag, varConstIndex, 0, 0, 0 },         { instruction_VSet}              }, // vset
+        { "syscall",    ii_syscall,  { functionIndex, 0, 0, 0, 0 },                    { instruction_Syscall }          }, // syscall
+        { "vect",       ii_vect,     { varIndex, 0, 0, 0, 0 },                         { instruction_Vect }             }, // vect
+        { "vind",       ii_vind,     { varConstFlag, varConstIndex, 0, 0, 0 },         enumerateFunc(instruction_vind)  }, // vind
 
         //Binary Arithmetic instructions
-        instructionDataBinary(A_Add,      0x64),
-        instructionDataBinary(A_Sub,      0x65),
-        instructionDataBinary(A_Mul,      0x66),
-        instructionDataBinary(A_Div,      0x67),
-        instructionDataBinary(A_lseq,     0x68),
-        instructionDataBinary(A_ls,       0x69),
-        instructionDataBinary(A_gr,       0x6A),
-        instructionDataBinary(A_greq,     0x6B),
-        instructionDataBinary(A_neq,      0x6C),
-        instructionDataBinary(A_eq,       0x6D),
-        instructionDataBinary(A_EDiv,     0x6E),
-        instructionDataBinary(A_LAnd,     0x6F),
-        instructionDataBinary(A_LOr,      0x70),
-        instructionDataBinary(A_And,      0x71),
-        instructionDataBinary(A_Xor,      0x72),
-        instructionDataBinary(A_Or,       0x73),
-        instructionDataBinary(A_lsh,      0x74),
-        instructionDataBinary(A_rlh,      0x75),
+        instructionDataBinary(A_Add,      ii_A_Add ),
+        instructionDataBinary(A_Sub,      ii_A_Sub ),
+        instructionDataBinary(A_Mul,      ii_A_Mul ),
+        instructionDataBinary(A_Div,      ii_A_Div ),
+        instructionDataBinary(A_lseq,     ii_A_lseq),
+        instructionDataBinary(A_ls,       ii_A_ls  ),
+        instructionDataBinary(A_gr,       ii_A_gr  ),
+        instructionDataBinary(A_greq,     ii_A_greq),
+        instructionDataBinary(A_neq,      ii_A_neq ),
+        instructionDataBinary(A_eq,       ii_A_eq  ),
+        instructionDataBinary(A_EDiv,     ii_A_EDiv),
+        instructionDataBinary(A_LAnd,     ii_A_LAnd),
+        instructionDataBinary(A_LOr,      ii_A_LOr ),
+        instructionDataBinary(A_And,      ii_A_And ),
+        instructionDataBinary(A_Xor,      ii_A_Xor ),
+        instructionDataBinary(A_Or,       ii_A_Or  ),
+        instructionDataBinary(A_lsh,      ii_A_lsh ),
+        instructionDataBinary(A_rlh,      ii_A_rlh ),
 
-        //instructionDataBinary(A_SetAdd,   0x76),
-        //instructionDataBinary(A_SetSub,   0x77),
-        //instructionDataBinary(A_SetMul,   0x78),
-        //instructionDataBinary(A_SetDiv,   0x79),
-        //instructionDataBinary(A_SetEDiv,  0x7A),
-        //instructionDataBinary(A_SetAnd,   0x7B),
-        //instructionDataBinary(A_SetXor,   0x7C),
-        //instructionDataBinary(A_SetOr,    0x7D),
-        //instructionDataBinary(A_Set,      0x7E),
+        //instructionDataBinary(A_SetAdd,  ii_A_SetAdd ),
+        //instructionDataBinary(A_SetSub,  ii_A_SetSub ),
+        //instructionDataBinary(A_SetMul,  ii_A_SetMul ),
+        //instructionDataBinary(A_SetDiv,  ii_A_SetDiv ),
+        //instructionDataBinary(A_SetEDiv, ii_A_SetEDiv),
+        //instructionDataBinary(A_SetAnd,  ii_A_SetAnd ),
+        //instructionDataBinary(A_SetXor,  ii_A_SetXor ),
+        //instructionDataBinary(A_SetOr,   ii_A_SetOr  ),
+        //instructionDataBinary(A_Set,     ii_A_Set    ),
 
         //Unary Arithmetic instructions
-        instructionDataUnary(A_Neg,       0x100),
-        instructionDataUnary(A_Not,       0x101),
-        instructionDataUnary(A_BNeg,      0x102)
+        instructionDataUnary(A_Neg,       ii_A_Neg ),
+        instructionDataUnary(A_Not,       ii_A_Not ),
+        instructionDataUnary(A_BNeg,      ii_A_BNeg)
 };
 
 nmInstructionData_t* getInstructionData(int instrIndex);

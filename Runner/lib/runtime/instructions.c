@@ -193,7 +193,7 @@ void instruction_VSet(struct _nmEnvironment* env, void** data)
     for(size_t i = 0; i < array->dimenitions; i++)
         offset += array->precalculatedProducts[i] * arrIndices[i];
 
-    *(int32_t*)(array->data + offset) = *(int32_t*)data[0];
+    *(int32_t*)(array->data + offset * array->type->typeBase) = *(int32_t*)data[0];
 
     arrIndicesCount = 0;
 }
