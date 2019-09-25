@@ -160,6 +160,7 @@ namespace Nevermind.ByteCode.NMB
             //array
             { "array_resize",  0x300 },
             { "array_free",    0x301 },
+            { "array_print",   0x302 },
         };
     }
 }

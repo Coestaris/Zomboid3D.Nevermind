@@ -16,11 +16,17 @@ function void resizeArray() { }
 [syscall: array_free, begin]; 
 function void freeArray() { }
 
+[variadic];                   
+[varRestrict: 0, array, any];      
+[varCount: eq, 1];           
+[syscall: array_print, begin]; 
+function void printArray() { }
+
 entrypoint function main()
 {
     var a : integer[][];
     resizeArray(a, 3, 6);
     a[1, 2] = 4 + 3;
 
-    //freeArray(a);
+    freeArray(a);
 }

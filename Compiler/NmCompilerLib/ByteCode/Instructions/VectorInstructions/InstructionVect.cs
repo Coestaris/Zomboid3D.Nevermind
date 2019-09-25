@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Nevermind.ByteCode.Functions;
+using Nevermind.ByteCode.NMB;
 
 namespace Nevermind.ByteCode.Instructions.VectorInstructions
 {
@@ -9,7 +10,7 @@ namespace Nevermind.ByteCode.Instructions.VectorInstructions
         public Variable Array;
 
         public override List<byte> Serialize() =>
-            Array.Serialize().ToList();
+            Chunk.Int32ToBytes(Array.Index).ToList();
 
         public override InstructionType Type => InstructionType.Vect;
 

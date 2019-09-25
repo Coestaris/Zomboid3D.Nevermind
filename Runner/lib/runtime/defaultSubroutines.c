@@ -79,13 +79,95 @@ void sr_array_resize()
         free(arrayInfo->data);
 
     size_t size = 1;
+    printf("Resized array %p to: ", arrayInfo);
     for(i = 0; i < arrayInfo->dimenitions; i++)
     {
         arrayInfo->precalculatedProducts[i] = size;
         size *= arrayInfo->size[i];
+        printf("%i, ", arrayInfo->size[i]);
     }
 
+    putchar('\n');
+
     arrayInfo->data = malloc(arrayInfo->type->typeBase * size);
+}
+
+void printElement(void* variable, nmType_t* type)
+{
+    switch(type->funcIndex)
+    {
+        case 0:
+            fprintf(currentEnv->outs,"%i", *(int8_t*)variable);
+            break;
+        case 1:
+            fprintf(currentEnv->outs,"%i", *(int16_t*)variable);
+            break;
+        case 2:
+            fprintf(currentEnv->outs,"%i", *(int32_t*)variable);
+            break;
+        case 3:
+            fprintf(currentEnv->outs,"%li", *(int64_t*)variable);
+            break;
+        case 4:
+            fprintf(currentEnv->outs,"%u", *(uint8_t*)variable);
+            break;
+        case 5:
+            fprintf(currentEnv->outs,"%u", *(uint16_t*)variable);
+            break;
+        case 6:
+            fprintf(currentEnv->outs,"%u", *(uint32_t*)variable);
+            break;
+        case 7:
+            fprintf(currentEnv->outs,"%lu", *(uint64_t*)variable);
+            break;
+        case 8:
+            fprintf(currentEnv->outs,"%f", *(float*)variable);
+            break;
+        case 9:
+            fprintf(currentEnv->outs,"%lf", *(double*)variable);
+            break;
+        case 10:
+            puts("array"); //todo
+            break;
+        default:
+            abort();
+    }
+}
+
+void sr_array_print()
+{
+    size_t count = (size_t)popStack(currentEnv->variableStack);
+    nmArrayInfo_t* arrayInfo = popStack(currentEnv->variableStack);
+    uint64_t typeIndex = (uint64_t)popStack(currentEnv->variableStack);
+
+    if(arrayInfo->dimenitions == 1)
+    {
+        printf("Vector: [");
+        for(size_t i = 0; i < arrayInfo->size[0]; i++)
+        {
+            printElement(arrayInfo + i, arrayInfo->type);
+            if(i != arrayInfo->size[0] - 1) printf(", ");
+            else printf("]\n");
+        }
+    }
+    else if(arrayInfo->dimenitions == 2)
+    {
+        printf("Array: [");
+        for(size_t i = 0; i < arrayInfo->size[0]; i++)
+        {
+            for(size_t j = 0; j < arrayInfo->size[1]; j++)
+            {
+                printElement(arrayInfo + i * arrayInfo->size[0] + j, arrayInfo->type);
+                printf(", ");
+            }
+            printf("\n");
+        }
+        printf("]\n");
+    }
+    else
+    {
+        printf("Array[");
+    }
 }
 
 void sr_array_free()
@@ -96,6 +178,8 @@ void sr_array_free()
 
     free(arrayInfo->data);
     arrayInfo->data = NULL;
+
+    printf("Freed array %p", arrayInfo);
 
     for(size_t i = 0; i < arrayInfo->dimenitions; i++)
         arrayInfo->size[i] = 0;
@@ -124,44 +208,7 @@ void sr_io_print()
         uint64_t typeIndex = (uint64_t)popStack(currentEnv->variableStack);
         nmType_t* type = currentEnv->program->usedTypes[typeIndex];
 
-        switch(type->funcIndex)
-        {
-            case 0:
-                fprintf(currentEnv->outs,"%i", *(int8_t*)variable);
-                break;
-            case 1:
-                fprintf(currentEnv->outs,"%i", *(int16_t*)variable);
-                break;
-            case 2:
-                fprintf(currentEnv->outs,"%i", *(int32_t*)variable);
-                break;
-            case 3:
-                fprintf(currentEnv->outs,"%li", *(int64_t*)variable);
-                break;
-            case 4:
-                fprintf(currentEnv->outs,"%u", *(uint8_t*)variable);
-                break;
-            case 5:
-                fprintf(currentEnv->outs,"%u", *(uint16_t*)variable);
-                break;
-            case 6:
-                fprintf(currentEnv->outs,"%u", *(uint32_t*)variable);
-                break;
-            case 7:
-                fprintf(currentEnv->outs,"%lu", *(uint64_t*)variable);
-                break;
-            case 8:
-                fprintf(currentEnv->outs,"%f", *(float*)variable);
-                break;
-            case 9:
-                fprintf(currentEnv->outs,"%lf", *(double*)variable);
-                break;
-            case 10:
-                puts("array"); //todo
-                break;
-            default:
-                abort();
-        }
+        printElement(variable, type);
 
         printf(", ");
     }

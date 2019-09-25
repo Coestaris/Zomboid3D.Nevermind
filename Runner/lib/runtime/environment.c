@@ -165,8 +165,9 @@ instructionFunction_t getInstructionFunction(nmCallableFunction_t* func, nmProgr
 {
     nmInstructionData_t* data = instr->dataPtr;
 
-    //ret, jmp, call, syscall
-    if(data->index == 0x1 || data->index == 0x5 || data->index == 0x6 || data->index == 0xB)
+    //ret, jmp, call, syscall, vect, vind or vget
+    if(data->index == 0x1 || data->index == 0x5 || data->index == 0x6 || data->index == 0xB ||
+       data->index == 0xA || data->index == 0x9 || data->index == 0xC)
         return data->function[0]; //doesn't really care
 
     //push breq

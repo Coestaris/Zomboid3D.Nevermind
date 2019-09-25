@@ -130,6 +130,7 @@ void registerBuiltinSubroutines(nmSubroutineScope_t scope)
     {
         registerSubroutine(createSubroutine(0x300, sr_array_resize));
         registerSubroutine(createSubroutine(0x301, sr_array_free));
+        registerSubroutine(createSubroutine(0x302, sr_array_print));
     }
 }
 

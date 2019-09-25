@@ -12,7 +12,7 @@ namespace Nevermind.ByteCode.Instructions.VectorInstructions
 
         public Variable Src;
 
-        public override List<byte> Serialize() => Chunk.Int32ToBytes(Src.Index).ToList();
+        public override List<byte> Serialize() => Src.Serialize().ToList();
 
         public override InstructionType Type => InstructionType.Vset;
 
