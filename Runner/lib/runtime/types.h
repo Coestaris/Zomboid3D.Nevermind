@@ -38,6 +38,8 @@ typedef struct _nmArrayInfo {
 
     void* data;
 
+    uint32_t* precalculatedProducts;
+
 } nmArrayInfo_t;
 
 #endif //NMRUNNER_CORETYPES_H

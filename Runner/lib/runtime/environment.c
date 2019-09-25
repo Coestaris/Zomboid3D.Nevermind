@@ -319,8 +319,13 @@ void* allocVariable(nmType_t* type, nmProgram_t* program)
         ai->index = type->typeIndex;
         ai->dimenitions = type->dim;
         ai->size = malloc(sizeof(uint32_t) * type->dim);
+        ai->precalculatedProducts = malloc(sizeof(uint32_t) * type->dim);
+
         for(size_t i = 0; i < type->dim; i++)
+        {
+            ai->precalculatedProducts[i] = 0;
             ai->size[i] = 0;
+        }
         ai->type = program->usedTypes[type->typeBase];
         ai->data = NULL;
     }
@@ -335,6 +340,7 @@ void freeVariable(void* variable, nmType_t* type)
     {
         nmArrayInfo_t* ai = variable;
         free(ai->size);
+        free(ai->precalculatedProducts);
         if(ai->data)
             free(ai->data);
     }

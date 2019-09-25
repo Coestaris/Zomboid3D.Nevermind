@@ -80,7 +80,10 @@ void sr_array_resize()
 
     size_t size = 1;
     for(i = 0; i < arrayInfo->dimenitions; i++)
+    {
+        arrayInfo->precalculatedProducts[i] = size;
         size *= arrayInfo->size[i];
+    }
 
     arrayInfo->data = malloc(arrayInfo->type->typeBase * size);
 }

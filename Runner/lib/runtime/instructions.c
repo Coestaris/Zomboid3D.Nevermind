@@ -97,6 +97,21 @@ declareCastInstructionSet(uint64_t, u64)
 declareCastInstructionSet(float,    f32)
 declareCastInstructionSet(double,   f64)
 
+nmArrayInfo_t* array;
+uint32_t arrIndices[100];
+size_t arrIndicesCount = 0;
+
+declareVindInstruction(instruction_vind_i8,  int8_t)
+declareVindInstruction(instruction_vind_i16, int32_t)
+declareVindInstruction(instruction_vind_i32, int32_t)
+declareVindInstruction(instruction_vind_i64, uint64_t)
+declareVindInstruction(instruction_vind_u8,  uint8_t)
+declareVindInstruction(instruction_vind_u16, uint16_t)
+declareVindInstruction(instruction_vind_u32, uint32_t)
+declareVindInstruction(instruction_vind_u64, uint64_t)
+declareVindInstruction(instruction_vind_f32, float)
+declareVindInstruction(instruction_vind_f64, double)
+
 nmInstructionData_t* getInstructionData(int instrIndex)
 {
     for(size_t i = 0; i < totalInstructionsCount; i++)
@@ -159,4 +174,31 @@ void instruction_Call(struct _nmEnvironment* env, void** data)
 
     *env->funcIndex = funcIndex;
     *env->programCounter = -1;
+}
+
+void instruction_VGet(struct _nmEnvironment* env, void** data)
+{
+    size_t offset = 0;
+    for(size_t i = 0; i < array->dimenitions; i++)
+        offset += array->precalculatedProducts[i] * arrIndices[i];
+
+    *(int32_t*)data[0] = *(int32_t*)(array->data + offset);
+
+    arrIndicesCount = 0;
+}
+
+void instruction_VSet(struct _nmEnvironment* env, void** data)
+{
+    size_t offset = 0;
+    for(size_t i = 0; i < array->dimenitions; i++)
+        offset += array->precalculatedProducts[i] * arrIndices[i];
+
+    *(int32_t*)(array->data + offset) = *(int32_t*)data[0];
+
+    arrIndicesCount = 0;
+}
+
+void instruction_Vect(struct _nmEnvironment* env, void** data)
+{
+    array = (nmArrayInfo_t*)data[0];
 }

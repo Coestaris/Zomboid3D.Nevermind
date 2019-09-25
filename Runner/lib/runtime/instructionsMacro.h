@@ -80,6 +80,11 @@ void name(struct _nmEnvironment* env, void** data)    \
         *env->programCounter = (uint32_t)data[1] - 1; \
 }                                                     \
 
+#define declareVindInstruction(name, type)            \
+void name(struct _nmEnvironment* env, void** data)    \
+{                                                     \
+     arrIndices[arrIndicesCount++] = *(type*)data[0]; \
+}                                                     \
 
 #define decalreABInstruction(name, type, sign)                  \
 void name(struct _nmEnvironment* env, void** data)              \

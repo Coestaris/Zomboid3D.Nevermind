@@ -48,6 +48,7 @@ instructionPrototype(instruction_ldi)
 instructionPrototype(instruction_jmp)
 instructionPrototype(instruction_call)
 instructionPrototype(instruction_breq)
+instructionPrototype(instruction_vind)
 
 instructionPrototype(instruction_A_Neg)
 instructionPrototype(instruction_A_Not)
@@ -110,6 +111,9 @@ void instruction_Ret(struct _nmEnvironment* env, void** data);
 void instruction_Jmp(struct _nmEnvironment* env, void** data);
 void instruction_Call(struct _nmEnvironment* env, void** data);
 void instruction_Syscall(struct _nmEnvironment* env, void** data);
+void instruction_VGet(struct _nmEnvironment* env, void** data);
+void instruction_VSet(struct _nmEnvironment* env, void** data);
+void instruction_Vect(struct _nmEnvironment* env, void** data);
 
 static nmInstructionData_t instructionsData[totalInstructionsCount] = 
 {
@@ -123,9 +127,11 @@ static nmInstructionData_t instructionsData[totalInstructionsCount] =
         { "call",       0x6,  { functionIndex, functionIndex, 0, 0, 0 },        { instruction_Call }             }, // call
         { "breq",       0x7,  { varConstFlag, varConstIndex, jumpIndex, 0, 0 }, enumerateFunc(instruction_breq)  }, // breq,
         { "cast",       0x8,  { varIndex, varConstFlag, varConstIndex, 0, 0 },  {}                               }, // cast
-        { "vget",       0x9,  { 0, 0, 0, 0, 0 },                                {}                               }, // vget
-        { "vset",       0xA,  { 0, 0, 0, 0, 0 },                                {}                               }, // vset
-        { "syscall",    0xB,  { functionIndex, 0, 0, 0, 0 },                    { instruction_Syscall }          }, //syscall
+        { "vget",       0x9,  { varIndex, 0, 0, 0, 0 },                         { instruction_VGet }             }, // vget
+        { "vset",       0xA,  { varConstFlag, varConstIndex, 0, 0, 0 },         { instruction_VSet}              }, // vset
+        { "syscall",    0xB,  { functionIndex, 0, 0, 0, 0 },                    { instruction_Syscall }          }, // syscall
+        { "vect",       0xC,  { varIndex, 0, 0, 0, 0 },                         { instruction_Vect }             }, // vect
+        { "vind",       0xD,  { varConstFlag, varConstIndex, 0, 0, 0 },         enumerateFunc(instruction_vind)  }, // vind
 
         //Binary Arithmetic instructions
         instructionDataBinary(A_Add,      0x64),
