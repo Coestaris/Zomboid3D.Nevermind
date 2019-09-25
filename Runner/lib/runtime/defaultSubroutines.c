@@ -153,15 +153,19 @@ void sr_array_print()
     }
     else if(arrayInfo->dimenitions == 2)
     {
-        printf("Array (%p): [", arrayInfo);
+        printf("Array (%p): [\n", arrayInfo);
         for(size_t i = 0; i < arrayInfo->size[0]; i++)
         {
             for(size_t j = 0; j < arrayInfo->size[1]; j++)
             {
-                printElement(arrayInfo->data + i * arrayInfo->size[0] + j, arrayInfo->type);
-                printf(", ");
+                printElement(arrayInfo->data + (i * arrayInfo->size[1] + j) * arrayInfo->type->typeBase,
+                        arrayInfo->type);
+
+                if(j != arrayInfo->size[1] - 1)
+                    printf(", ");
             }
-            printf("\n");
+            if(i != arrayInfo->size[0] - 1)
+                printf("\n");
         }
         printf("]\n");
     }
