@@ -1,36 +1,9 @@
 /*
  * Simple program example
  */
- 
-import io;
-//import math;
 
-[variadic];
-[varRestrict: 0, array, any];
-[syscall: array_resize, begin];
-function void resizeArray() { }
-
-[variadic];                   
-[varRestrict: 0, array, any];      
-[varCount: eq, 1];            //eq, gr, greq, ls or lseq
-[syscall: array_free, begin]; 
-function void freeArray() { }
-
-[variadic];                   
-[varRestrict: 0, array, any];      
-[varCount: eq, 1];           
-[syscall: array_print, begin]; 
-function void printArray() { }
-
-entrypoint function main()
+entrypoint function integer main()
 {
     var a : integer[][];
-    var b : integer;
-    resizeArray(a, 5, 5);
-    
-    a[2, 4] = 4 + 0;
-    printi(a[2, 4]);
-
-    printArray(a);
-    freeArray(a);
+    a[2,4] = 
 }

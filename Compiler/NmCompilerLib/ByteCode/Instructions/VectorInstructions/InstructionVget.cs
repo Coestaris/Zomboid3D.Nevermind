@@ -10,6 +10,7 @@ namespace Nevermind.ByteCode.Instructions.VectorInstructions
     {
         internal Variable _array;
         internal List<Variable> _indices;
+        public bool Expanded;
 
         public override List<byte> Serialize() => Chunk.Int32ToBytes(Result.Index).ToList();
 

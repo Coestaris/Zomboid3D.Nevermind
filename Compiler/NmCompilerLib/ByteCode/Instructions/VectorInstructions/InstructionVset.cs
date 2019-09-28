@@ -11,6 +11,7 @@ namespace Nevermind.ByteCode.Instructions.VectorInstructions
         internal List<Variable> _indices;
 
         public Variable Src;
+        public bool Expanded;
 
         public override List<byte> Serialize() => Src.Serialize().ToList();
 

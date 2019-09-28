@@ -44,14 +44,10 @@ namespace Nevermind.ByteCode
             ExpressionToList_FixIndexerAssignment(expression, lexeme, function, ref labelIndex,
                 ref localVarIndex, ref regCount, outRegisters, instructionsSet, locals, storeResultTo);
 
-            ExpressionToList_IndexerMultiply(expression, lexeme, function, ref labelIndex,
-                ref localVarIndex, ref regCount, outRegisters, instructionsSet, locals, storeResultTo);
+            ExpressionToList_IndexerMultiply(function, ref labelIndex, instructionsSet);
         }
 
-        private void ExpressionToList_IndexerMultiply(
-            ExpressionLexeme expression, Lexeme lexeme, Function function,
-            ref int labelIndex, ref int localVarIndex, ref int regCount, List<Variable> outRegisters,
-            FunctionInstructions instructionsSet, List<NumeratedVariable> locals, Variable storeResultTo)
+        private void ExpressionToList_IndexerMultiply(Function function, ref int labelIndex, FunctionInstructions instructionsSet)
         {
             //when all indices were collected, we just replace it by product of them
             for (int i = 0; i < instructionsSet.Instructions.Count; i++)
@@ -64,13 +60,27 @@ namespace Nevermind.ByteCode
 
                     if (instructionsSet.Instructions[i].Type == InstructionType.Vget)
                     {
-                        indexes = (instructionsSet.Instructions[i] as InstructionVget)._indices;
-                        array = (instructionsSet.Instructions[i] as InstructionVget)._array;
+                        var vget = instructionsSet.Instructions[i] as InstructionVget;
+
+                        indexes = vget._indices;
+                        array = vget._array;
+
+                        if(vget.Expanded)
+                            continue;
+
+                        vget.Expanded = true;
                     }
                     else
                     {
-                        indexes = (instructionsSet.Instructions[i] as InstructionVset)._indices;
-                        array = (instructionsSet.Instructions[i] as InstructionVset)._array;
+                        var vset = instructionsSet.Instructions[i] as InstructionVset;
+
+                        indexes = vset._indices;
+                        array = vset._array;
+
+                        if(vset.Expanded)
+                            continue;
+
+                        vset.Expanded = true;
                     }
 
                     var newInstructions = new List<Instruction>();
@@ -608,6 +618,7 @@ namespace Nevermind.ByteCode
 
                 instructionSet.Registers = registers;
                 instructionSet.Locals = locals.Select(p => p.Variable).ToList();
+
                 Instructions.Add(instructionSet);
             }
 
